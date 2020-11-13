@@ -18,6 +18,8 @@ Task List
 			[ ] Returns a value
 			[ ] Returns a correct value
 			[ ] Throw exception if incorrect Coordinate type
+	[ ] Return NULL if coordinate can't be made
+		[ ] Coordinate already exists
 
 [ ] Move piece from one location to another
 	[ ] Return a value
