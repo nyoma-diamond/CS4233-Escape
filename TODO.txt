@@ -20,6 +20,7 @@ Task List
 			[ ] Throw exception if incorrect Coordinate type
 	[ ] Return NULL if coordinate can't be made
 		[ ] Coordinate already exists
+		[ ] Coordinate would be out of bounds
 
 [ ] Move piece from one location to another
 	[ ] Return a value
