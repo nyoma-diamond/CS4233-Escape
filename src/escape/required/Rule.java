@@ -12,8 +12,6 @@
 
 package escape.required;
 
-import java.util.Objects;
-
 /**
  * Interface for the rule implementations. It also contains a static
  * enumeration for the rule names. How you implement the actual  implementations
