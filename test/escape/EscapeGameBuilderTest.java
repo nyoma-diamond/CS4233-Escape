@@ -20,12 +20,10 @@ import org.junit.jupiter.api.Test;
  * 
  * @version May 30, 2020
  */
-class EscapeGameBuilderTest
-{
+class EscapeGameBuilderTest {
 
 	@Test
-	void test() throws Exception
-	{
+	void test() throws Exception {
 		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/test1.egc");
 	}
 

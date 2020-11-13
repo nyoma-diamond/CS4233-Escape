@@ -1,2 +1,45 @@
 Task List
 =========
+[ ] Create new game from specification file
+	[ ] Read specification file
+	[ ] Create new game
+	[ ] Store specifications to new game
+
+[ ] getPieceAt (piece retrieval by position. Board independent)
+	[ ] Return a value
+	[ ] Return piece at coordinate
+		[ ] Return null if no piece
+		[ ] Return piece if present
+	[ ] Return null for invalid coordinate
+
+[ ] makeCoordinate (coordinate creation for SQUARE coordinates. Board independent)
+	[ ] Make a coordinate and return it
+		[ ] Coordinate.DistanceTo
+			[ ] Returns a value
+			[ ] Returns a correct value
+			[ ] Throw exception if incorrect Coordinate type
+
+[ ] Move piece from one location to another
+	[ ] Return a value
+	[ ] Remove piece from source
+	[ ] Put piece on destination
+	[ ] Valid moves
+		[ ] Move to empty destination
+			[ ] Return TRUE
+		[ ] Destination is an EXIT
+			[ ] Return TRUE
+			[ ] Remove piece
+		[ ] Destination has opponent's piece
+			[ ] Return TRUE
+			[ ] Replace opponent's piece with piece being moved
+		[ ] Change player turn
+	[ ] Invalid moves
+		[ ] Either coordinate is NULL
+			[ ] Return NULL
+		[ ] Destination is a BLOCK
+			[ ] Return NULL
+		[ ] No piece on source
+			[ ] Return NULL
+		[ ] Trying to move opponent's piece
+			[ ] Return NULL
+		[ ] DON'T change player turn
