@@ -23,6 +23,7 @@ import escape.util.EscapeGameInitializer;
 public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
 	private GameSettings settings;
 	private List<AlphaCoordinate> coordinates;
+	// Hashmap<AlphaCoordinate,Location>
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
 		this.settings = new GameSettings();
