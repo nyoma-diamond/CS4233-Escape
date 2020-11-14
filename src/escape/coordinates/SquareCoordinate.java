@@ -10,15 +10,20 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.construction;
+package escape.coordinates;
 
-import escape.util.*;
-import escape.required.Coordinate.CoordinateType;
+import escape.required.Coordinate;
 
-public class GameSettings {
-	CoordinateType coordinateType;
-	int xMax, yMax;
-	RuleDescriptor[] rules;
+public class SquareCoordinate extends AlphaCoordinate {
 
-	public GameSettings() { }
+	public SquareCoordinate(int x, int y) {
+		super(x, y);
+	}
+
+	@Override
+	public int DistanceTo(Coordinate c) { 
+		AlphaCoordinate coord = (AlphaCoordinate) c;
+		return Math.max((coord.getX() - this.getX()), (coord.getY() - this.getY()));
+	}
+	
 }

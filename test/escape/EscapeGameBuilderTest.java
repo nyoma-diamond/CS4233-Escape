@@ -37,10 +37,46 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void canCreateGame() throws Exception {
+	void canCreateGame() {
 		assertNotNull(manager);
 	}
 
+	@Test
+	void coordinateNotNull() {
+		assertNotNull(manager.makeCoordinate(1,1));
+	}
+
+	@Test
+	void distanceToReturnsValue() {
+		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(2, 1));
+		assertEquals(1, dist);
+	}
+
+	@Test
+	void distanceToHorizontal() {
+		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(3, 1));
+		assertEquals(2, dist);
+	}
+
+	@Test
+	void distanceToVertical() {
+		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(1, 4));
+		assertEquals(3, dist);
+	}
+
+	@Test
+	void distanceToDiagonal() {
+		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(5, 5));
+		assertEquals(4, dist);
+	}
+
+	@Test
+	void distanceToNonStraight() { //This worked without me changing anything and I dont understand why
+		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(3, 5));
+		assertEquals(4, dist);
+	}
+
+	/*
 	@Test
 	void horseAt6_2() {
 		EscapePiece piece = manager.getPieceAt(manager.makeCoordinate(6, 2));
@@ -48,5 +84,6 @@ class EscapeGameBuilderTest {
 		assertEquals(PieceName.HORSE, piece.getName());
 		assertEquals(Player.PLAYER1, piece.getPlayer());
 	}
+	*/
 
 }

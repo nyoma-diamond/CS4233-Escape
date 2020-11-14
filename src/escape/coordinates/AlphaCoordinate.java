@@ -10,15 +10,22 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.construction;
+package escape.coordinates;
 
-import escape.util.*;
-import escape.required.Coordinate.CoordinateType;
+import escape.required.Coordinate;
 
-public class GameSettings {
-	CoordinateType coordinateType;
-	int xMax, yMax;
-	RuleDescriptor[] rules;
+public abstract class AlphaCoordinate implements Coordinate {
+	protected int x, y;
 
-	public GameSettings() { }
+	public AlphaCoordinate(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public int getX() {	return this.x; }
+
+	public int getY() {	return this.y; }
+
+	public abstract int DistanceTo(Coordinate c);
+	
 }

@@ -20,6 +20,7 @@ import econfig.EscapeConfigurator;
 import escape.construction.EscapeGameManagerImpl;
 import escape.util.EscapeGameInitializer;
 
+
 /**
  * This class builds an instance of an EscapeGameManager from a configuration
  * file (.egc). This uses the EscapeConfigurator for XML to turnthe .egc file

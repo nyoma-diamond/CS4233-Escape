@@ -11,9 +11,14 @@ Task List
 
 [ ] makeCoordinate (coordinate creation for SQUARE coordinates. Board independent)
 	[ ] Make a coordinate and return it
+		[X] makeCoordinate doesn't always return null
 		[ ] Coordinate.DistanceTo
-			[ ] Returns a value
+			[X] Returns a value
 			[ ] Returns a correct value
+				[X] Horizontal Line
+				[X] Vertical Line
+				[X] Diagonal Line
+				[ ] Non-straight line
 			[ ] Throw exception if incorrect Coordinate type
 	[ ] Return NULL if coordinate can't be made
 		[ ] Coordinate already exists

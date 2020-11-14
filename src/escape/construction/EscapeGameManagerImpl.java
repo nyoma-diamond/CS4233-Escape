@@ -15,12 +15,14 @@ package escape.construction;
 import escape.EscapeGameManager;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
+import escape.coordinates.*;
 
-public class EscapeGameManagerImpl<C extends Coordinate> implements EscapeGameManager<C> {
+public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
 	private GameSettings settings;
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
 		this.settings = new GameSettings();
+		this.settings.coordinateType = initializer.getCoordinateType();
 		this.settings.xMax = initializer.getxMax();
 		this.settings.yMax = initializer.getyMax();
 		this.settings.rules = initializer.getRules();
@@ -28,18 +30,19 @@ public class EscapeGameManagerImpl<C extends Coordinate> implements EscapeGameMa
 		//TODO: initialize pieces (depends on makeCoordinate)
 	}
 
-	public boolean move(C from, C to) {
+	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
 		//TODO: implement this
 		return false;
 	}
 
-	public EscapePiece getPieceAt(C coordinate) {
+	public EscapePiece getPieceAt(AlphaCoordinate coordinate) {
 		return null;
 		//TODO: implement this
 	}
 
-	public C makeCoordinate(int x, int y) {
-		return null;
+	public AlphaCoordinate makeCoordinate(int x, int y) {
+		return new SquareCoordinate(x, y);
+		
 		//TODO: implement this
 	}
 }
