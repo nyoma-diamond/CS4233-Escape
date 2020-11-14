@@ -12,6 +12,7 @@
 
 package escape.coordinates;
 
+import escape.exception.EscapeException;
 import escape.required.Coordinate;
 
 public class SquareCoordinate extends AlphaCoordinate {
@@ -22,8 +23,11 @@ public class SquareCoordinate extends AlphaCoordinate {
 
 	@Override
 	public int DistanceTo(Coordinate c) { 
+		if (c.getClass() != this.getClass()) 
+			throw new EscapeException("Mismatched coordinate type. Cannot distance between different coordinate types.");
+		
 		AlphaCoordinate coord = (AlphaCoordinate) c;
-		return Math.max((coord.getX() - this.getX()), (coord.getY() - this.getY()));
+		return Math.max(Math.abs(coord.getX() - this.getX()), Math.abs(coord.getY() - this.getY()));
 	}
 	
 }

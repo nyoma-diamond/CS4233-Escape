@@ -12,6 +12,9 @@
 
 package escape.construction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import escape.EscapeGameManager;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
@@ -19,6 +22,7 @@ import escape.coordinates.*;
 
 public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
 	private GameSettings settings;
+	private List<AlphaCoordinate> coordinates;
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
 		this.settings = new GameSettings();
@@ -26,6 +30,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		this.settings.xMax = initializer.getxMax();
 		this.settings.yMax = initializer.getyMax();
 		this.settings.rules = initializer.getRules();
+
+		this.coordinates = new ArrayList<AlphaCoordinate>();
 		//TODO: initialize locations (depends on makeCoordinate)
 		//TODO: initialize pieces (depends on makeCoordinate)
 	}
@@ -41,6 +47,14 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	}
 
 	public AlphaCoordinate makeCoordinate(int x, int y) {
+		AlphaCoordinate coord = new SquareCoordinate(x, y);
+		
+		if (x > settings.xMax || y > settings.yMax) return null;
+
+		for (AlphaCoordinate c : coordinates)
+		 	if (coord.DistanceTo(c) == 0) return null;
+
+		coordinates.add(coord);
 		return new SquareCoordinate(x, y);
 		
 		//TODO: implement this

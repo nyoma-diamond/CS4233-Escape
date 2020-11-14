@@ -14,9 +14,10 @@ package escape;
 
 import static org.junit.Assert.*;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import escape.exception.EscapeException;
 import escape.required.*;
 import escape.required.EscapePiece.PieceName;
 
@@ -30,8 +31,8 @@ class EscapeGameBuilderTest {
 
 	private static EscapeGameManager manager;
 
-	@BeforeAll
-	static void loadGame() throws Exception {
+	@BeforeEach
+	void loadGame() throws Exception {
 		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/test1.egc");
 		manager = egb.makeGameManager();
 	}
@@ -59,8 +60,20 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
+	void distanceToHorizontalBackwards() {
+		int dist = manager.makeCoordinate(3, 1).DistanceTo(manager.makeCoordinate(1, 1));
+		assertEquals(2, dist);
+	}
+
+	@Test
 	void distanceToVertical() {
 		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(1, 4));
+		assertEquals(3, dist);
+	}
+
+	@Test
+	void distanceToVerticalBackwards() {
+		int dist = manager.makeCoordinate(1, 4).DistanceTo(manager.makeCoordinate(1, 1));
 		assertEquals(3, dist);
 	}
 
@@ -71,9 +84,43 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void distanceToNonStraight() { //This worked without me changing anything and I dont understand why
+	void distanceToDiagonalBackwards() {
+		int dist = manager.makeCoordinate(5, 5).DistanceTo(manager.makeCoordinate(1, 1));
+		assertEquals(4, dist);
+	}
+
+	@Test
+	void distanceToNonStraight() { //This worked without me changing anything. Apparently what I did for Diagonals also works for non-straight lines
 		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(3, 5));
 		assertEquals(4, dist);
+	}
+
+	@Test
+	void distanceToNonStraightBackwards() { //This worked without me changing anything. Apparently what I did for Diagonals also works for non-straight lines
+		int dist = manager.makeCoordinate(3, 5).DistanceTo(manager.makeCoordinate(1, 1));
+		assertEquals(4, dist);
+	}
+
+	@Test
+	void incorrectCoordinateType() {
+		Coordinate c1 = manager.makeCoordinate(1, 1);
+		Coordinate c2 = (c) -> {
+			return 0;
+		};
+		assertThrows(EscapeException.class, () -> c1.DistanceTo(c2));
+	}
+
+	@Test
+	void coordinateAlreadyExists() {
+		manager.makeCoordinate(1, 1);
+		assertNull(manager.makeCoordinate(1, 1));
+	}
+
+	@Test
+	void coordinateOutOfBounds() {
+		assertNull(manager.makeCoordinate(26, 1));
+		assertNull(manager.makeCoordinate(1, 21));
+		assertNull(manager.makeCoordinate(26, 21));
 	}
 
 	/*

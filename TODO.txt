@@ -9,20 +9,28 @@ Task List
 			[ ] Locations
 			[ ] Pieces
 
-[ ] makeCoordinate (coordinate creation for SQUARE coordinates. Board independent)
-	[ ] Make a coordinate and return it
+[X] makeCoordinate (coordinate creation for SQUARE coordinates. Board independent)
+	[X] Make a coordinate and return it
 		[X] makeCoordinate doesn't always return null
-		[ ] Coordinate.DistanceTo
+		[X] Coordinate.DistanceTo
 			[X] Returns a value
-			[ ] Returns a correct value
-				[X] Horizontal Line
-				[X] Vertical Line
-				[X] Diagonal Line
-				[ ] Non-straight line
-			[ ] Throw exception if incorrect Coordinate type
-	[ ] Return NULL if coordinate can't be made
-		[ ] Coordinate already exists
-		[ ] Coordinate would be out of bounds
+			[X] Returns a correct value
+				[X] Horizontal line
+					[X] Away from origin
+					[X] Toward origin
+				[X] Vertical line
+					[X] Away from origin
+					[X] Toward origin
+				[X] Diagonal line
+					[X] Away from origin
+					[X] Toward origin
+				[X] Non-straight path
+					[X] Away from origin
+					[X] Toward origin
+			[X] Throw exception if incorrect Coordinate type
+	[X] Return NULL if coordinate can't be made
+		[X] Coordinate already exists
+		[X] Coordinate would be out of bounds
 
 [ ] getPieceAt (piece retrieval by position. Board independent)
 	[ ] Return a value
