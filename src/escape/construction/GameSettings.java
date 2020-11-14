@@ -17,4 +17,6 @@ import escape.util.*;
 public class GameSettings {
 	int xMax, yMax;
 	RuleDescriptor[] rules;
+
+	public GameSettings() { }
 }

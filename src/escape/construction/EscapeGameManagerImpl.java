@@ -20,6 +20,7 @@ public class EscapeGameManagerImpl<C extends Coordinate> implements EscapeGameMa
 	private GameSettings settings;
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
+		this.settings = new GameSettings();
 		this.settings.xMax = initializer.getxMax();
 		this.settings.yMax = initializer.getyMax();
 		this.settings.rules = initializer.getRules();
