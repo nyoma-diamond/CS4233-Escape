@@ -10,12 +10,12 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.coordinates;
+package escape.positioning;
 
 import escape.required.Coordinate;
 
 public abstract class AlphaCoordinate implements Coordinate {
-	protected int x, y;
+	int x, y; //default is less visible than protected
 
 	public AlphaCoordinate(int x, int y) {
 		this.x = x;

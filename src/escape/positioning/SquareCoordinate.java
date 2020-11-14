@@ -10,7 +10,7 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.coordinates;
+package escape.positioning;
 
 import escape.exception.EscapeException;
 import escape.required.Coordinate;

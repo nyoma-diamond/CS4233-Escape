@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import escape.EscapeGameManager;
+import escape.positioning.*;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
-import escape.coordinates.*;
 
 public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
 	private GameSettings settings;
