@@ -56,7 +56,7 @@ public class EscapeGameBuilder {
 	public EscapeGameBuilder(String fileName) throws Exception {
 		String xmlConfiguration = getXmlConfiguration(fileName);
 		// Uncomment the next instruction if you want to see the XML
-		// System.err.println(xmlConfiguration);
+		System.out.println(xmlConfiguration);
 		gameInitializer = unmarshalXml(xmlConfiguration);
 	}
 
@@ -83,7 +83,8 @@ public class EscapeGameBuilder {
 		JAXBContext contextObj = JAXBContext.newInstance(EscapeGameInitializer.class);
 		Unmarshaller mub = contextObj.createUnmarshaller();
 		return (EscapeGameInitializer) mub.unmarshal(
-			new StreamSource(new StringReader(xmlConfiguration)));
+			new StreamSource(new StringReader(xmlConfiguration))
+		);
 	}
 
 	/**

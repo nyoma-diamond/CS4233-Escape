@@ -31,21 +31,19 @@ class EscapeGameBuilderTest {
 	private static EscapeGameManager manager;
 
 	@BeforeAll
-	static void loadGame() throws Exception
-	{
-		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/GameBuilderTest.egc");
+	static void loadGame() throws Exception {
+		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/test1.egc");
 		manager = egb.makeGameManager();
 		assertNotNull(manager);
 	}
-	
+
 	@Test
 	void test() throws Exception {
 		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/test1.egc");
 	}
 
 	@Test
-	void horseAt6_2()
-	{
+	void horseAt6_2() {
 		EscapePiece piece = manager.getPieceAt(manager.makeCoordinate(6, 2));
 		assertNotNull(piece);
 		assertEquals(PieceName.HORSE, piece.getName());

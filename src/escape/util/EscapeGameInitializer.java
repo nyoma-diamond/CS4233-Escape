@@ -29,118 +29,104 @@ import escape.required.Rule;
  * @see escape.EscapeGameBuilder#makeGameManager()
  */
 @XmlRootElement
-public class EscapeGameInitializer
-{
+public class EscapeGameInitializer {
 	private CoordinateType coordinateType;
-	
+
 	// Board items
 	private int xMax, yMax;
 	private LocationInitializer[] locationInitializers;
-	
+
 	// Piece items
 	private PieceTypeDescriptor[] pieceTypes;
-	
+
 	// Rule items
 	private RuleDescriptor[] rules;
-    
-    public EscapeGameInitializer()
-    {
-        // Needed for JAXB
-    }
 
-    /**
-     * @return the coordinateType
-     */
-    public CoordinateType getCoordinateType()
-    {
-        return coordinateType;
-    }
+	public EscapeGameInitializer() {
+		// Needed for JAXB
+	}
 
-    /**
-     * @param coordinateType the coordinateType to set
-     */
-    public void setCoordinateType(CoordinateType coordinateType)
-    {
-        this.coordinateType = coordinateType;
-    }
+	/**
+	 * @return the coordinateType
+	 */
+	public CoordinateType getCoordinateType() {
+		return coordinateType;
+	}
+
+	/**
+	 * @param coordinateType the coordinateType to set
+	 */
+	public void setCoordinateType(CoordinateType coordinateType) {
+		this.coordinateType = coordinateType;
+	}
 
 	/**
 	 * @return the xMax
 	 */
-	public int getxMax()
-	{
+	public int getxMax() {
 		return xMax;
 	}
 
 	/**
 	 * @param xMax the xMax to set
 	 */
-	public void setxMax(int xMax)
-	{
+	public void setxMax(int xMax) {
 		this.xMax = xMax;
 	}
 
 	/**
 	 * @return the yMax
 	 */
-	public int getyMax()
-	{
+	public int getyMax() {
 		return yMax;
 	}
 
 	/**
 	 * @param yMax the yMax to set
 	 */
-	public void setyMax(int yMax)
-	{
+	public void setyMax(int yMax) {
 		this.yMax = yMax;
 	}
 
 	/**
 	 * @return the locationInitializers
 	 */
-	public LocationInitializer[] getLocationInitializers()
-	{
+	public LocationInitializer[] getLocationInitializers() {
 		return locationInitializers;
 	}
 
 	/**
 	 * @param locationInitializers the locationInitializers to set
 	 */
-	public void setLocationInitializers(LocationInitializer ... locationInitializers)
-	{
+	public void setLocationInitializers(LocationInitializer...locationInitializers) {
 		this.locationInitializers = locationInitializers;
 	}
 
 	/**
 	 * @return the types
 	 */
-	public PieceTypeDescriptor[] getPieceTypes()
-	{
+	public PieceTypeDescriptor[] getPieceTypes() {
 		return pieceTypes;
 	}
 
 	/**
 	 * @param types the types to set
 	 */
-	public void setPieceTypes(PieceTypeDescriptor ... types)
-	{
+	public void setPieceTypes(PieceTypeDescriptor...types) {
 		this.pieceTypes = types;
 	}
 
 	/**
 	 * @return the rules
 	 */
-	public RuleDescriptor[] getRules()
-	{
+	public RuleDescriptor[] getRules() {
 		return rules;
 	}
 
 	/**
 	 * @param rules the rules to set
 	 */
-	public void setRules(RuleDescriptor[] rules)
-	{
+	public void setRules(RuleDescriptor[] rules) {
 		this.rules = rules;
 	}
 
@@ -148,12 +134,11 @@ public class EscapeGameInitializer
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString()
-	{
-		return "EscapeGameInitializer [xMax=" + xMax + ", yMax=" + yMax
-		    + ", coordinateType=" + coordinateType + ", locationInitializers="
-		    + Arrays.toString(locationInitializers) + ", types="
-		    + Arrays.toString(pieceTypes) + "]";
+	public String toString() {
+		return "EscapeGameInitializer [xMax=" + xMax + ", yMax=" + yMax +
+			", coordinateType=" + coordinateType + ", locationInitializers=" +
+			Arrays.toString(locationInitializers) + ", types=" +
+			Arrays.toString(pieceTypes) + "]";
 	}
-	
+
 }
