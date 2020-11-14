@@ -9,13 +9,6 @@ Task List
 			[ ] Locations
 			[ ] Pieces
 
-[ ] getPieceAt (piece retrieval by position. Board independent)
-	[ ] Return a value
-	[ ] Return piece at coordinate
-		[ ] Return null if no piece
-		[ ] Return piece if present
-	[ ] Return null for invalid coordinate
-
 [ ] makeCoordinate (coordinate creation for SQUARE coordinates. Board independent)
 	[ ] Make a coordinate and return it
 		[ ] Coordinate.DistanceTo
@@ -25,6 +18,13 @@ Task List
 	[ ] Return NULL if coordinate can't be made
 		[ ] Coordinate already exists
 		[ ] Coordinate would be out of bounds
+
+[ ] getPieceAt (piece retrieval by position. Board independent)
+	[ ] Return a value
+	[ ] Return piece at coordinate
+		[ ] Return null if no piece
+		[ ] Return piece if present
+	[ ] Return null for invalid coordinate
 
 [ ] Move piece from one location to another
 	[ ] Return a value

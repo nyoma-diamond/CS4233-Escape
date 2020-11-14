@@ -24,8 +24,8 @@ public class EscapeGameManagerImpl<C extends Coordinate> implements EscapeGameMa
 		this.settings.xMax = initializer.getxMax();
 		this.settings.yMax = initializer.getyMax();
 		this.settings.rules = initializer.getRules();
-		//TODO: initialize locations
-		//TODO: initialize pieces
+		//TODO: initialize locations (depends on makeCoordinate)
+		//TODO: initialize pieces (depends on makeCoordinate)
 	}
 
 	public boolean move(C from, C to) {
