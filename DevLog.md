@@ -13,3 +13,5 @@
 - Created SquareCoordinate (class extends AlphaCoordinate)
 - Completed DistanceTo for SquareCoordinate (sufficient for Alpha)
 - Completed makeCoordinate
+
+## 11/14

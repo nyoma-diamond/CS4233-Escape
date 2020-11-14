@@ -32,7 +32,7 @@ Task List
 		[X] Coordinate already exists
 		[X] Coordinate would be out of bounds
 
-[ ] getPieceAt (piece retrieval by position. Board independent)
+[ ] getPieceAt
 	[ ] Return a value
 	[ ] Return piece at coordinate
 		[ ] Return null if no piece

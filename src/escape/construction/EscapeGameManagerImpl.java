@@ -56,7 +56,5 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 		coordinates.add(coord);
 		return new SquareCoordinate(x, y);
-		
-		//TODO: implement this
 	}
 }
