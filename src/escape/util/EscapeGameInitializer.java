@@ -15,7 +15,6 @@ package escape.util;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
 import escape.required.Coordinate.CoordinateType;
-import escape.required.Rule;
 
 /**
  * An example of reading a game configuration file and storing the information in this

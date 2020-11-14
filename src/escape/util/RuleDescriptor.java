@@ -25,23 +25,20 @@ import escape.required.Rule.RuleID;
  * MOVEABLE: YES
  * REQUIRED: NO
  */
-public class RuleDescriptor
-{
+public class RuleDescriptor {
 	public RuleID ruleId;
 	public int ruleValue;
-	
-	public RuleDescriptor()
-	{
-	    // needed for JAXB unmarshalling
+
+	public RuleDescriptor() {
+		// needed for JAXB unmarshalling
 	}
-	
+
 	/**
 	 * Description
 	 * @param ruleId
 	 * @param ruleValue
 	 */
-	public RuleDescriptor(RuleID ruleId, int ruleValue)
-	{
+	public RuleDescriptor(RuleID ruleId, int ruleValue) {
 		this.ruleId = ruleId;
 		this.ruleValue = ruleValue;
 	}
@@ -50,8 +47,7 @@ public class RuleDescriptor
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "RuleDescriptor [ruleId=" + ruleId + ", ruleValue=" + ruleValue + "]";
 	}
 }

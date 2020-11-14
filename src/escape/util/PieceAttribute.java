@@ -26,7 +26,6 @@ import escape.required.EscapePiece.PieceAttributeID;
  * REQUIRED: NO
  */
 public class PieceAttribute {
-	
     PieceAttributeID id;
     int value;
     

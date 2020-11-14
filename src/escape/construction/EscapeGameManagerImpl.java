@@ -13,23 +13,32 @@
 package escape.construction;
 
 import escape.EscapeGameManager;
-import escape.required.Coordinate;
+import escape.required.*;
 import escape.util.EscapeGameInitializer;
 
 public class EscapeGameManagerImpl<C extends Coordinate> implements EscapeGameManager<C> {
+	private GameSettings settings;
+
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
+		this.settings.xMax = initializer.getxMax();
+		this.settings.yMax = initializer.getyMax();
+		this.settings.rules = initializer.getRules();
+		//TODO: initialize locations
+		//TODO: initialize pieces
+	}
+
+	public boolean move(C from, C to) {
+		//TODO: implement this
+		return false;
+	}
+
+	public EscapePiece getPieceAt(C coordinate) {
+		return null;
 		//TODO: implement this
 	}
 
-	boolean move(C from, C to) {
-		//TODO: implement this
-	}
-
-	EscapePiece getPieceAt(C coordinate) {
-		//TODO: implement this
-	}
-
-	C makeCoordinate(int x, int y) {
+	public C makeCoordinate(int x, int y) {
+		return null;
 		//TODO: implement this
 	}
 }

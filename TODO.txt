@@ -1,9 +1,13 @@
 Task List
 =========
 [ ] Create new game from specification file
-	[ ] Read specification file
+	[X] Read specification file (provided already implemented)
 	[ ] Create new game
-	[ ] Store specifications to new game
+		[X] Create *a* game
+		[ ] Store specifications to game
+			[X] Rules/board size
+			[ ] Locations
+			[ ] Pieces
 
 [ ] getPieceAt (piece retrieval by position. Board independent)
 	[ ] Return a value

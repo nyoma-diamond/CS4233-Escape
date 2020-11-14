@@ -17,6 +17,7 @@ import javax.xml.bind.*;
 import javax.xml.transform.stream.StreamSource;
 import org.antlr.v4.runtime.CharStreams;
 import econfig.EscapeConfigurator;
+import escape.construction.EscapeGameManagerImpl;
 import escape.util.EscapeGameInitializer;
 
 /**
@@ -105,6 +106,6 @@ public class EscapeGameBuilder {
 	 */
 	public EscapeGameManager makeGameManager() {
 		// >>> YOU MUST IMPLEMENT THIS METHOD<<<
-		return null;
+		return new EscapeGameManagerImpl(gameInitializer);
 	}
 }

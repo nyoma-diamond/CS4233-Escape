@@ -34,12 +34,11 @@ class EscapeGameBuilderTest {
 	static void loadGame() throws Exception {
 		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/test1.egc");
 		manager = egb.makeGameManager();
-		assertNotNull(manager);
 	}
 
 	@Test
-	void test() throws Exception {
-		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/test1.egc");
+	void canCreateGame() throws Exception {
+		assertNotNull(manager);
 	}
 
 	@Test

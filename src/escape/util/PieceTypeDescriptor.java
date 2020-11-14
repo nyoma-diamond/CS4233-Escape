@@ -26,68 +26,60 @@ import escape.required.EscapePiece.*;
  * MOVEABLE: YES
  * REQUIRED: NO
  */
-public class PieceTypeDescriptor
-{
+public class PieceTypeDescriptor {
 	private PieceName pieceName;
-    private MovementPattern movementPattern;
-    private PieceAttribute[] attributes;
-    
-    public PieceTypeDescriptor() {}
-    
-    /**
-     * @return the pieceName
-     */
-    public PieceName getPieceName()
-    {
-        return pieceName;
-    }
-    /**
-     * @param pieceName the pieceName to set
-     */
-    public void setPieceName(PieceName pieceName)
-    {
-        this.pieceName = pieceName;
-    }
-    /**
-     * @return the movementPattern
-     */
-    public MovementPattern getMovementPattern()
-    {
-        return movementPattern;
-    }
-    /**
-     * @param movementPattern the movementPattern to set
-     */
-    public void setMovementPattern(MovementPattern movementPattern)
-    {
-        this.movementPattern = movementPattern;
-    }
-    /**
-     * @return the attributes
-     */
-    public PieceAttribute[] getAttributes()
-    {
-        return attributes;
-    }
-    /**
-     * @param attributes the attributes to set
-     */
-    public void setAttributes(PieceAttribute ... attributes)
-    {
-        this.attributes = attributes;
-    }
-    
-    /**
+	private MovementPattern movementPattern;
+	private PieceAttribute[] attributes;
+
+	public PieceTypeDescriptor() {}
+
+	/**
+	 * @return the pieceName
+	 */
+	public PieceName getPieceName() {
+		return pieceName;
+	}
+	/**
+	 * @param pieceName the pieceName to set
+	 */
+	public void setPieceName(PieceName pieceName) {
+		this.pieceName = pieceName;
+	}
+	/**
+	 * @return the movementPattern
+	 */
+	public MovementPattern getMovementPattern() {
+		return movementPattern;
+	}
+	/**
+	 * @param movementPattern the movementPattern to set
+	 */
+	public void setMovementPattern(MovementPattern movementPattern) {
+		this.movementPattern = movementPattern;
+	}
+	/**
+	 * @return the attributes
+	 */
+	public PieceAttribute[] getAttributes() {
+		return attributes;
+	}
+	/**
+	 * @param attributes the attributes to set
+	 */
+	public void setAttributes(PieceAttribute...attributes) {
+		this.attributes = attributes;
+	}
+
+	/**
 	 * See if this descriptor has the specified attribute
 	 * @param id the attribute ID
 	 * @return the attribute or null if the piece has none
 	 */
-	public PieceAttribute getAttribute(PieceAttributeID id)
-	{
-		Optional<PieceAttribute> attr = 
+	public PieceAttribute getAttribute(PieceAttributeID id) {
+		Optional<PieceAttribute> attr =
 			Arrays.stream(attributes)
-				.filter(a -> a.getId().equals(id))
-				.findFirst();
+			.filter(a -> a.getId().equals(id))
+			.findFirst();
 		return attr.isPresent() ? attr.get() : null;
 	}
 
@@ -95,9 +87,8 @@ public class PieceTypeDescriptor
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString()
-	{
-		return "PieceTypeInitializer [pieceName=" + pieceName + ", movementPattern="
-		    + movementPattern + ", attributes=" + Arrays.toString(attributes) + "]";
+	public String toString() {
+		return "PieceTypeInitializer [pieceName=" + pieceName + ", movementPattern=" +
+			movementPattern + ", attributes=" + Arrays.toString(attributes) + "]";
 	}
 }

@@ -34,66 +34,58 @@ import escape.required.EscapePiece.*;
  * MOVEABLE: YES
  * REQUIRED: NO 
  */
-public class PieceTypeInitializer
-{
-    private PieceName pieceName;
-    private MovementPattern movementPattern;
-    private PieceAttribute[] attributes;
-    
-    public PieceTypeInitializer() {}
-    
-    /**
-     * @return the pieceName
-     */
-    public PieceName getPieceName()
-    {
-        return pieceName;
-    }
-    /**
-     * @param pieceName the pieceName to set
-     */
-    public void setPieceName(PieceName pieceName)
-    {
-        this.pieceName = pieceName;
-    }
-    /**
-     * @return the movementPattern
-     */
-    public MovementPattern getMovementPattern()
-    {
-        return movementPattern;
-    }
-    /**
-     * @param movementPattern the movementPattern to set
-     */
-    public void setMovementPattern(MovementPattern movementPattern)
-    {
-        this.movementPattern = movementPattern;
-    }
-    /**
-     * @return the attributes
-     */
-    public PieceAttribute[] getAttributes()
-    {
-        return attributes;
-    }
-    /**
-     * @param attributes the attributes to set
-     */
-    public void setAttributes(PieceAttribute ... attributes)
-    {
-        this.attributes = attributes;
-    }
+public class PieceTypeInitializer {
+	private PieceName pieceName;
+	private MovementPattern movementPattern;
+	private PieceAttribute[] attributes;
+
+	public PieceTypeInitializer() {}
+
+	/**
+	 * @return the pieceName
+	 */
+	public PieceName getPieceName() {
+		return pieceName;
+	}
+	/**
+	 * @param pieceName the pieceName to set
+	 */
+	public void setPieceName(PieceName pieceName) {
+		this.pieceName = pieceName;
+	}
+	/**
+	 * @return the movementPattern
+	 */
+	public MovementPattern getMovementPattern() {
+		return movementPattern;
+	}
+	/**
+	 * @param movementPattern the movementPattern to set
+	 */
+	public void setMovementPattern(MovementPattern movementPattern) {
+		this.movementPattern = movementPattern;
+	}
+	/**
+	 * @return the attributes
+	 */
+	public PieceAttribute[] getAttributes() {
+		return attributes;
+	}
+	/**
+	 * @param attributes the attributes to set
+	 */
+	public void setAttributes(PieceAttribute...attributes) {
+		this.attributes = attributes;
+	}
 
 	/*
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString()
-	{
-		return "PieceTypeInitializer [pieceName=" + pieceName + ", movementPattern="
-		    + movementPattern + ", attributes=" + Arrays.toString(attributes) + "]";
+	public String toString() {
+		return "PieceTypeInitializer [pieceName=" + pieceName + ", movementPattern=" +
+			movementPattern + ", attributes=" + Arrays.toString(attributes) + "]";
 	}
-    
-    
+
+
 }
