@@ -17,14 +17,14 @@ import escape.required.Coordinate;
 abstract class AlphaCoordinate implements Coordinate {
 	int x, y; //default is less visible than protected
 
-	public AlphaCoordinate(int x, int y) {
+	AlphaCoordinate(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public int getX() {	return this.x; }
+	int getX() { return this.x; }
 
-	public int getY() {	return this.y; }
+	int getY() { return this.y; }
 
 	public abstract int DistanceTo(Coordinate c);
 	

@@ -22,7 +22,7 @@ class AlphaLocation {
 	private Player player;
 	private PieceName pieceName;
 
-	public AlphaLocation(LocationInitializer initializer) {
+	AlphaLocation(LocationInitializer initializer) {
 		this.locationType = initializer.locationType;
 		this.player = initializer.player;
 		this.pieceName = initializer.pieceName;

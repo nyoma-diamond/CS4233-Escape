@@ -17,7 +17,7 @@ import javax.xml.bind.*;
 import javax.xml.transform.stream.StreamSource;
 import org.antlr.v4.runtime.CharStreams;
 import econfig.EscapeConfigurator;
-import escape.construction.EscapeGameManagerImpl;
+import escape.alpha.EscapeGameManagerImpl;
 import escape.util.EscapeGameInitializer;
 
 

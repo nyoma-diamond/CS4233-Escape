@@ -17,7 +17,7 @@ import escape.required.Coordinate;
 
 class SquareCoordinate extends AlphaCoordinate {
 
-	public SquareCoordinate(int x, int y) {
+	SquareCoordinate(int x, int y) {
 		super(x, y);
 	}
 
