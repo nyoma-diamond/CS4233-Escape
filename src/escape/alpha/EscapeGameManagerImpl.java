@@ -19,15 +19,11 @@ import java.util.List;
 import escape.EscapeGameManager;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
-import escape.util.LocationInitializer;
 
 public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
 	private GameSettings settings;
 	
-	//private HashMap<Coordinate, AlphaLocation> board;
-
 	private List<Coordinate> coordinates;
-	private List<AlphaLocation> locations;
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
 		this.settings = new GameSettings();
@@ -37,12 +33,6 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		this.settings.rules = initializer.getRules();
 
 		this.coordinates = new ArrayList<Coordinate>();
-
-		this.locations = new ArrayList<AlphaLocation>();
-		for (LocationInitializer loc : initializer.getLocationInitializers()) { //TODO: Change this to use a factory
-			locations.add(new AlphaLocation(loc)); 
-			// makeCoordinate(loc.x, loc.y); //can't do this because we don't have a way to get these coordinates
-		}
 
 		//TODO: initialize locations (depends on makeCoordinate)
 		//TODO: initialize pieces (depends on makeCoordinate)
