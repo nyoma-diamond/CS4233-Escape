@@ -10,22 +10,21 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.positioning;
+package escape.alpha;
 
-import escape.required.Coordinate;
+import escape.required.LocationType;
+import escape.required.Player;
+import escape.required.EscapePiece.PieceName;
+import escape.util.LocationInitializer;
 
-public abstract class AlphaCoordinate implements Coordinate {
-	int x, y; //default is less visible than protected
+class AlphaLocation {
+	private LocationType locationType;
+	private Player player;
+	private PieceName pieceName;
 
-	public AlphaCoordinate(int x, int y) {
-		this.x = x;
-		this.y = y;
+	public AlphaLocation(LocationInitializer initializer) {
+		this.locationType = initializer.locationType;
+		this.player = initializer.player;
+		this.pieceName = initializer.pieceName;
 	}
-
-	public int getX() {	return this.x; }
-
-	public int getY() {	return this.y; }
-
-	public abstract int DistanceTo(Coordinate c);
-	
 }

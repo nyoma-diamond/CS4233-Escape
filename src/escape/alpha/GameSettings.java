@@ -10,24 +10,15 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.positioning;
+package escape.alpha;
 
-import escape.exception.EscapeException;
-import escape.required.Coordinate;
+import escape.util.*;
+import escape.required.Coordinate.CoordinateType;
 
-public class SquareCoordinate extends AlphaCoordinate {
+class GameSettings {
+	CoordinateType coordinateType;
+	int xMax, yMax;
+	RuleDescriptor[] rules;
 
-	public SquareCoordinate(int x, int y) {
-		super(x, y);
-	}
-
-	@Override
-	public int DistanceTo(Coordinate c) { 
-		if (c.getClass() != this.getClass()) 
-			throw new EscapeException("Mismatched coordinate type. Cannot distance between different coordinate types.");
-		
-		AlphaCoordinate coord = (AlphaCoordinate) c;
-		return Math.max(Math.abs(coord.getX() - this.getX()), Math.abs(coord.getY() - this.getY()));
-	}
-	
+	public GameSettings() { }
 }

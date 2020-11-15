@@ -10,19 +10,21 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.construction;
+package escape.alpha;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import escape.EscapeGameManager;
-import escape.positioning.*;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
+import escape.util.LocationInitializer;
 
 public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
 	private GameSettings settings;
-	private List<AlphaCoordinate> coordinates;
+	private List<Coordinate> coordinates;
+	
+	private List<AlphaLocation> locations;
 	// Hashmap<AlphaCoordinate,Location>
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
@@ -32,7 +34,11 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		this.settings.yMax = initializer.getyMax();
 		this.settings.rules = initializer.getRules();
 
-		this.coordinates = new ArrayList<AlphaCoordinate>();
+		this.coordinates = new ArrayList<Coordinate>();
+
+		this.locations = new ArrayList<AlphaLocation>();
+		for (LocationInitializer loc : initializer.getLocationInitializers()) locations.add(new AlphaLocation(loc));
+
 		//TODO: initialize locations (depends on makeCoordinate)
 		//TODO: initialize pieces (depends on makeCoordinate)
 	}
@@ -52,7 +58,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		
 		if (x > settings.xMax || y > settings.yMax) return null;
 
-		for (AlphaCoordinate c : coordinates)
+		for (Coordinate c : coordinates)
 		 	if (coord.DistanceTo(c) == 0) return null;
 
 		coordinates.add(coord);
