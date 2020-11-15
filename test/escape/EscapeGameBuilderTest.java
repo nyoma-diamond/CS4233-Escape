@@ -91,14 +91,14 @@ class EscapeGameBuilderTest {
 
 	@Test
 	void distanceToNonStraight() { //This worked without me changing anything. Apparently what I did for Diagonals also works for non-straight lines
-		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(3, 5));
-		assertEquals(4, dist);
+		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(3, 6));
+		assertEquals(5, dist);
 	}
 
 	@Test
 	void distanceToNonStraightBackwards() { //This worked without me changing anything. Apparently what I did for Diagonals also works for non-straight lines
-		int dist = manager.makeCoordinate(3, 5).DistanceTo(manager.makeCoordinate(1, 1));
-		assertEquals(4, dist);
+		int dist = manager.makeCoordinate(3, 6).DistanceTo(manager.makeCoordinate(1, 1));
+		assertEquals(5, dist);
 	}
 
 	@Test
@@ -121,7 +121,15 @@ class EscapeGameBuilderTest {
 		assertNull(manager.makeCoordinate(26, 1));
 		assertNull(manager.makeCoordinate(1, 21));
 		assertNull(manager.makeCoordinate(26, 21));
+		assertNull(manager.makeCoordinate(0, 1));
+		assertNull(manager.makeCoordinate(1, 0));
+		assertNull(manager.makeCoordinate(0, 0));
 	}
+
+	// @Test
+	// void getPieceNotNull() {
+	// 	manager.getPieceAt(coordinate)
+	// }
 
 	/*
 	@Test

@@ -12,17 +12,20 @@
 
 package escape.alpha;
 
+import escape.required.Coordinate;
 import escape.required.LocationType;
 import escape.util.LocationInitializer;
 
 class AlphaLocation {
+	private Coordinate coordinate;
 	private LocationType locationType;
 	private AlphaPiece piece;
 
 	//private Player player;
 	//private PieceName pieceName;
 
-	AlphaLocation(LocationInitializer initializer) {
+	AlphaLocation(LocationInitializer initializer) { 
+		this.coordinate = new SquareCoordinate(initializer.x, initializer.y); //works for Alpha
 		this.locationType = initializer.locationType;
 
 		this.piece = new AlphaPiece();
@@ -32,4 +35,13 @@ class AlphaLocation {
 
 	AlphaPiece getPiece() { return this.piece; }
 	AlphaPiece setPiece(AlphaPiece piece) { return this.piece = piece; }
+	
+	Coordinate getCoordinate() { return this.coordinate; }
+	Coordinate setCoordinate(Coordinate coordinate) {
+		Coordinate c = this.coordinate;
+		this.coordinate = coordinate;
+		return c;
+	}
+	
+	LocationType getLocationType() { return this.locationType; }
 }

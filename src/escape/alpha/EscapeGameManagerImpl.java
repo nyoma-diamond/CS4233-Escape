@@ -13,6 +13,7 @@
 package escape.alpha;
 
 import java.util.ArrayList;
+//import java.util.HashMap;
 import java.util.List;
 
 import escape.EscapeGameManager;
@@ -22,10 +23,11 @@ import escape.util.LocationInitializer;
 
 public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
 	private GameSettings settings;
-	private List<Coordinate> coordinates;
 	
+	//private HashMap<Coordinate, AlphaLocation> board;
+
+	private List<Coordinate> coordinates;
 	private List<AlphaLocation> locations;
-	// Hashmap<AlphaCoordinate,Location>
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
 		this.settings = new GameSettings();
@@ -37,7 +39,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		this.coordinates = new ArrayList<Coordinate>();
 
 		this.locations = new ArrayList<AlphaLocation>();
-		for (LocationInitializer loc : initializer.getLocationInitializers()) locations.add(new AlphaLocation(loc));
+		for (LocationInitializer loc : initializer.getLocationInitializers()) { //TODO: Change this to use a factory
+			locations.add(new AlphaLocation(loc)); 
+			// makeCoordinate(loc.x, loc.y); //can't do this because we don't have a way to get these coordinates
+		}
 
 		//TODO: initialize locations (depends on makeCoordinate)
 		//TODO: initialize pieces (depends on makeCoordinate)
@@ -56,7 +61,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	public AlphaCoordinate makeCoordinate(int x, int y) {
 		AlphaCoordinate coord = new SquareCoordinate(x, y);
 		
-		if (x > settings.xMax || y > settings.yMax) return null;
+		if (x > settings.xMax || y > settings.yMax || x < 1 || y < 1) return null; //this will need to change, but is okay for Alpha
 
 		for (Coordinate c : coordinates)
 		 	if (coord.DistanceTo(c) == 0) return null;
