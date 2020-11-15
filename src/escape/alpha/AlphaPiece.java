@@ -12,24 +12,12 @@
 
 package escape.alpha;
 
-import escape.required.LocationType;
-import escape.util.LocationInitializer;
+import escape.required.Player;
+import escape.required.EscapePiece.PieceName;
 
-class AlphaLocation {
-	private LocationType locationType;
-	private AlphaPiece piece;
+class AlphaPiece {
+	Player player;
+	PieceName pieceName;
 
-	//private Player player;
-	//private PieceName pieceName;
-
-	AlphaLocation(LocationInitializer initializer) {
-		this.locationType = initializer.locationType;
-
-		this.piece = new AlphaPiece();
-		this.piece.player = initializer.player;
-		this.piece.pieceName = initializer.pieceName;
-	}
-
-	AlphaPiece getPiece() { return this.piece; }
-	AlphaPiece setPiece(AlphaPiece piece) { return this.piece = piece; }
+	AlphaPiece() { }
 }
