@@ -42,6 +42,8 @@ class EscapeGameBuilderTest {
 		assertNotNull(manager);
 	}
 
+	//TODO: get tests for coordinates directly in here
+
 	@Test
 	void coordinateNotNull() {
 		assertNotNull(manager.makeCoordinate(1,1));
@@ -126,12 +128,11 @@ class EscapeGameBuilderTest {
 		assertNull(manager.makeCoordinate(0, 0));
 	}
 
-	// @Test
-	// void getPieceNotNull() {
-	// 	manager.getPieceAt(coordinate)
-	// }
+	@Test
+	void getPieceNotNull() {
+		assertNotNull(manager.getPieceAt(manager.makeCoordinate(4, 4)));
+	}
 
-	/*
 	@Test
 	void horseAt6_2() {
 		EscapePiece piece = manager.getPieceAt(manager.makeCoordinate(6, 2));
@@ -139,6 +140,7 @@ class EscapeGameBuilderTest {
 		assertEquals(PieceName.HORSE, piece.getName());
 		assertEquals(Player.PLAYER1, piece.getPlayer());
 	}
-	*/
+
+
 
 }

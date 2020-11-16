@@ -14,4 +14,7 @@
 - Completed DistanceTo for SquareCoordinate (sufficient for Alpha)
 - Completed makeCoordinate
 
-## 11/14
+## 11/15
+
+- Created CoordinateFactory (class)
+- Changed EscapeGameMnagerImpl to use a factory for makeCoordinate

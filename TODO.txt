@@ -33,10 +33,10 @@ Task List
 		[X] Coordinate would be out of bounds
 
 [ ] getPieceAt
-	[ ] Return a value
+	[ ] Return a non-null value
 	[ ] Return piece at coordinate
-		[ ] Return null if no piece
 		[ ] Return piece if present
+		[ ] Return null if no piece
 	[ ] Return null for invalid coordinate
 
 [ ] Move piece from one location to another

@@ -23,7 +23,7 @@ import escape.util.EscapeGameInitializer;
 public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
 	private GameSettings settings;
 	
-	private List<Coordinate> coordinates;
+	private List<AlphaCoordinate> coordinates;
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
 		this.settings = new GameSettings();
@@ -32,7 +32,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		this.settings.yMax = initializer.getyMax();
 		this.settings.rules = initializer.getRules();
 
-		this.coordinates = new ArrayList<Coordinate>();
+		this.coordinates = new ArrayList<AlphaCoordinate>();
 
 		//TODO: initialize locations (depends on makeCoordinate)
 		//TODO: initialize pieces (depends on makeCoordinate)
@@ -49,14 +49,14 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	}
 
 	public AlphaCoordinate makeCoordinate(int x, int y) {
-		AlphaCoordinate coord = new SquareCoordinate(x, y);
+		AlphaCoordinate coord = AlphaCoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
 		
 		if (x > settings.xMax || y > settings.yMax || x < 1 || y < 1) return null; //this will need to change, but is okay for Alpha
 
-		for (Coordinate c : coordinates)
+		for (AlphaCoordinate c : coordinates)
 		 	if (coord.DistanceTo(c) == 0) return null;
 
 		coordinates.add(coord);
-		return new SquareCoordinate(x, y);
+		return coord;
 	}
 }
