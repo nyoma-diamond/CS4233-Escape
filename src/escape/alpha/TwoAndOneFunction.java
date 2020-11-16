@@ -12,18 +12,7 @@
 
 package escape.alpha;
 
-import escape.required.Coordinate;
-import escape.required.Coordinate.CoordinateType;
-
-
-class AlphaCoordinateFactory {
-	static TwoAndOneFunction<Integer, Coordinate, Integer> sqDistance = (Integer x, Integer y, Coordinate c) -> {
-		AlphaCoordinate coord = (AlphaCoordinate) c;
-		return Math.max(Math.abs(coord.getX() - x), Math.abs(coord.getY() - y));
-	};
-
-	static AlphaCoordinate getCoordinate(CoordinateType coordinateType, int x, int y) {
-		if(coordinateType == CoordinateType.SQUARE)	return new AlphaCoordinate(x, y, coordinateType, sqDistance);
-		else return null;
-	}
+@FunctionalInterface
+interface TwoAndOneFunction<A,B,R> {
+	R apply(A a1, A a2, B b);
 }

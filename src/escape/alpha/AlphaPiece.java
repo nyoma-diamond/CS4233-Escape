@@ -12,22 +12,8 @@
 
 package escape.alpha;
 
-import escape.exception.EscapeException;
-import escape.required.Coordinate;
+import escape.required.EscapePiece;
 
-class SquareCoordinate extends AlphaCoordinate {
-
-	SquareCoordinate(int x, int y) {
-		super(x, y);
-	}
-
-	@Override
-	public int DistanceTo(Coordinate c) { 
-		if (c.getClass() != this.getClass()) 
-			throw new EscapeException("Mismatched coordinate type. Cannot distance between different coordinate types.");
-		
-		AlphaCoordinate coord = (AlphaCoordinate) c;
-		return Math.max(Math.abs(coord.getX() - this.getX()), Math.abs(coord.getY() - this.getY()));
-	}
-	
+class AlphaPiece implements EscapePiece {
+	AlphaPiece() { }
 }

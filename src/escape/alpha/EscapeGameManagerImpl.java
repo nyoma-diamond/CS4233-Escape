@@ -44,7 +44,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	}
 
 	public EscapePiece getPieceAt(AlphaCoordinate coordinate) {
-		return null;
+		return new AlphaPiece();
 		//TODO: implement this
 	}
 

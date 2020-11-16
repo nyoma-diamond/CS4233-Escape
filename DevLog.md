@@ -18,3 +18,9 @@
 
 - Created CoordinateFactory (class)
 - Changed EscapeGameMnagerImpl to use a factory for makeCoordinate
+- Refactored AlphaCoordinate to use lambdas
+  - Created TwoAndOneFunction (interface)
+  - Deleted SquareCoordinate
+  - Made AlphaCoordinate store coordinate type.
+  - This way I don't need a separate class for every type of coordinate and can just use lambdas, which can be reused.
+- Created AlphaPiece (class extends EscapePiece)
