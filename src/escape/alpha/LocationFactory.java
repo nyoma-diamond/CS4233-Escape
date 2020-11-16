@@ -12,19 +12,19 @@
 
 package escape.alpha;
 
-import escape.required.EscapePiece;
-import escape.required.Player;
+import escape.required.LocationType;
+import escape.util.LocationInitializer;
 
-class AlphaPiece implements EscapePiece {
-	Player player;
-	PieceName pieceName;
-	
-	AlphaPiece(Player player, PieceName pieceName) {
-		this.player = player;
-		this.pieceName = pieceName;
+class LocationFactory {
+	static AlphaLocation getLocation(LocationInitializer initializer) {
+		return new AlphaLocation(
+			initializer.x, 
+			initializer.y, 
+			initializer.locationType, 
+			initializer.player == null ? null : new AlphaPiece(initializer.player, initializer.pieceName));
 	}
 
-	public PieceName getName() { return this.pieceName; }
-
-	public Player getPlayer() { return this.player; }
+	static AlphaLocation getLocation(int x, int y) {
+		return new AlphaLocation(x, y, LocationType.CLEAR, null);
+	}
 }

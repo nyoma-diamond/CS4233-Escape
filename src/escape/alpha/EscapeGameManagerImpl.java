@@ -13,28 +13,33 @@
 package escape.alpha;
 
 import java.util.ArrayList;
-//import java.util.HashMap;
+import java.util.HashMap;
 import java.util.List;
 
 import escape.EscapeGameManager;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
+import escape.util.LocationInitializer;
 
 public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
-	private GameSettings settings;
+	private AlphaSettings settings;
 	
-	private List<AlphaCoordinate> coordinates;
+	private List<AlphaLocation> unassignedLocations;
+	private HashMap<AlphaCoordinate, AlphaLocation> positions;
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
-		this.settings = new GameSettings();
+		this.settings = new AlphaSettings();
 		this.settings.coordinateType = initializer.getCoordinateType();
 		this.settings.xMax = initializer.getxMax();
 		this.settings.yMax = initializer.getyMax();
 		this.settings.rules = initializer.getRules();
 
-		this.coordinates = new ArrayList<AlphaCoordinate>();
+		this.positions = new HashMap<AlphaCoordinate, AlphaLocation>();
 
-		//TODO: initialize locations (depends on makeCoordinate)
+		this.unassignedLocations = new ArrayList<AlphaLocation>();
+		for (LocationInitializer loc : initializer.getLocationInitializers()) 
+			unassignedLocations.add(LocationFactory.getLocation(loc));
+		
 		//TODO: initialize pieces (depends on makeCoordinate)
 	}
 
@@ -44,19 +49,28 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	}
 
 	public EscapePiece getPieceAt(AlphaCoordinate coordinate) {
-		return new AlphaPiece();
-		//TODO: implement this
+		if (positions.get(coordinate) == null) return null; //this should catch any bad coordinate.
+		return positions.get(coordinate).getPiece();
 	}
 
-	public AlphaCoordinate makeCoordinate(int x, int y) {
+	public AlphaCoordinate makeCoordinate(int x, int y) { //this code is bad and I don't like it
 		AlphaCoordinate coord = AlphaCoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
 		
 		if (x > settings.xMax || y > settings.yMax || x < 1 || y < 1) return null; //this will need to change, but is okay for Alpha
 
-		for (AlphaCoordinate c : coordinates)
+		for (AlphaCoordinate c : positions.keySet()) //TODO: make this into its own function
 		 	if (coord.DistanceTo(c) == 0) return null;
 
-		coordinates.add(coord);
+		for (int i = 0; i < unassignedLocations.size(); i++) { //TODO: make this into its own function
+			AlphaLocation loc = unassignedLocations.get(i);
+			if (loc.x == x && loc.y == y) {
+				positions.put(coord, loc);
+				unassignedLocations.remove(i);
+				return coord;
+			}
+		}
+
+		positions.put(coord, LocationFactory.getLocation(x, y));
 		return coord;
 	}
 }

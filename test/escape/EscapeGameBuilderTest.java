@@ -129,18 +129,33 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
+	void nothingAt1_1() { //location not made during initialization
+		EscapePiece piece = manager.getPieceAt(manager.makeCoordinate(1, 1));
+		assertNull(piece);
+	}
+
+	@Test
+	void nothingAt3_5() { //location made during initialization
+		EscapePiece piece = manager.getPieceAt(manager.makeCoordinate(3, 5));
+		assertNull(piece);
+	}
+	
+	@Test
 	void getPieceNotNull() {
 		assertNotNull(manager.getPieceAt(manager.makeCoordinate(4, 4)));
 	}
 
 	@Test
-	void horseAt6_2() {
-		EscapePiece piece = manager.getPieceAt(manager.makeCoordinate(6, 2));
+	void snailAt4_4() {
+		EscapePiece piece = manager.getPieceAt(manager.makeCoordinate(4, 4));
 		assertNotNull(piece);
-		assertEquals(PieceName.HORSE, piece.getName());
+		assertEquals(PieceName.SNAIL, piece.getName());
 		assertEquals(Player.PLAYER1, piece.getPlayer());
 	}
 
-
-
+	@Test
+	void getPieceAtBadCoordinate() throws Exception {
+		EscapePiece piece = manager.getPieceAt(new EscapeGameBuilder("config/egc/test1.egc").makeGameManager().makeCoordinate(4, 4));
+		assertNull(piece);
+	}
 }

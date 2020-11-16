@@ -15,10 +15,10 @@ package escape.alpha;
 import escape.util.*;
 import escape.required.Coordinate.CoordinateType;
 
-class GameSettings {
+class AlphaSettings {
 	CoordinateType coordinateType;
 	int xMax, yMax;
 	RuleDescriptor[] rules;
 
-	GameSettings() { }
+	AlphaSettings() { }
 }

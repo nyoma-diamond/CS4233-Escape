@@ -32,12 +32,12 @@ Task List
 		[X] Coordinate already exists
 		[X] Coordinate would be out of bounds
 
-[ ] getPieceAt
+[X] getPieceAt
 	[X] Return a non-null value
-	[ ] Return piece at coordinate
-		[ ] Return piece if present
-		[ ] Return null if no piece
-	[ ] Return null for invalid coordinate
+	[X] Return piece at coordinate
+		[X] Return piece if present
+		[X] Return null if no piece
+	[X] Return null for invalid coordinate
 
 [ ] Move piece from one location to another
 	[ ] Return a value
