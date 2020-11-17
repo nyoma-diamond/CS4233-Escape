@@ -256,4 +256,30 @@ class EscapeGameBuilderTest {
 		manager.move(c1, c2);
 		assertEquals(p, manager.getPieceAt(c2));
 	}
+
+	@Test
+	void player1CantMovePlayer2() {
+		Coordinate c1 = manager.makeCoordinate(10, 12);
+		Coordinate c2 = manager.makeCoordinate(1, 1);
+
+		assertFalse(manager.move(c1, c2));
+	}
+
+	@Test
+	void player2CantMovePlayer1() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(1, 1);
+
+		manager.move(c1, c2);
+		assertFalse(manager.move(c2, c1));
+	}
+
+	@Test
+	void invalidMoveDoesntChangeTurn() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(10, 12);
+
+		assertFalse(manager.move(c2, c1));
+		assertTrue(manager.move(c1, c2));
+	}
 }

@@ -34,4 +34,4 @@
 
 ## 11/16
 
-- 
+- Finished implementing move

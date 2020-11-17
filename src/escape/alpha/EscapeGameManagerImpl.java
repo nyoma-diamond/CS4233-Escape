@@ -20,9 +20,12 @@ import escape.EscapeGameManager;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
+import escape.required.Player;
 
 public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
 	private AlphaSettings settings;
+
+	private Player curPlayer;
 	
 	private List<AlphaLocation> unassignedLocations;
 	private HashMap<AlphaCoordinate, AlphaLocation> positions;
@@ -33,6 +36,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		this.settings.xMax = initializer.getxMax();
 		this.settings.yMax = initializer.getyMax();
 		this.settings.rules = initializer.getRules();
+
+		this.curPlayer = Player.PLAYER1;
 
 		this.positions = new HashMap<AlphaCoordinate, AlphaLocation>();
 
@@ -53,11 +58,14 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 		if (fromLoc.getPiece() == null 
 			|| (toLoc.getPiece() != null && fromLoc.getPiece().getPlayer() == toLoc.getPiece().getPlayer())
+			|| fromLoc.getPiece().getPlayer() != curPlayer
 			|| toLoc.locationType == LocationType.BLOCK
 			) return false;
 	
 		if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece());
 		fromLoc.setPiece(null);
+
+		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; 
 		return true;
 	}
 
