@@ -40,7 +40,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		for (LocationInitializer loc : initializer.getLocationInitializers()) 
 			unassignedLocations.add(LocationFactory.getLocation(loc));
 		
-		//TODO: initialize pieces (depends on makeCoordinate)
+		//TODO: initialize pieces. Don't need to implement for alpha tho :)
 	}
 
 	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
@@ -53,24 +53,46 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		return positions.get(coordinate).getPiece();
 	}
 
-	public AlphaCoordinate makeCoordinate(int x, int y) { //this code is bad and I don't like it
-		AlphaCoordinate coord = AlphaCoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
-		
-		if (x > settings.xMax || y > settings.yMax || x < 1 || y < 1) return null; //this will need to change, but is okay for Alpha
+	/**
+	 * Checks if the provided coordinate is a valid coordinate given existing coordinates
+	 * @param coord coordinate to check
+	 * @return true if valid, false if not
+	 */
+	private boolean validCoordinate(AlphaCoordinate coord) {
+		if (coord.getX() > settings.xMax 
+			|| coord.getY() > settings.yMax 
+			|| coord.getX() < 1 
+			|| coord.getY() < 1) return false; //this will need to change, but is okay for Alpha
 
-		for (AlphaCoordinate c : positions.keySet()) //TODO: make this into its own function
-		 	if (coord.DistanceTo(c) == 0) return null;
+		for (AlphaCoordinate c : positions.keySet())
+			if (coord.DistanceTo(c) == 0) return false;
+			 
+		return true;
+	}
 
-		for (int i = 0; i < unassignedLocations.size(); i++) { //TODO: make this into its own function
+	/**
+	 * Adds the provided coordinate to the game
+	 * @param coord coordinate to add
+	 */
+	private void putCoordinate(AlphaCoordinate coord) {
+		for (int i = 0; i < unassignedLocations.size(); i++) { //Check if this coordinate matches a currently unassigned location
 			AlphaLocation loc = unassignedLocations.get(i);
-			if (loc.x == x && loc.y == y) {
+			if (loc.x == coord.getX() && loc.y == coord.getY()) {
 				positions.put(coord, loc);
 				unassignedLocations.remove(i);
-				return coord;
+				return;
 			}
 		}
 
-		positions.put(coord, LocationFactory.getLocation(x, y));
+		positions.put(coord, LocationFactory.getLocation(coord.getX(), coord.getY()));
+	}
+
+	public AlphaCoordinate makeCoordinate(int x, int y) { //this code is bad and I don't like it
+		AlphaCoordinate coord = AlphaCoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
+		
+		if (!validCoordinate(coord)) return null;
+
+		putCoordinate(coord);
 		return coord;
 	}
 }
