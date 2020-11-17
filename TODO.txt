@@ -44,9 +44,9 @@ Task List
 	[ ] Valid moves
 		[X] Destination is empty
 			[X] Return TRUE
-		[ ] Destination is an EXIT
+		[X] Destination is an EXIT
 			[X] Return TRUE
-			[ ] Remove piece
+			[X] Remove piece
 		[ ] Destination has opponent's piece
 			[ ] Return TRUE
 			[ ] Replace opponent's piece with piece being moved
