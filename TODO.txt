@@ -1,13 +1,13 @@
 Task List
 =========
-[ ] Create new game from specification file
+[X] Create new game from specification file
 	[X] Read specification file (provided already implemented)
-	[ ] Create new game
+	[X] Create new game
 		[X] Create *a* game
-		[ ] Store specifications to game
+		[X] Store specifications to game
 			[X] Rules/board size
 			[X] Locations
-			[ ] Pieces
+			[ ] Pieces (not necessary for Alpha)
 
 [X] makeCoordinate (coordinate creation for SQUARE coordinates. Board independent)
 	[X] Make a coordinate and return it

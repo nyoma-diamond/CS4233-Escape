@@ -31,7 +31,10 @@
 - Made EscapeGameManagerImpl use a HashMap to associate coordinates with locations.
 - Finished implementing getPieceAt
 
-
 ## 11/16
 
+- Refactored some functionality out of makeCoordinate and into their own methods
+  - No reason to have massive blocks of code in makeCoordinate when it could be made significantly clearer by splitting functionality out to their own methods.
 - Finished implementing move
+- Refactored some functionality out of move and into their own methods
+  - No reason to have massive blocks of code in makeCoordinate when it could be made significantly clearer by splitting functionality out to their own methods.

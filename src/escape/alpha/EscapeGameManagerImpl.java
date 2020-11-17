@@ -48,31 +48,42 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		//TODO: initialize pieces. Don't need to implement for alpha tho :)
 	}
 
+	
+	/**
+	 * Return whether moving a piece between the provided locations is valid
+	 * @param from location to move piece from
+	 * @param to location to move piece to
+	 * @return whether moving a piece between the provided locations is valid
+	 */
+	private boolean validMove(AlphaLocation from, AlphaLocation to) {
+		return !(from.getPiece() == null 
+			|| (to.getPiece() != null && from.getPiece().getPlayer() == to.getPiece().getPlayer())
+			|| from.getPiece().getPlayer() != curPlayer
+			|| to.locationType == LocationType.BLOCK);
+	}
+
+
 	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
-		//TODO: implement this
-		if (from == null 
-			|| to == null) return false;
+		if (from == null || to == null) return false;
 		
 		AlphaLocation fromLoc = positions.get(from);
 		AlphaLocation toLoc = positions.get(to);
 
-		if (fromLoc.getPiece() == null 
-			|| (toLoc.getPiece() != null && fromLoc.getPiece().getPlayer() == toLoc.getPiece().getPlayer())
-			|| fromLoc.getPiece().getPlayer() != curPlayer
-			|| toLoc.locationType == LocationType.BLOCK
-			) return false;
+		if (!validMove(fromLoc, toLoc)) return false;
 	
 		if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece());
 		fromLoc.setPiece(null);
 
-		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; 
+		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; //Would make this its own method but its only one line and not used anywhere else
 		return true;
 	}
+
 
 	public EscapePiece getPieceAt(AlphaCoordinate coordinate) {
 		if (positions.get(coordinate) == null) return null; //this should catch any bad coordinate.
 		return positions.get(coordinate).getPiece();
 	}
+
 
 	/**
 	 * Checks if the provided coordinate is a valid coordinate given existing coordinates
@@ -91,6 +102,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		return true;
 	}
 
+
 	/**
 	 * Adds the provided coordinate to the game
 	 * @param coord coordinate to add
@@ -108,6 +120,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		//No unassigned location in same spot. Create new clear location and add coordinate-location pair to positions
 		positions.put(coord, LocationFactory.getLocation(coord.getX(), coord.getY()));
 	}
+
 
 	public AlphaCoordinate makeCoordinate(int x, int y) { //this code is bad and I don't like it
 		AlphaCoordinate coord = AlphaCoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
