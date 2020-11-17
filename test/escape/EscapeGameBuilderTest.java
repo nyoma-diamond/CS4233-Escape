@@ -275,7 +275,27 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
+	void moveChangesBackTurn() {
+		Coordinate c1 = manager.makeCoordinate(4, 4); //p1 piece
+		Coordinate c2 = manager.makeCoordinate(1, 1); //clear
+		Coordinate c3 = manager.makeCoordinate(10, 12); //p2 piece
+
+		manager.move(c1, c2); //p1 turn: p1 to clear 
+		manager.move(c3, c1); //p2 turn: p2 to clear 
+		assertFalse(manager.move(c1, c3)); //p1 turn: p2 to clear
+	}
+
+	@Test
 	void invalidMoveDoesntChangeTurn() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(10, 12);
+
+		assertFalse(manager.move(c2, c1));
+		assertTrue(manager.move(c1, c2));
+	}
+
+	@Test
+	void foo() {
 		Coordinate c1 = manager.makeCoordinate(4, 4);
 		Coordinate c2 = manager.makeCoordinate(10, 12);
 

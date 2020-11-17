@@ -28,7 +28,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	private Player curPlayer;
 	
 	private List<AlphaLocation> unassignedLocations;
-	private HashMap<AlphaCoordinate, AlphaLocation> positions;
+	private HashMap<AlphaCoordinate, AlphaLocation> positions; //This could just use Coordinates, but the change isn't necessary
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
 		this.settings = new AlphaSettings();
@@ -123,7 +123,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 
 	public AlphaCoordinate makeCoordinate(int x, int y) { //this code is bad and I don't like it
-		AlphaCoordinate coord = AlphaCoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
+		AlphaCoordinate coord = CoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
 		
 		if (!validCoordinate(coord)) return null;
 

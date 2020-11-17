@@ -16,7 +16,7 @@ import escape.required.Coordinate;
 import escape.required.Coordinate.CoordinateType;
 
 
-class AlphaCoordinateFactory {
+class CoordinateFactory {
 	static TwoAndOneFunction<Integer, Coordinate, Integer> sqDistance = (Integer x, Integer y, Coordinate c) -> {
 		AlphaCoordinate coord = (AlphaCoordinate) c;
 		return Math.max(Math.abs(coord.getX() - x), Math.abs(coord.getY() - y));
