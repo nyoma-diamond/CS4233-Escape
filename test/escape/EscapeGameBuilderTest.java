@@ -158,4 +158,90 @@ class EscapeGameBuilderTest {
 		EscapePiece piece = manager.getPieceAt(new EscapeGameBuilder("config/egc/test1.egc").makeGameManager().makeCoordinate(4, 4));
 		assertNull(piece);
 	}
+
+	@Test
+	void movePieceToEmptySpace() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(1, 1);
+		assertTrue(manager.move(c1, c2));
+	}
+
+	@Test
+	void movePieceToFilledSpace() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(10, 12);
+		assertFalse(manager.move(c1, c2));
+	}
+
+	@Test
+	void movePieceFromEmptySpace() {
+		Coordinate c1 = manager.makeCoordinate(1, 1);
+		Coordinate c2 = manager.makeCoordinate(2, 2);
+		assertFalse(manager.move(c1, c2));
+	}
+
+	@Test
+	void moveNullCoord() {
+		Coordinate c = manager.makeCoordinate(1, 1);
+		assertFalse(manager.move(c, null));
+		assertFalse(manager.move(null, c));
+		assertFalse(manager.move(null, null));
+	}
+
+	@Test
+	void moveToBlock() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(3, 5);
+		assertFalse(manager.move(c1, c2));
+	}
+
+	@Test
+	void moveRemovesPieceFromSource() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(1, 1);
+		manager.move(c1, c2);
+		assertNull(manager.getPieceAt(c1));
+	}
+
+	@Test
+	void invalidMoveLeavesPieceAtSource() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(3, 5);
+
+		EscapePiece p = manager.getPieceAt(c1);
+		manager.move(c1, c2);
+		assertEquals(p, manager.getPieceAt(c1));
+	}
+
+	@Test
+	void movePutsPieceAtDestination() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(1, 1);
+
+		EscapePiece p = manager.getPieceAt(c1);
+		manager.move(c1, c2);
+		assertEquals(p, manager.getPieceAt(c2));
+	}
+
+	@Test
+	void invalidMoveDoesntPutPieceAtDestination() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(3, 5);
+		Coordinate c3 = manager.makeCoordinate(10, 12);
+
+		manager.move(c1, c2);
+		assertNull(manager.getPieceAt(c2));
+
+		EscapePiece p = manager.getPieceAt(c3);
+		manager.move(c1, c3);
+		assertEquals(p, manager.getPieceAt(c3));
+	}
+
+	@Test
+	void moveToExitRemovesPiece() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(5, 12);
+		assertTrue(manager.move(c1, c2));
+		assertNull(manager.getPieceAt(c2));
+	}
 }

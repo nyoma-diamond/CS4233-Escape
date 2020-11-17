@@ -40,26 +40,24 @@ Task List
 	[X] Return null for invalid coordinate
 
 [ ] Move piece from one location to another
-	[ ] Return a value
-	[ ] Remove piece from source
-	[ ] Put piece on destination
+	[X] Return a value
 	[ ] Valid moves
-		[ ] Move to empty destination
-			[ ] Return TRUE
+		[X] Destination is empty
+			[X] Return TRUE
 		[ ] Destination is an EXIT
-			[ ] Return TRUE
+			[X] Return TRUE
 			[ ] Remove piece
 		[ ] Destination has opponent's piece
 			[ ] Return TRUE
 			[ ] Replace opponent's piece with piece being moved
+		[X] Remove piece from source
+		[X] Put piece on destination
 		[ ] Change player turn
 	[ ] Invalid moves
-		[ ] Either coordinate is NULL
-			[ ] Return NULL
-		[ ] Destination is a BLOCK
-			[ ] Return NULL
-		[ ] No piece on source
-			[ ] Return NULL
+		[X] No piece on source
+		[X] Either coordinate is NULL
+		[X] Destination is a BLOCK
 		[ ] Trying to move opponent's piece
-			[ ] Return NULL
+		[X] Piece ISN'T removed from source
+		[X] Piece ISN'T put on destination
 		[ ] DON'T change player turn

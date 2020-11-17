@@ -45,7 +45,19 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
 		//TODO: implement this
-		return false;
+		if (from == null 
+			|| to == null) return false;
+		
+		AlphaLocation fromLoc = positions.get(from);
+		AlphaLocation toLoc = positions.get(to);
+
+		if (toLoc.getPiece() != null 
+			|| fromLoc.getPiece() == null 
+			|| toLoc.locationType == LocationType.BLOCK) return false;
+	
+		if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece());
+		fromLoc.setPiece(null);
+		return true;
 	}
 
 	public EscapePiece getPieceAt(AlphaCoordinate coordinate) {
@@ -75,15 +87,16 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	 * @param coord coordinate to add
 	 */
 	private void putCoordinate(AlphaCoordinate coord) {
-		for (int i = 0; i < unassignedLocations.size(); i++) { //Check if this coordinate matches a currently unassigned location
-			AlphaLocation loc = unassignedLocations.get(i);
-			if (loc.x == coord.getX() && loc.y == coord.getY()) {
-				positions.put(coord, loc);
-				unassignedLocations.remove(i);
-				return;
+		for (int i = 0; i < unassignedLocations.size(); i++) { 
+			AlphaLocation loc = unassignedLocations.get(i); //For each unassigned location
+			if (loc.x == coord.getX() && loc.y == coord.getY()) { //If same position as provided coordinate
+				positions.put(coord, loc); //Add coordinate-location pair to positions
+				unassignedLocations.remove(i); //remove location from unassigned locations list
+				return; //exit (there shouldn't be more than one unassigned location at the same spot)
 			}
 		}
 
+		//No unassigned location in same spot. Create new clear location and add coordinate-location pair to positions
 		positions.put(coord, LocationFactory.getLocation(coord.getX(), coord.getY()));
 	}
 

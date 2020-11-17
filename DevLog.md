@@ -22,11 +22,16 @@
   - Created TwoAndOneFunction (interface)
   - Deleted SquareCoordinate
   - Made AlphaCoordinate store coordinate type.
-  - This way I don't need a separate class for every type of coordinate and can just use lambdas, which can be reused.
+  - This way I don't need a separate class for every type of coordinate and can just use lambdas, which can be reused. Might change this in the future because it's kinda jank, but for the time being it's simpler.
 - Created AlphaPiece (class extends EscapePiece)
 - Created AlphaLocation (class)
 - Created LocationFactory (class)
   - This is dependent on both AlphaLocation and AlphaPiece because it generates a location containing a piece if provided one by the location initializer
 - Made EscapeGameManagerImpl store locations
 - Made EscapeGameManagerImpl use a HashMap to associate coordinates with locations.
-- Implemented getPieceAt
+- Finished implementing getPieceAt
+
+
+## 11/16
+
+- 
