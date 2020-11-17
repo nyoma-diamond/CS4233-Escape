@@ -169,7 +169,7 @@ class EscapeGameBuilderTest {
 	@Test
 	void movePieceToFilledSpace() {
 		Coordinate c1 = manager.makeCoordinate(4, 4);
-		Coordinate c2 = manager.makeCoordinate(10, 12);
+		Coordinate c2 = manager.makeCoordinate(7, 6);
 		assertFalse(manager.move(c1, c2));
 	}
 
@@ -225,16 +225,11 @@ class EscapeGameBuilderTest {
 
 	@Test
 	void invalidMoveDoesntPutPieceAtDestination() {
-		Coordinate c1 = manager.makeCoordinate(4, 4);
-		Coordinate c2 = manager.makeCoordinate(3, 5);
-		Coordinate c3 = manager.makeCoordinate(10, 12);
+		Coordinate c1 = manager.makeCoordinate(4, 4); 
+		Coordinate c2 = manager.makeCoordinate(3, 5); 
 
 		manager.move(c1, c2);
 		assertNull(manager.getPieceAt(c2));
-
-		EscapePiece p = manager.getPieceAt(c3);
-		manager.move(c1, c3);
-		assertEquals(p, manager.getPieceAt(c3));
 	}
 
 	@Test
@@ -243,5 +238,22 @@ class EscapeGameBuilderTest {
 		Coordinate c2 = manager.makeCoordinate(5, 12);
 		assertTrue(manager.move(c1, c2));
 		assertNull(manager.getPieceAt(c2));
+	}
+	
+	@Test
+	void movePieceToEnemyFilledSpace() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(10, 12);
+		assertTrue(manager.move(c1, c2));
+	}
+
+	@Test
+	void movePieceToEnemyFilledSpaceReplacesPiece() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(10, 12);
+
+		EscapePiece p = manager.getPieceAt(c1);
+		manager.move(c1, c2);
+		assertEquals(p, manager.getPieceAt(c2));
 	}
 }

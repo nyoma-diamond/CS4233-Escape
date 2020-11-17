@@ -6,7 +6,7 @@ Task List
 		[X] Create *a* game
 		[ ] Store specifications to game
 			[X] Rules/board size
-			[ ] Locations
+			[X] Locations
 			[ ] Pieces
 
 [X] makeCoordinate (coordinate creation for SQUARE coordinates. Board independent)
@@ -47,9 +47,9 @@ Task List
 		[X] Destination is an EXIT
 			[X] Return TRUE
 			[X] Remove piece
-		[ ] Destination has opponent's piece
-			[ ] Return TRUE
-			[ ] Replace opponent's piece with piece being moved
+		[X] Destination has opponent's piece
+			[X] Return TRUE
+			[X] Replace opponent's piece with piece being moved
 		[X] Remove piece from source
 		[X] Put piece on destination
 		[ ] Change player turn

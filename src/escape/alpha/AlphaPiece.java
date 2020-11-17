@@ -16,8 +16,8 @@ import escape.required.EscapePiece;
 import escape.required.Player;
 
 class AlphaPiece implements EscapePiece {
-	Player player;
-	PieceName pieceName;
+	private Player player;
+	private PieceName pieceName;
 	
 	AlphaPiece(Player player, PieceName pieceName) {
 		this.player = player;

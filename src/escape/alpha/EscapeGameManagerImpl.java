@@ -51,9 +51,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		AlphaLocation fromLoc = positions.get(from);
 		AlphaLocation toLoc = positions.get(to);
 
-		if (toLoc.getPiece() != null 
-			|| fromLoc.getPiece() == null 
-			|| toLoc.locationType == LocationType.BLOCK) return false;
+		if (fromLoc.getPiece() == null 
+			|| (toLoc.getPiece() != null && fromLoc.getPiece().getPlayer() == toLoc.getPiece().getPlayer())
+			|| toLoc.locationType == LocationType.BLOCK
+			) return false;
 	
 		if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece());
 		fromLoc.setPiece(null);
