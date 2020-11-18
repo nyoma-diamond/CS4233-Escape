@@ -49,6 +49,12 @@
   - `move` now works for coordinates not made by the same board
   - `DistanceTo` now works for coordinates that are out of bounds (actually already did, but actually tested for it now)
 - Overrode `equals` and `hashCode` for `AlphaCoordinate`
-  - this is to make it so different coordinate objects that refer to the same location and coordinate type are logically equivalent.
+  - this is to make it so different coordinate objects that refer to the same location and coordinate type are logically equivalent. Necessary for retreiving pieces at coordinates that are logically equivalent but aren't the same literal object
 - Refactored `AlphaLocation` not to store x and y position (unnecessary after previous refactors and bug fixes)
 - Changed `AlphaPiece.setPiece` to return void (returning the old piece was unnecessary because I will never need it) and created `AlphaPiece.removePiece` which removes the current piece and returns it
+
+## 11/18
+
+- Refactored `move`
+  - Empty locations are no longer stored. Locations stored in `positions` are either a BLOCK, EXIT, or have a piece in them. This saves on memory and allows for some simplification of conditionals.
+  - Other adjustments to improve performance

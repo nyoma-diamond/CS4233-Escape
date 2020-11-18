@@ -37,6 +37,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		this.curPlayer = Player.PLAYER1;
 
 		this.positions = new HashMap<AlphaCoordinate, AlphaLocation>();
+		//TODO: experiment with removing empty locations from positions altogether
 
 		for (LocationInitializer loc : initializer.getLocationInitializers()) 
 			positions.put(makeCoordinate(loc.x, loc.y), LocationFactory.getLocation(loc));
@@ -54,69 +55,30 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		return coord.getX() > settings.xMax 
 			|| coord.getY() > settings.yMax 
 			|| coord.getX() < 1 
-			|| coord.getY() < 1; //this will need to change, but is okay for Alpha because square boards are finite
+			|| coord.getY() < 1; //TODO: this will need to change, but is okay for Alpha because square boards are finite
 	}
 
-
-	/**
-	 * Return whether moving a piece between the provided locations is valid
-	 * @param from location to move piece from
-	 * @param to location to move piece to
-	 * @return whether moving a piece between the provided locations is valid
-	 */
-	private boolean validMove(AlphaLocation from, AlphaLocation to) {
-		return !(from == null
-				|| to == null
-				|| from.getPiece() == null
-				|| (to.getPiece() != null && from.getPiece().getPlayer() == to.getPiece().getPlayer())
-				|| from.getPiece().getPlayer() != curPlayer
-				|| to.locationType == LocationType.BLOCK) 
-			|| from == to;
-	}
-
-	/*//TODO: this works (and is better imo) but doesn't change the turn if from and to are the same spot
+	
 	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
 		AlphaLocation fromLoc, toLoc;
 
-		if (from == null 
+		if (from == null //TODO: are there any ways to short-circuit this for obviously valid moves?
 			|| to == null 
-			|| outOfBounds(to) 
-			|| (fromLoc = positions.get(from)) == null 
-			|| fromLoc.getPiece() == null 
-			|| fromLoc.getPiece().getPlayer() != curPlayer
-			|| ((toLoc = positions.get(to)) != null && toLoc.locationType == LocationType.BLOCK)) return false;
-		if (from.equals(to)) return true; //we know theres a curPlayer piece on from already, so if to and from are the same then we can short-circuit here
-		if (toLoc != null && toLoc.getPiece() != null && toLoc.getPiece().getPlayer() == curPlayer) return false; //we already checked to and from aren't the same, so if target piece is current players, fail
+			|| outOfBounds(to) //target out of bounds
+			|| (fromLoc = positions.get(from)) == null //source has no location (empty)
+			|| fromLoc.getPiece() == null  //no piece, implies BLOCK or EXIT
+			|| fromLoc.getPiece().getPlayer() != curPlayer //wrong player's piece
+			|| ((toLoc = positions.get(to)) != null && toLoc.locationType == LocationType.BLOCK) //target isn't a block
+			|| (!from.equals(to) && toLoc != null && toLoc.getPiece() != null && toLoc.getPiece().getPlayer() == curPlayer)) //target isn't source and has current player's piece TODO: this can be simplified after alpha because moving to your own space won't be valid
+			return false;
 
 
-		// This creates a location in case one hasn't already been initialized yet for the provided coordinate
-		if (toLoc == null || toLoc.locationType != LocationType.EXIT) {
-			toLoc = LocationFactory.getLocation();
-			toLoc.setPiece(fromLoc.getPiece());
-			positions.put(to, toLoc);
+		if (!from.equals(to)) { //do nothing if same space
+			positions.remove(from); //no reason to keep the coordinate after moving a piece off it (must be a clear location). Free up some memory
+			if (toLoc == null) positions.put(to, toLoc = LocationFactory.getLocation()); //if empty target location, initialize one
+			if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece()); //not exit (must be enemy or empty), so set piece
 		}
 
-		positions.remove(from); //no reason to keep the coordinate after moving a piece off it (must be a clear location). Free up some memory
-
-		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; //Would make this its own method but its only one line and not used anywhere else
-		return true;
-	}*/
-
-
-	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
-		if (from == null || to == null || outOfBounds(to)) return false; //TODO: is there a way to combine all the validity checks in this function?
-		
-		// This creates a location in case one hasn't already been initialized yet for the provided coordinate
-		if (!positions.containsKey(to)) positions.put(to, LocationFactory.getLocation());
-
-		AlphaLocation fromLoc = positions.get(from);
-		AlphaLocation toLoc = positions.get(to);
-
-		if (!validMove(fromLoc, toLoc)) return false; 
-	
-		if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.removePiece());
-
-		//TODO: Will need to not change turns on movement to same spot disabled after Alpha
 		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; //Would make this its own method but its only one line and not used anywhere else
 		return true;
 	}
