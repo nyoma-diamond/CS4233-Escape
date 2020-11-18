@@ -47,5 +47,6 @@
   - `move` now returns true for moving a piece to the coordinate its already on
   - `makeCoordinate` doesn't return null for out of bounds coordinates anymore
   - `move` now works for coordinates not made by the same board
+  - `DistanceTo` now works for coordinates that are out of bounds (actually already did, but actually tested for it now)
 - Overrode `equals` and `hashCode` for `AlphaCoordinate`
   - this is to make it so different coordinate objects that refer to the same location and coordinate type are logically equivalent.

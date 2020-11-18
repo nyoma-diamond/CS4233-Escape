@@ -127,6 +127,12 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
+	void distanceToOutOfBoundsWorks() {
+		int dist = manager.makeCoordinate(1, 1).DistanceTo(manager.makeCoordinate(-1, -5));
+		assertEquals(6, dist);		
+	}
+
+	@Test
 	void nothingAt1_1() { //location not made during initialization
 		EscapePiece piece = manager.getPieceAt(manager.makeCoordinate(1, 1));
 		assertNull(piece);

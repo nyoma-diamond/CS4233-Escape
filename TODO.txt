@@ -27,6 +27,7 @@ Task List
 				[X] Non-straight path
 					[X] Away from origin
 					[X] Toward origin
+				[X] Out of bounds coordinate
 			[X] Throw exception if invalid provided Coordinate
 	[X] Coordinate can be made independent of board (no out of bounds)
 
