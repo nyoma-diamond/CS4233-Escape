@@ -75,7 +75,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 		if (!from.equals(to)) { //do nothing if same space
 			if (toLoc == null) positions.put(to, toLoc = LocationFactory.getLocation(fromLoc.getPiece())); //if null target location (empty), initialize new location with sourcepiece
-			else if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece()); //not exit (must be enemy or empty), so set piece
+			else if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece()); //not exit (must be enemy or empty, already checked for blocks), so set piece
 			positions.remove(from); //no reason to keep the coordinate after moving a piece off it (must be a clear location). Free up some memory (This line can actually be removed by replacing fromLoc in previous two lines with positions.remove(from), but that hurts readability)
 		}
 
