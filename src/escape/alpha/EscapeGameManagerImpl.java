@@ -64,7 +64,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
 		if (from == null || to == null) return false;
-		//if (from == to) return true; //see lower todo
+		//if (from.equals(to)) return true; //Uncommenting this will resolve lower todo
 
 		// This creates a location in case one hasn't already been initialized yet for the provided coordinate
 		if (!positions.containsKey(to) && !outOfBounds(to)) positions.put(to, LocationFactory.getLocation(to.getX(), to.getY()));
