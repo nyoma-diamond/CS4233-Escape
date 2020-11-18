@@ -117,13 +117,13 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void coordinateOutOfBounds() {
-		assertNull(manager.makeCoordinate(26, 1));
-		assertNull(manager.makeCoordinate(1, 21));
-		assertNull(manager.makeCoordinate(26, 21));
-		assertNull(manager.makeCoordinate(0, 1));
-		assertNull(manager.makeCoordinate(1, 0));
-		assertNull(manager.makeCoordinate(0, 0));
+	void makeCoordinateIndependentOfBoard() {
+		assertNotNull(manager.makeCoordinate(26, 1));
+		assertNotNull(manager.makeCoordinate(1, 33));
+		assertNotNull(manager.makeCoordinate(26, 40));
+		assertNotNull(manager.makeCoordinate(-20, 1));
+		assertNotNull(manager.makeCoordinate(1, -21));
+		assertNotNull(manager.makeCoordinate(0, -10));
 	}
 
 	@Test
@@ -312,5 +312,18 @@ class EscapeGameBuilderTest {
 
 		assertFalse(manager.move(c2, c1));
 		assertTrue(manager.move(c1, c2));
+	}
+
+	@Test
+	void moveOutOfBoundsFails() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(50, 50);
+		Coordinate c3 = manager.makeCoordinate(-1, 4);
+		Coordinate c4 = manager.makeCoordinate(1, 1);
+
+		assertFalse(manager.move(c1, c2));
+		assertFalse(manager.move(c1, c3));
+		assertFalse(manager.move(c2, c1));
+		assertFalse(manager.move(c2, c4));
 	}
 }

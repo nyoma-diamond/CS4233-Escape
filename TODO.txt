@@ -28,9 +28,7 @@ Task List
 					[X] Away from origin
 					[X] Toward origin
 			[X] Throw exception if invalid provided Coordinate
-	[X] Return NULL if coordinate can't be made
-		[X] Coordinate already exists
-		[X] Coordinate would be out of bounds
+	[X] Coordinate can be made independent of board (no out of bounds)
 
 [X] getPieceAt
 	[X] Return a non-null value
@@ -56,11 +54,13 @@ Task List
 		[X] Remove piece from source
 		[X] Put piece on destination
 		[X] Change player turn
+		[ ] Works for coordinate that hasn't been made with same manager
 	[X] Invalid moves
 		[X] No piece on source
 		[X] Either coordinate is NULL
 		[X] Destination is a BLOCK
 		[X] Trying to move opponent's piece
+		[X] Destination and source aren't out of bounds
 		[X] Piece ISN'T removed from source
 		[X] Piece ISN'T put on destination
 		[X] DON'T change player turn

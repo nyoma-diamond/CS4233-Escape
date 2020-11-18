@@ -52,7 +52,9 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	 * @return whether moving a piece between the provided locations is valid
 	 */
 	private boolean validMove(AlphaLocation from, AlphaLocation to) {
-		return !(from.getPiece() == null 
+		return !(from == null
+				|| to == null
+				|| from.getPiece() == null
 				|| (to.getPiece() != null && from.getPiece().getPlayer() == to.getPiece().getPlayer())
 				|| from.getPiece().getPlayer() != curPlayer
 				|| to.locationType == LocationType.BLOCK) 
@@ -62,6 +64,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
 		if (from == null || to == null) return false;
+		//if (from == to) return true; //see lower todo
 
 		AlphaLocation fromLoc = positions.get(from);
 		AlphaLocation toLoc = positions.get(to);
@@ -71,6 +74,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece());
 		if (fromLoc != toLoc) fromLoc.setPiece(null); //this is kind of redundant because its already checked for in validMove. Is there a better way to do this?
 
+		//TODO: Will need to not change turns on movement to same spot disabled after Alpha
 		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; //Would make this its own method but its only one line and not used anywhere else
 		return true;
 	}
@@ -83,24 +87,23 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 
 	/**
-	 * Checks if the provided coordinate is a valid coordinate given existing coordinates
+	 * Checks if the provided coordinate is out of bounds for this board
 	 * @param coord coordinate to check
-	 * @return true if valid, false if not
+	 * @return true if out of bounds, false if in bounds
 	 */
-	private boolean validCoordinate(AlphaCoordinate coord) {
-		return coord.getX() < settings.xMax 
-			&& coord.getY() < settings.yMax 
-			&& coord.getX() >= 1 
-			&& coord.getY() >= 1; //this will need to change, but is okay for Alpha
+	private boolean outOfBounds(AlphaCoordinate coord) {
+		return coord.getX() > settings.xMax 
+			|| coord.getY() > settings.yMax 
+			|| coord.getX() < 1 
+			|| coord.getY() < 1; //this will need to change, but is okay for Alpha because square boards are finite
 	}
 
 
 	public AlphaCoordinate makeCoordinate(int x, int y) { //this code is bad and I don't like it
 		AlphaCoordinate coord = CoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
 		
-		if (!validCoordinate(coord)) return null;
-
-		if (!positions.containsKey(coord)) positions.put(coord, LocationFactory.getLocation(coord.getX(), coord.getY()));
+		if (!outOfBounds(coord) && !positions.containsKey(coord)) 
+			positions.put(coord, LocationFactory.getLocation(coord.getX(), coord.getY()));
 		return coord;
 	}
 }
