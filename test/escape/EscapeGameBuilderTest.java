@@ -278,8 +278,10 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void moveFromNullToNull() {
-		assertFalse(manager.move(null, null));
+	void moveToInitializedClear() throws Exception { //This is to try and test if creating a board with a empty clear location initializer causes problems. Test doesn't actually work because EscapeGameBuilder already filters those out
+		EscapeGameManager m = new EscapeGameBuilder("config/egc/test3.egc").makeGameManager();
+		assertTrue(m.move(m.makeCoordinate(4, 4), m.makeCoordinate(5, 5)));
+		
 	}
 
 	@Test

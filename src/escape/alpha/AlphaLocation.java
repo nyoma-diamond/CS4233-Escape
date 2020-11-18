@@ -34,14 +34,4 @@ class AlphaLocation {
 	 * @param newPiece piece to put in this location
 	 */
 	void setPiece(AlphaPiece newPiece) { this.piece = newPiece; }
-
-	/**
-	 * Removes the current piece
-	 * @return the piece that was removed
-	 */
-	AlphaPiece removePiece() {
-		AlphaPiece p = piece;
-		this.piece = null;
-		return p;
-	}
 }

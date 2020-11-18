@@ -24,6 +24,6 @@ class CoordinateFactory {
 
 	static AlphaCoordinate getCoordinate(CoordinateType coordinateType, int x, int y) {
 		if(coordinateType == CoordinateType.SQUARE)	return new AlphaCoordinate(x, y, coordinateType, sqDistance);
-		else return null;
+		return null; //No way to test, but it's needed so this compiles
 	}
 }

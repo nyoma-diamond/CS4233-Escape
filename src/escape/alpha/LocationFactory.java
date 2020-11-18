@@ -22,7 +22,7 @@ class LocationFactory {
 			initializer.player == null ? null : new AlphaPiece(initializer.player, initializer.pieceName));
 	}
 
-	static AlphaLocation getLocation() {
-		return new AlphaLocation(LocationType.CLEAR, null);
+	static AlphaLocation getLocation(AlphaPiece piece) {
+		return new AlphaLocation(LocationType.CLEAR, piece);
 	}
 }

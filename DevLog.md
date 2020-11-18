@@ -58,3 +58,7 @@
 - Refactored `move`
   - Empty locations are no longer stored. Locations stored in `positions` are either a BLOCK, EXIT, or have a piece in them. This saves on memory and allows for some simplification of conditionals.
   - Other adjustments to improve performance
+  - Replaced the no-input version of `getLocation` in `LocationFactory` to take an `AlphaPiece`.
+    - In my implementation locations are always either an EXIT, BLOCK, or have a piece. There's no reason to create an empty CLEAR location. This allows for further performance optimizations
+  - Deleted `removePiece` from `AlphaLocation` (didn't need it anymore)
+- Removed some other unused code

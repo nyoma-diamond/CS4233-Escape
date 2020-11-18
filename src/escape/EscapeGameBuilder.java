@@ -90,15 +90,6 @@ public class EscapeGameBuilder {
 	}
 
 	/**
-	 * Getter for the gameInitializer. Can be used to examine it after the builder
-	 * creates it.
-	 * @return the gameInitializer
-	 */
-	public EscapeGameInitializer getGameInitializer() {
-		return gameInitializer;
-	}
-
-	/**
 	 * Once the builder is constructed, this method creates the
 	 * EscapeGameManager instance. For this example, you would use the
 	 * gameInitializer object to get all of the information you need to create
