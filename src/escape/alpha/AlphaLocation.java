@@ -15,13 +15,10 @@ package escape.alpha;
 import escape.required.LocationType;
 
 class AlphaLocation {
-	int x, y;
 	LocationType locationType;
 	private AlphaPiece piece;
 
-	AlphaLocation(int x, int y, LocationType locationType, AlphaPiece piece) {
-		this.x = x;
-		this.y = y;
+	AlphaLocation(LocationType locationType, AlphaPiece piece) {
 		this.locationType = locationType;
 		this.piece = piece;
 	}

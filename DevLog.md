@@ -50,3 +50,4 @@
   - `DistanceTo` now works for coordinates that are out of bounds (actually already did, but actually tested for it now)
 - Overrode `equals` and `hashCode` for `AlphaCoordinate`
   - this is to make it so different coordinate objects that refer to the same location and coordinate type are logically equivalent.
+- Refactored `AlphaLocation` not to store x and y position (unnecessary after previous refactors and bug fixes)

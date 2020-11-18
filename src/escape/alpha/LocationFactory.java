@@ -18,13 +18,11 @@ import escape.util.LocationInitializer;
 class LocationFactory {
 	static AlphaLocation getLocation(LocationInitializer initializer) {
 		return new AlphaLocation(
-			initializer.x, 
-			initializer.y, 
 			initializer.locationType, 
 			initializer.player == null ? null : new AlphaPiece(initializer.player, initializer.pieceName));
 	}
 
-	static AlphaLocation getLocation(int x, int y) {
-		return new AlphaLocation(x, y, LocationType.CLEAR, null);
+	static AlphaLocation getLocation() {
+		return new AlphaLocation(LocationType.CLEAR, null);
 	}
 }

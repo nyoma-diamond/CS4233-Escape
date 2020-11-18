@@ -41,7 +41,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		for (LocationInitializer loc : initializer.getLocationInitializers()) 
 			positions.put(makeCoordinate(loc.x, loc.y), LocationFactory.getLocation(loc));
 		
-		//TODO: initialize pieces. Don't need to implement for alpha tho :)
+		//TODO: initialize piece types. Don't need to implement for alpha tho :)
 	}
 
 	
@@ -67,7 +67,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		//if (from.equals(to)) return true; //Uncommenting this will resolve lower todo
 
 		// This creates a location in case one hasn't already been initialized yet for the provided coordinate
-		if (!positions.containsKey(to) && !outOfBounds(to)) positions.put(to, LocationFactory.getLocation(to.getX(), to.getY()));
+		if (!positions.containsKey(to) && !outOfBounds(to)) positions.put(to, LocationFactory.getLocation());
 
 		AlphaLocation fromLoc = positions.get(from);
 		AlphaLocation toLoc = positions.get(to);
