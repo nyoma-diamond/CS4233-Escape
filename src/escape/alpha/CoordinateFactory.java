@@ -15,6 +15,10 @@ package escape.alpha;
 import escape.required.Coordinate;
 import escape.required.Coordinate.CoordinateType;
 
+@FunctionalInterface
+interface TwoAndOneFunction<A,B,R> {
+	R apply(A a1, A a2, B b);
+}
 
 class CoordinateFactory {
 	static TwoAndOneFunction<Integer, Coordinate, Integer> sqDistance = (Integer x, Integer y, Coordinate c) -> {

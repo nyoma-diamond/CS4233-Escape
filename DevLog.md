@@ -62,3 +62,4 @@
     - In my implementation locations are always either an EXIT, BLOCK, or have a piece. There's no reason to create an empty CLEAR location. This allows for further performance optimizations
   - Deleted `removePiece` from `AlphaLocation` (didn't need it anymore)
 - Removed some other unused code
+- Moved `TwoAndOneFunction` into the `CoordinateFactory` file (not really necessary to have its own file)
