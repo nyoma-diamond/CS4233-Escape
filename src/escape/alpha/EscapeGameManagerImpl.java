@@ -58,24 +58,27 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 				|| (to.getPiece() != null && from.getPiece().getPlayer() == to.getPiece().getPlayer())
 				|| from.getPiece().getPlayer() != curPlayer
 				|| to.locationType == LocationType.BLOCK) 
-			|| from == to;
+			|| from == to; //TODO: this line can be removed after alpha (see TODOs in move)
 	}
 
 
 	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
-		if (from == null || to == null) return false;
-		//if (from.equals(to)) return true; //Uncommenting this will resolve lower todo
+		if (from == null || to == null) return false; //TODO: is there a way to combine all the validity checks in this function?
+		//if (from.equals(to)) return true; //TODO: Uncommenting this will resolve lower TODOs via short-circuiting. Shouldn't do this until after Alpha, though
+
+		if (outOfBounds(to)) return false; //short circuit. No reason to keep going if its out of bounds
 
 		// This creates a location in case one hasn't already been initialized yet for the provided coordinate
-		if (!positions.containsKey(to) && !outOfBounds(to)) positions.put(to, LocationFactory.getLocation());
+		if (!positions.containsKey(to)) positions.put(to, LocationFactory.getLocation());
 
 		AlphaLocation fromLoc = positions.get(from);
 		AlphaLocation toLoc = positions.get(to);
 
-		if (!validMove(fromLoc, toLoc)) return false;
+		if (!validMove(fromLoc, toLoc)) return false; 
 	
 		if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece());
-		if (fromLoc != toLoc) fromLoc.setPiece(null); //this is kind of redundant because its already checked for in validMove. Is there a better way to do this?
+		if (!from.equals(to)) fromLoc.setPiece(null); //TODO: this is kind of redundant because its already checked for in validMove. See TODO above (remove conditional when resolving)
+
 
 		//TODO: Will need to not change turns on movement to same spot disabled after Alpha
 		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; //Would make this its own method but its only one line and not used anywhere else
