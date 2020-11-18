@@ -32,11 +32,16 @@ class AlphaLocation {
 	/**
 	 * Sets the piece in this location
 	 * @param newPiece piece to put in this location
-	 * @return previous piece
 	 */
-	AlphaPiece setPiece(AlphaPiece newPiece) {
-		AlphaPiece p = this.piece;
-		this.piece = newPiece;
+	void setPiece(AlphaPiece newPiece) { this.piece = newPiece; }
+
+	/**
+	 * Removes the current piece
+	 * @return the piece that was removed
+	 */
+	AlphaPiece removePiece() {
+		AlphaPiece p = piece;
+		this.piece = null;
 		return p;
 	}
 }

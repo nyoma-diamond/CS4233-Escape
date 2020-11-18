@@ -172,7 +172,7 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void movePieceToFilledSpace() {
+	void movePieceToFilledOwnedSpace() {
 		Coordinate c1 = manager.makeCoordinate(4, 4);
 		Coordinate c2 = manager.makeCoordinate(7, 6);
 		assertFalse(manager.move(c1, c2));
@@ -275,6 +275,11 @@ class EscapeGameBuilderTest {
 		EscapePiece p = manager.getPieceAt(c);
 		manager.move(c,c);
 		assertEquals(p, manager.getPieceAt(c));
+	}
+
+	@Test
+	void moveFromNullToNull() {
+		assertFalse(manager.move(null, null));
 	}
 
 	@Test

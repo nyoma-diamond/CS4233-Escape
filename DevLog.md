@@ -51,3 +51,4 @@
 - Overrode `equals` and `hashCode` for `AlphaCoordinate`
   - this is to make it so different coordinate objects that refer to the same location and coordinate type are logically equivalent.
 - Refactored `AlphaLocation` not to store x and y position (unnecessary after previous refactors and bug fixes)
+- Changed `AlphaPiece.setPiece` to return void (returning the old piece was unnecessary because I will never need it) and created `AlphaPiece.removePiece` which removes the current piece and returns it
