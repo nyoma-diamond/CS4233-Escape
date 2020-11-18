@@ -46,5 +46,6 @@
   - Removed internal `putCoordinate` function from `EscapeGameManagerImpl` because it was unnecessary and caused further bugs after adjusting to properly fit the specification.
   - `move` now returns true for moving a piece to the coordinate its already on
   - `makeCoordinate` doesn't return null for out of bounds coordinates anymore
+  - `move` now works for coordinates not made by the same board
 - Overrode `equals` and `hashCode` for `AlphaCoordinate`
   - this is to make it so different coordinate objects that refer to the same location and coordinate type are logically equivalent.

@@ -159,12 +159,6 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void getPieceAtBadCoordinate() throws Exception { //This only tests out of bounds coordinates right now because theres no way to make any other kind of bad coordinate currently
-		EscapePiece piece = manager.getPieceAt(new EscapeGameBuilder("config/egc/test2.egc").makeGameManager().makeCoordinate(30, 30));
-		assertNull(piece);
-	}
-
-	@Test
 	void movePieceToEmptySpace() {
 		Coordinate c1 = manager.makeCoordinate(4, 4);
 		Coordinate c2 = manager.makeCoordinate(1, 1);
@@ -263,14 +257,14 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void movePieceToSource() { //TODO: this
+	void movePieceToSource() { 
 		Coordinate c = manager.makeCoordinate(4, 4);
 		EscapePiece p = manager.getPieceAt(c);
 		assertTrue(manager.move(c,c));
 	}
 
 	@Test
-	void movePieceToSourceKeepsPiece() { //TODO: this
+	void movePieceToSourceKeepsPiece() {
 		Coordinate c = manager.makeCoordinate(4, 4);
 		EscapePiece p = manager.getPieceAt(c);
 		manager.move(c,c);
@@ -325,5 +319,26 @@ class EscapeGameBuilderTest {
 		assertFalse(manager.move(c1, c3));
 		assertFalse(manager.move(c2, c1));
 		assertFalse(manager.move(c2, c4));
+	}
+
+	@Test
+	void moveToCoordinateMadeByOtherManager() throws Exception {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = new EscapeGameBuilder("config/egc/test2.egc").makeGameManager().makeCoordinate(1, 1);
+		assertTrue(manager.move(c1, c2));
+	}
+
+	@Test
+	void badMoveFromCoordinateMadeByOtherManager() throws Exception {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = new EscapeGameBuilder("config/egc/test2.egc").makeGameManager().makeCoordinate(1, 1);
+		assertFalse(manager.move(c2, c1));
+	}
+
+	@Test
+	void moveFromCoordinateMadeByOtherManager() throws Exception {
+		Coordinate c1 = new EscapeGameBuilder("config/egc/test2.egc").makeGameManager().makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(1, 1);
+		assertTrue(manager.move(c1, c2));
 	}
 }

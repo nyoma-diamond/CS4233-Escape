@@ -66,6 +66,9 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		if (from == null || to == null) return false;
 		//if (from == to) return true; //see lower todo
 
+		// This creates a location in case one hasn't already been initialized yet for the provided coordinate
+		if (!positions.containsKey(to) && !outOfBounds(to)) positions.put(to, LocationFactory.getLocation(to.getX(), to.getY()));
+
 		AlphaLocation fromLoc = positions.get(from);
 		AlphaLocation toLoc = positions.get(to);
 
@@ -99,11 +102,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	}
 
 
-	public AlphaCoordinate makeCoordinate(int x, int y) { //this code is bad and I don't like it
-		AlphaCoordinate coord = CoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
-		
-		if (!outOfBounds(coord) && !positions.containsKey(coord)) 
-			positions.put(coord, LocationFactory.getLocation(coord.getX(), coord.getY()));
-		return coord;
+	public AlphaCoordinate makeCoordinate(int x, int y) {
+		return CoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
 	}
 }

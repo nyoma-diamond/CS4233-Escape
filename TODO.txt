@@ -54,7 +54,7 @@ Task List
 		[X] Remove piece from source
 		[X] Put piece on destination
 		[X] Change player turn
-		[ ] Works for coordinate that hasn't been made with same manager
+		[X] Works for coordinate that hasn't been made with same manager
 	[X] Invalid moves
 		[X] No piece on source
 		[X] Either coordinate is NULL
