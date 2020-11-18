@@ -12,6 +12,8 @@
 
 package escape.alpha;
 
+import java.util.Objects;
+
 import escape.exception.EscapeException;
 import escape.required.Coordinate;
 
@@ -39,13 +41,21 @@ class AlphaCoordinate implements Coordinate {
 	CoordinateType getCoordinateType() { return this.coordinateType; }
 
 	public int DistanceTo(Coordinate c) {
-		try { // This is jank as hell, but it works.
-			if (((AlphaCoordinate)c).getCoordinateType() != coordinateType) 
+		if (!(c instanceof AlphaCoordinate) || ((AlphaCoordinate)c).getCoordinateType() != coordinateType) 
 				throw new EscapeException("Mismatched coordinate type. Cannot get distance between different coordinate types.");
-		} catch (Exception e) {
-			throw new EscapeException("Mismatched coordinate type. Cannot get distance between different coordinate types.");
-		}
 			
 		return distanceToFunc.apply(x, y, c);
 	}	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y, coordinateType);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof AlphaCoordinate)) return false;
+		AlphaCoordinate c = (AlphaCoordinate)o;
+		return c.getX() == x && c.getY() == y && c.getCoordinateType() == coordinateType;
+	}
 }

@@ -27,7 +27,7 @@ Task List
 				[X] Non-straight path
 					[X] Away from origin
 					[X] Toward origin
-			[X] Throw exception if incorrect Coordinate type
+			[X] Throw exception if invalid provided Coordinate
 	[X] Return NULL if coordinate can't be made
 		[X] Coordinate already exists
 		[X] Coordinate would be out of bounds
@@ -50,6 +50,9 @@ Task List
 		[X] Destination has opponent's piece
 			[X] Return TRUE
 			[X] Replace opponent's piece with piece being moved
+		[X] Destination is same as source
+			[X] Return TRUE
+			[X] Piece stays
 		[X] Remove piece from source
 		[X] Put piece on destination
 		[X] Change player turn

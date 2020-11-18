@@ -42,8 +42,6 @@ class EscapeGameBuilderTest {
 		assertNotNull(manager);
 	}
 
-	//TODO: get tests for coordinates directly in here
-
 	@Test
 	void coordinateNotNull() {
 		assertNotNull(manager.makeCoordinate(1,1));
@@ -104,7 +102,7 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void incorrectCoordinateType() {
+	void distanceToInvalidCoordinate() {
 		Coordinate c1 = manager.makeCoordinate(1, 1);
 		Coordinate c2 = (c) -> {
 			return 0;
@@ -113,9 +111,9 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void coordinateAlreadyExists() {
-		manager.makeCoordinate(1, 1);
-		assertNull(manager.makeCoordinate(1, 1));
+	void coordinateAlreadyExists() { 
+		Coordinate c = manager.makeCoordinate(1, 1);
+		assertTrue(manager.makeCoordinate(1, 1).equals(c));
 	}
 
 	@Test
@@ -154,8 +152,15 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
-	void getPieceAtBadCoordinate() throws Exception {
-		EscapePiece piece = manager.getPieceAt(new EscapeGameBuilder("config/egc/test1.egc").makeGameManager().makeCoordinate(4, 4));
+	void getPieceAtMadeCoordinate() {
+		EscapePiece p1 = manager.getPieceAt(manager.makeCoordinate(4, 4));
+		EscapePiece p2 = manager.getPieceAt(manager.makeCoordinate(4, 4));
+		assertEquals(p1, p2);
+	}
+
+	@Test
+	void getPieceAtBadCoordinate() throws Exception { //This only tests out of bounds coordinates right now because theres no way to make any other kind of bad coordinate currently
+		EscapePiece piece = manager.getPieceAt(new EscapeGameBuilder("config/egc/test2.egc").makeGameManager().makeCoordinate(30, 30));
 		assertNull(piece);
 	}
 
@@ -258,6 +263,21 @@ class EscapeGameBuilderTest {
 	}
 
 	@Test
+	void movePieceToSource() { //TODO: this
+		Coordinate c = manager.makeCoordinate(4, 4);
+		EscapePiece p = manager.getPieceAt(c);
+		assertTrue(manager.move(c,c));
+	}
+
+	@Test
+	void movePieceToSourceKeepsPiece() { //TODO: this
+		Coordinate c = manager.makeCoordinate(4, 4);
+		EscapePiece p = manager.getPieceAt(c);
+		manager.move(c,c);
+		assertEquals(p, manager.getPieceAt(c));
+	}
+
+	@Test
 	void player1CantMovePlayer2() {
 		Coordinate c1 = manager.makeCoordinate(10, 12);
 		Coordinate c2 = manager.makeCoordinate(1, 1);
@@ -287,15 +307,6 @@ class EscapeGameBuilderTest {
 
 	@Test
 	void invalidMoveDoesntChangeTurn() {
-		Coordinate c1 = manager.makeCoordinate(4, 4);
-		Coordinate c2 = manager.makeCoordinate(10, 12);
-
-		assertFalse(manager.move(c2, c1));
-		assertTrue(manager.move(c1, c2));
-	}
-
-	@Test
-	void foo() {
 		Coordinate c1 = manager.makeCoordinate(4, 4);
 		Coordinate c2 = manager.makeCoordinate(10, 12);
 

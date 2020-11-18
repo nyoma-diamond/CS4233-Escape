@@ -12,9 +12,7 @@
 
 package escape.alpha;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import escape.EscapeGameManager;
 import escape.required.*;
@@ -27,7 +25,6 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 	private Player curPlayer;
 	
-	private List<AlphaLocation> unassignedLocations;
 	private HashMap<AlphaCoordinate, AlphaLocation> positions; //This could just use Coordinates, but the change isn't necessary
 
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
@@ -41,9 +38,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 		this.positions = new HashMap<AlphaCoordinate, AlphaLocation>();
 
-		this.unassignedLocations = new ArrayList<AlphaLocation>();
 		for (LocationInitializer loc : initializer.getLocationInitializers()) 
-			unassignedLocations.add(LocationFactory.getLocation(loc));
+			positions.put(makeCoordinate(loc.x, loc.y), LocationFactory.getLocation(loc));
 		
 		//TODO: initialize pieces. Don't need to implement for alpha tho :)
 	}
@@ -57,22 +53,23 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	 */
 	private boolean validMove(AlphaLocation from, AlphaLocation to) {
 		return !(from.getPiece() == null 
-			|| (to.getPiece() != null && from.getPiece().getPlayer() == to.getPiece().getPlayer())
-			|| from.getPiece().getPlayer() != curPlayer
-			|| to.locationType == LocationType.BLOCK);
+				|| (to.getPiece() != null && from.getPiece().getPlayer() == to.getPiece().getPlayer())
+				|| from.getPiece().getPlayer() != curPlayer
+				|| to.locationType == LocationType.BLOCK) 
+			|| from == to;
 	}
 
 
 	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
 		if (from == null || to == null) return false;
-		
+
 		AlphaLocation fromLoc = positions.get(from);
 		AlphaLocation toLoc = positions.get(to);
 
 		if (!validMove(fromLoc, toLoc)) return false;
 	
 		if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece());
-		fromLoc.setPiece(null);
+		if (fromLoc != toLoc) fromLoc.setPiece(null); //this is kind of redundant because its already checked for in validMove. Is there a better way to do this?
 
 		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; //Would make this its own method but its only one line and not used anywhere else
 		return true;
@@ -91,34 +88,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	 * @return true if valid, false if not
 	 */
 	private boolean validCoordinate(AlphaCoordinate coord) {
-		if (coord.getX() > settings.xMax 
-			|| coord.getY() > settings.yMax 
-			|| coord.getX() < 1 
-			|| coord.getY() < 1) return false; //this will need to change, but is okay for Alpha
-
-		for (AlphaCoordinate c : positions.keySet())
-			if (coord.DistanceTo(c) == 0) return false;
-			 
-		return true;
-	}
-
-
-	/**
-	 * Adds the provided coordinate to the game
-	 * @param coord coordinate to add
-	 */
-	private void putCoordinate(AlphaCoordinate coord) {
-		for (int i = 0; i < unassignedLocations.size(); i++) { 
-			AlphaLocation loc = unassignedLocations.get(i); //For each unassigned location
-			if (loc.x == coord.getX() && loc.y == coord.getY()) { //If same position as provided coordinate
-				positions.put(coord, loc); //Add coordinate-location pair to positions
-				unassignedLocations.remove(i); //remove location from unassigned locations list
-				return; //exit (there shouldn't be more than one unassigned location at the same spot)
-			}
-		}
-
-		//No unassigned location in same spot. Create new clear location and add coordinate-location pair to positions
-		positions.put(coord, LocationFactory.getLocation(coord.getX(), coord.getY()));
+		return coord.getX() < settings.xMax 
+			&& coord.getY() < settings.yMax 
+			&& coord.getX() >= 1 
+			&& coord.getY() >= 1; //this will need to change, but is okay for Alpha
 	}
 
 
@@ -127,7 +100,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		
 		if (!validCoordinate(coord)) return null;
 
-		putCoordinate(coord);
+		if (!positions.containsKey(coord)) positions.put(coord, LocationFactory.getLocation(coord.getX(), coord.getY()));
 		return coord;
 	}
 }
