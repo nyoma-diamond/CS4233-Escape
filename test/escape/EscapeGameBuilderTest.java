@@ -298,7 +298,6 @@ class EscapeGameBuilderTest {
 	@Test
 	void movePieceToSource() { 
 		Coordinate c = manager.makeCoordinate(4, 4);
-		EscapePiece p = manager.getPieceAt(c);
 		assertTrue(manager.move(c,c));
 	}
 
