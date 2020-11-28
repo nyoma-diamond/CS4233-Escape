@@ -1,0 +1,18 @@
+Task List
+=========
+[ ] Piece attributes
+	[ ] Movement patterns
+		[ ] Orthogonal
+		[ ] Diagonal
+		[ ] Linear (not tested on Triangle for Beta)
+		[ ] Omni
+	[ ] Value
+	[ ] Distance
+	[ ] Jump/fly
+	[ ] Unblock (not tested for Beta)	
+
+[ ] Triangle coordinates
+
+[ ] Gameplay changes
+	[ ] Moving a piece to the same location should be invalid
+	??? [ ] No pieces -> game over (other player wins) 

@@ -71,3 +71,5 @@
 ### 11/28
 
 - Renamed `alpha` package to `game` and changed class names to remove references to Alpha.
+- Made new test file for Beta
+- Made and filled new TODO file for Beta
