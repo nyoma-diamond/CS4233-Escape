@@ -12,7 +12,7 @@ Locations :
 Piece descriptors :
 	SNAIL omni [distance 1]
 	DOG linear [distance 5]
-	HORSE diagonal [distance 7, jump]
+	HORSE omni [distance 7, jump]
 	bird linear [fly 5]
 	frog omni [distance 3, unblock]
 	
