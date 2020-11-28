@@ -19,12 +19,19 @@ class AlphaPiece implements EscapePiece {
 	private Player player;
 	private PieceName pieceName;
 	
+	/**
+	 * AlphaPiece constructor
+	 * @param player player that owns piece
+	 * @param pieceName name of piece
+	 */
 	AlphaPiece(Player player, PieceName pieceName) {
 		this.player = player;
 		this.pieceName = pieceName;
 	}
 
+	@Override
 	public PieceName getName() { return this.pieceName; }
 
+	@Override
 	public Player getPlayer() { return this.player; }
 }

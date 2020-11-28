@@ -16,12 +16,22 @@ import escape.required.LocationType;
 import escape.util.LocationInitializer;
 
 class LocationFactory {
+	/**
+	 * Build a location
+	 * @param initializer initializer to make location with
+	 * @return new loacation based on initializer
+	 */
 	static AlphaLocation getLocation(LocationInitializer initializer) {
 		return new AlphaLocation(
 			initializer.locationType, 
 			initializer.player == null ? null : new AlphaPiece(initializer.player, initializer.pieceName));
 	}
 
+	/**
+	 * build an empty location with provided piece
+	 * @param piece piece to put in location
+	 * @return the location
+	 */
 	static AlphaLocation getLocation(AlphaPiece piece) {
 		return new AlphaLocation(LocationType.CLEAR, piece);
 	}

@@ -124,7 +124,7 @@ class EscapeGameBuilderTest {
 
 	// #13
 	@Test
-	void coordinateAlreadyExists() { 
+	void coordinatesAreEquivalent() { 
 		Coordinate c = manager.makeCoordinate(1, 1);
 		assertTrue(manager.makeCoordinate(1, 1).equals(c));
 	}

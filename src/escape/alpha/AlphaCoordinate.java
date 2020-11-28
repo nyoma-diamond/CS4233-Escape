@@ -18,7 +18,7 @@ import escape.exception.EscapeException;
 import escape.required.Coordinate;
 
 class AlphaCoordinate implements Coordinate {
-	private int x, y; //default is less visible than protected
+	private int x, y;
 	private CoordinateType coordinateType;
 	private TwoAndOneFunction<Integer, Coordinate, Integer> distanceToFunc;
 	
@@ -36,10 +36,25 @@ class AlphaCoordinate implements Coordinate {
 		this.distanceToFunc = distanceToFunc;
 	}
 
+	/**
+	 * x getter
+	 * @return x of this coordinate
+	 */
 	int getX() { return this.x; }
+
+	/**
+	 * y getter
+	 * @return y of this coordinate
+	 */
 	int getY() { return this.y; }
+
+	/**
+	 * coordinate type getter
+	 * @return coordinate type of this coordinate
+	 */
 	CoordinateType getCoordinateType() { return this.coordinateType; }
 
+	@Override
 	public int DistanceTo(Coordinate c) {
 		if (!(c instanceof AlphaCoordinate) || ((AlphaCoordinate)c).getCoordinateType() != coordinateType) 
 				throw new EscapeException("Mismatched coordinate type. Cannot get distance between different coordinate types.");

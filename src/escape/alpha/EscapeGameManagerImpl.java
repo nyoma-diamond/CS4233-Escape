@@ -27,6 +27,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	
 	private HashMap<AlphaCoordinate, AlphaLocation> positions; //This could just use Coordinates, but the change isn't necessary
 
+	/**
+	 * EscapeGameManagerImpl constructor
+	 * @param initializer the game initializer to use
+	 */
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
 		this.settings = new AlphaSettings();
 		this.settings.coordinateType = initializer.getCoordinateType();
@@ -38,7 +42,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 		this.positions = new HashMap<AlphaCoordinate, AlphaLocation>();
 
-		//This assumes that the initializer filtered out empty spaces. If an initializer is provided with an empty CLEAR LocationInitializer, bugs may occur(?)
+		//This assumes that the initializer filtered out empty and out of bounds spaces. If an initializer is provided with an empty CLEAR LocationInitializer, bugs may occur(?)
 		for (LocationInitializer loc : initializer.getLocationInitializers()) 
 			positions.put(makeCoordinate(loc.x, loc.y), LocationFactory.getLocation(loc));
 		
@@ -58,7 +62,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 			|| coord.getY() < 1; //TODO: this will need to change, but is okay for Alpha because square boards are finite
 	}
 
-	
+	@Override
 	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
 		AlphaLocation fromLoc, toLoc;
 
@@ -83,13 +87,13 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 		return true;
 	}
 
-
+	@Override
 	public EscapePiece getPieceAt(AlphaCoordinate coordinate) {
 		if (positions.get(coordinate) == null) return null; //this should catch any bad coordinate.
 		return positions.get(coordinate).getPiece();
 	}
 
-
+	@Override
 	public AlphaCoordinate makeCoordinate(int x, int y) {
 		return CoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
 	}

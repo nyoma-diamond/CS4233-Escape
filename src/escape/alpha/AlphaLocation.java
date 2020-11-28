@@ -18,6 +18,11 @@ class AlphaLocation {
 	LocationType locationType;
 	private AlphaPiece piece;
 
+	/**
+	 * AlphaLocation constructor
+	 * @param locationType locationType of location
+	 * @param piece piece to put in location
+	 */
 	AlphaLocation(LocationType locationType, AlphaPiece piece) {
 		this.locationType = locationType;
 		this.piece = piece;
