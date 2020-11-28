@@ -10,14 +10,14 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.alpha;
+package escape.game;
 
 import java.util.Objects;
 
 import escape.exception.EscapeException;
 import escape.required.Coordinate;
 
-class AlphaCoordinate implements Coordinate {
+class EscapeCoordinate implements Coordinate {
 	private int x, y;
 	private CoordinateType coordinateType;
 	private TwoAndOneFunction<Integer, Coordinate, Integer> distanceToFunc;
@@ -29,7 +29,7 @@ class AlphaCoordinate implements Coordinate {
 	 * @param coordinateType associated coordinate type (used for same type validation in DistanceTo)
 	 * @param distanceToFunc how to calculate DistanceTo
 	 */
-	AlphaCoordinate(int x, int y, CoordinateType coordinateType, TwoAndOneFunction<Integer, Coordinate, Integer> distanceToFunc) {
+	EscapeCoordinate(int x, int y, CoordinateType coordinateType, TwoAndOneFunction<Integer, Coordinate, Integer> distanceToFunc) {
 		this.x = x;
 		this.y = y;
 		this.coordinateType = coordinateType;
@@ -56,7 +56,7 @@ class AlphaCoordinate implements Coordinate {
 
 	@Override
 	public int DistanceTo(Coordinate c) {
-		if (!(c instanceof AlphaCoordinate) || ((AlphaCoordinate)c).getCoordinateType() != coordinateType) 
+		if (!(c instanceof EscapeCoordinate) || ((EscapeCoordinate)c).getCoordinateType() != coordinateType) 
 				throw new EscapeException("Mismatched coordinate type. Cannot get distance between different coordinate types.");
 			
 		return distanceToFunc.apply(x, y, c);
@@ -69,8 +69,8 @@ class AlphaCoordinate implements Coordinate {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof AlphaCoordinate)) return false;
-		AlphaCoordinate c = (AlphaCoordinate)o;
+		if (!(o instanceof EscapeCoordinate)) return false;
+		EscapeCoordinate c = (EscapeCoordinate)o;
 		return c.getX() == x && c.getY() == y && c.getCoordinateType() == coordinateType;
 	}
 }

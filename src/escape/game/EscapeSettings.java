@@ -10,15 +10,15 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.alpha;
+package escape.game;
 
 import escape.util.*;
 import escape.required.Coordinate.CoordinateType;
 
-class AlphaSettings {
+class EscapeSettings {
 	CoordinateType coordinateType;
 	int xMax, yMax;
 	RuleDescriptor[] rules;
 
-	AlphaSettings() { }
+	EscapeSettings() { }
 }

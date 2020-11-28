@@ -10,21 +10,21 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.alpha;
+package escape.game;
 
 import escape.required.EscapePiece;
 import escape.required.Player;
 
-class AlphaPiece implements EscapePiece {
+class EscapePieceImpl implements EscapePiece {
 	private Player player;
 	private PieceName pieceName;
 	
 	/**
-	 * AlphaPiece constructor
+	 * EscapeGamePiece constructor
 	 * @param player player that owns piece
 	 * @param pieceName name of piece
 	 */
-	AlphaPiece(Player player, PieceName pieceName) {
+	EscapePieceImpl(Player player, PieceName pieceName) {
 		this.player = player;
 		this.pieceName = pieceName;
 	}

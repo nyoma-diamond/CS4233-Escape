@@ -10,7 +10,7 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.alpha;
+package escape.game;
 
 import java.util.HashMap;
 
@@ -20,19 +20,19 @@ import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
 import escape.required.Player;
 
-public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate> {
-	private AlphaSettings settings;
+public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate> {
+	private EscapeSettings settings;
 
 	private Player curPlayer;
 	
-	private HashMap<AlphaCoordinate, AlphaLocation> positions; //This could just use Coordinates, but the change isn't necessary
+	private HashMap<EscapeCoordinate, EscapeLocation> positions; //This could just use Coordinates, but the change isn't necessary
 
 	/**
 	 * EscapeGameManagerImpl constructor
 	 * @param initializer the game initializer to use
 	 */
 	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
-		this.settings = new AlphaSettings();
+		this.settings = new EscapeSettings();
 		this.settings.coordinateType = initializer.getCoordinateType();
 		this.settings.xMax = initializer.getxMax();
 		this.settings.yMax = initializer.getyMax();
@@ -40,7 +40,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 
 		this.curPlayer = Player.PLAYER1;
 
-		this.positions = new HashMap<AlphaCoordinate, AlphaLocation>();
+		this.positions = new HashMap<EscapeCoordinate, EscapeLocation>();
 
 		//This assumes that the initializer filtered out empty and out of bounds spaces. If an initializer is provided with an empty CLEAR LocationInitializer, bugs may occur(?)
 		for (LocationInitializer loc : initializer.getLocationInitializers()) 
@@ -55,7 +55,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	 * @param coord coordinate to check
 	 * @return true if out of bounds, false if in bounds
 	 */
-	private boolean outOfBounds(AlphaCoordinate coord) {
+	private boolean outOfBounds(EscapeCoordinate coord) {
 		return coord.getX() > settings.xMax 
 			|| coord.getY() > settings.yMax 
 			|| coord.getX() < 1 
@@ -63,8 +63,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	}
 
 	@Override
-	public boolean move(AlphaCoordinate from, AlphaCoordinate to) {
-		AlphaLocation fromLoc, toLoc;
+	public boolean move(EscapeCoordinate from, EscapeCoordinate to) {
+		EscapeLocation fromLoc, toLoc;
 
 		if (from == null //TODO: are there any ways to short-circuit this for obviously valid moves?
 			|| to == null 
@@ -88,13 +88,13 @@ public class EscapeGameManagerImpl implements EscapeGameManager<AlphaCoordinate>
 	}
 
 	@Override
-	public EscapePiece getPieceAt(AlphaCoordinate coordinate) {
+	public EscapePiece getPieceAt(EscapeCoordinate coordinate) {
 		if (positions.get(coordinate) == null) return null; //this should catch any bad coordinate.
 		return positions.get(coordinate).getPiece();
 	}
 
 	@Override
-	public AlphaCoordinate makeCoordinate(int x, int y) {
+	public EscapeCoordinate makeCoordinate(int x, int y) {
 		return CoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
 	}
 }

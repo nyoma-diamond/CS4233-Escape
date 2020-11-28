@@ -1,12 +1,14 @@
 # Development Log
 
-## 11/12
+## Alpha
+
+### 11/12
 
 - Added tasks to TODO list.
 - Fixed formatting
 - Made some minor changes based on updates on Canvas and Slack
 
-## 11/13
+### 11/13
 
 - Created `EscapeGameManagerImpl` (class)
 - Created `AlphaCoordinate` (interface)
@@ -14,7 +16,7 @@
 - Completed `DistanceTo` for `SquareCoordinate` (sufficient for Alpha)
 - Completed `makeCoordinate`
 
-## 11/15
+### 11/15
 
 - Created `CoordinateFactory` (class)
 - Changed `EscapeGameMnagerImpl` to use a factory for `makeCoordinate`
@@ -32,7 +34,7 @@
 - Made `EscapeGameManagerImpl` use a `HashMap` to associate coordinates with locations.
 - Finished implementing `getPieceAt`
 
-## 11/16
+### 11/16
 
 - Refactored some functionality out of `makeCoordinate` and into their own methods
   - No reason to have massive blocks of code in `makeCoordinate` when it could be made significantly clearer by splitting functionality out to their own methods.
@@ -40,7 +42,7 @@
 - Refactored some functionality out of `move` and into their own methods
   - No reason to have massive blocks of code in `makeCoordinate` when it could be made significantly clearer by splitting functionality out to their own methods.
 
-## 11/17
+### 11/17
 
 - Fixed some bugs resultant of specification misinterpretations
   - Removed internal `putCoordinate` function from `EscapeGameManagerImpl` because it was unnecessary and caused further bugs after adjusting to properly fit the specification.
@@ -53,7 +55,7 @@
 - Refactored `AlphaLocation` not to store x and y position (unnecessary after previous refactors and bug fixes)
 - Changed `AlphaPiece.setPiece` to return void (returning the old piece was unnecessary because I will never need it) and created `AlphaPiece.removePiece` which removes the current piece and returns it
 
-## 11/18
+### 11/18
 
 - Refactored `move`
   - Empty locations are no longer stored. Locations stored in `positions` are either a BLOCK, EXIT, or have a piece in them. This saves on memory and allows for some simplification of conditionals.
@@ -63,3 +65,9 @@
   - Deleted `removePiece` from `AlphaLocation` (didn't need it anymore)
 - Removed some other unused code
 - Moved `TwoAndOneFunction` into the `CoordinateFactory` file (not really necessary to have its own file)
+
+## Beta
+
+### 11/28
+
+- Renamed `alpha` package to `game` and changed class names to remove references to Alpha.
