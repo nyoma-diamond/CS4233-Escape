@@ -27,7 +27,7 @@ import escape.required.EscapePiece.PieceName;
  * 
  * @version May 30, 2020
  */
-class EscapeGameBuilderTest {
+class AlphaEscapeGameBuilderTest {
 
 	private static EscapeGameManager manager;
 
