@@ -23,7 +23,7 @@ class EscapeCoordinate implements Coordinate {
 	private TwoAndOneFunction<Integer, Coordinate, Integer> distanceToFunc;
 	
 	/**
-	 * Constructor for AlphaCoordinate
+	 * Constructor for EscapeCoordinate
 	 * @param x x position of coordinate
 	 * @param y y position of coordinate
 	 * @param coordinateType associated coordinate type (used for same type validation in DistanceTo)

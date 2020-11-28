@@ -19,7 +19,7 @@ class EscapeLocation {
 	private EscapePieceImpl piece;
 
 	/**
-	 * AlphaLocation constructor
+	 * EscapeLocation constructor
 	 * @param locationType locationType of location
 	 * @param piece piece to put in location
 	 */
