@@ -10,7 +10,7 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.alpha;
+package escape.game;
 
 import escape.required.Coordinate;
 import escape.required.Coordinate.CoordinateType;
@@ -29,7 +29,7 @@ interface TwoAndOneFunction<A,B,R> {
 
 class CoordinateFactory {
 	static TwoAndOneFunction<Integer, Coordinate, Integer> sqDistance = (Integer x, Integer y, Coordinate c) -> {
-		AlphaCoordinate coord = (AlphaCoordinate) c;
+		EscapeCoordinate coord = (EscapeCoordinate) c;
 		return Math.max(Math.abs(coord.getX() - x), Math.abs(coord.getY() - y));
 	};
 
@@ -40,8 +40,8 @@ class CoordinateFactory {
 	 * @param y y value of coordinate
 	 * @return a new coordinate based on provided parameters
 	 */
-	static AlphaCoordinate getCoordinate(CoordinateType coordinateType, int x, int y) {
-		if(coordinateType == CoordinateType.SQUARE)	return new AlphaCoordinate(x, y, coordinateType, sqDistance);
+	static EscapeCoordinate getCoordinate(CoordinateType coordinateType, int x, int y) {
+		if(coordinateType == CoordinateType.SQUARE)	return new EscapeCoordinate(x, y, coordinateType, sqDistance);
 		return null; //No way to test, but it's needed so this compiles
 	}
 }

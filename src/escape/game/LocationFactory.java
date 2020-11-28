@@ -10,7 +10,7 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.alpha;
+package escape.game;
 
 import escape.required.LocationType;
 import escape.util.LocationInitializer;
@@ -21,10 +21,10 @@ class LocationFactory {
 	 * @param initializer initializer to make location with
 	 * @return new loacation based on initializer
 	 */
-	static AlphaLocation getLocation(LocationInitializer initializer) {
-		return new AlphaLocation(
+	static EscapeLocation getLocation(LocationInitializer initializer) {
+		return new EscapeLocation(
 			initializer.locationType, 
-			initializer.player == null ? null : new AlphaPiece(initializer.player, initializer.pieceName));
+			initializer.player == null ? null : new EscapePieceImpl(initializer.player, initializer.pieceName));
 	}
 
 	/**
@@ -32,7 +32,7 @@ class LocationFactory {
 	 * @param piece piece to put in location
 	 * @return the location
 	 */
-	static AlphaLocation getLocation(AlphaPiece piece) {
-		return new AlphaLocation(LocationType.CLEAR, piece);
+	static EscapeLocation getLocation(EscapePieceImpl piece) {
+		return new EscapeLocation(LocationType.CLEAR, piece);
 	}
 }

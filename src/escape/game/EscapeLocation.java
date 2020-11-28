@@ -10,20 +10,20 @@
  * Copyright ©2020 N'yoma Diamond
  *******************************************************************************/
 
-package escape.alpha;
+package escape.game;
 
 import escape.required.LocationType;
 
-class AlphaLocation {
+class EscapeLocation {
 	LocationType locationType;
-	private AlphaPiece piece;
+	private EscapePieceImpl piece;
 
 	/**
 	 * AlphaLocation constructor
 	 * @param locationType locationType of location
 	 * @param piece piece to put in location
 	 */
-	AlphaLocation(LocationType locationType, AlphaPiece piece) {
+	EscapeLocation(LocationType locationType, EscapePieceImpl piece) {
 		this.locationType = locationType;
 		this.piece = piece;
 	}
@@ -32,11 +32,11 @@ class AlphaLocation {
 	 * Gets the piece in this location
 	 * @return the piece in this location
 	 */
-	AlphaPiece getPiece() { return this.piece; }
+	EscapePieceImpl getPiece() { return this.piece; }
 
 	/**
 	 * Sets the piece in this location
 	 * @param newPiece piece to put in this location
 	 */
-	void setPiece(AlphaPiece newPiece) { this.piece = newPiece; }
+	void setPiece(EscapePieceImpl newPiece) { this.piece = newPiece; }
 }
