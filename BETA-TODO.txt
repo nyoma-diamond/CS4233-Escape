@@ -12,7 +12,9 @@ Task List
 	[ ] Unblock (not tested for Beta)	
 
 [ ] Triangle coordinates
+	[ ] Finite board
+	[ ] Infinite board
 
 [ ] Gameplay changes
-	[ ] Moving a piece to the same location should be invalid
+	[X] Moving a piece to the same location should be invalid
 	??? [ ] No pieces -> game over (other player wins) 

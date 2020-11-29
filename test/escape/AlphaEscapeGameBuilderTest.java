@@ -298,7 +298,7 @@ class AlphaEscapeGameBuilderTest {
 	@Test
 	void movePieceToSource() { 
 		Coordinate c = manager.makeCoordinate(4, 4);
-		assertTrue(manager.move(c,c));
+		assertFalse(manager.move(c,c)); //this was assertTrue in Alpha, but is now assertFalse from Beta on
 	}
 
 	// #34

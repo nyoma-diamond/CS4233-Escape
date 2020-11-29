@@ -20,5 +20,8 @@ class EscapeSettings {
 	int xMax, yMax;
 	RuleDescriptor[] rules;
 
+	/**
+	 * EscapeSettings constructor
+	 */
 	EscapeSettings() { }
 }

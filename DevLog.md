@@ -73,3 +73,8 @@
 - Renamed `alpha` package to `game` and changed class names to remove references to Alpha.
 - Made new test file for Beta
 - Made and filled new TODO file for Beta
+- Moving to the same space is no longer allowed (also needed to change a test from Alpha so this won't cause tests to fail wrongly)
+- Removed `PieceTypeInitializer`
+  - Class is unused and redundant with `PieceTypeDescriptor`
+- Made `EscapePieceImpl` store a `PieceTypeDescriptor` instead of just a `PieceName` (this way I can call the attributes of the piece instead of needing to store the attributes somewhere else and reference them separately)
+- Added piece initialization to `EscapeGameManagerImpl`

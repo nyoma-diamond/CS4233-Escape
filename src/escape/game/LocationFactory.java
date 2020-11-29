@@ -18,13 +18,12 @@ import escape.util.LocationInitializer;
 class LocationFactory {
 	/**
 	 * Build a location
+	 * This only builds the location and does not pull information about the piece!
 	 * @param initializer initializer to make location with
 	 * @return new loacation based on initializer
 	 */
 	static EscapeLocation getLocation(LocationInitializer initializer) {
-		return new EscapeLocation(
-			initializer.locationType, 
-			initializer.player == null ? null : new EscapePieceImpl(initializer.player, initializer.pieceName));
+		return new EscapeLocation(initializer.locationType, null);
 	}
 
 	/**

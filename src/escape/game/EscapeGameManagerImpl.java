@@ -18,7 +18,9 @@ import escape.EscapeGameManager;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
+import escape.util.PieceTypeDescriptor;
 import escape.required.Player;
+import escape.required.EscapePiece.PieceName;
 
 public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate> {
 	private EscapeSettings settings;
@@ -26,7 +28,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private Player curPlayer;
 	
 	private HashMap<EscapeCoordinate, EscapeLocation> positions; //This could just use Coordinates, but the change isn't necessary
-
+	
 	/**
 	 * EscapeGameManagerImpl constructor
 	 * @param initializer the game initializer to use
@@ -42,11 +44,18 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 		this.positions = new HashMap<EscapeCoordinate, EscapeLocation>();
 
+		HashMap<PieceName, PieceTypeDescriptor> pieceTypes = new HashMap<PieceName, PieceTypeDescriptor>(); //this is used to make piece descriptors easily accessible during construction
+		for (PieceTypeDescriptor pieceType : initializer.getPieceTypes()) 
+			pieceTypes.put(pieceType.getPieceName(), pieceType);
+
 		//This assumes that the initializer filtered out empty and out of bounds spaces. If an initializer is provided with an empty CLEAR LocationInitializer, bugs may occur(?)
 		for (LocationInitializer loc : initializer.getLocationInitializers()) 
-			positions.put(makeCoordinate(loc.x, loc.y), LocationFactory.getLocation(loc));
-		
-		//TODO: initialize piece types. Don't need to implement for alpha tho :)
+			positions.put(
+				makeCoordinate(loc.x, loc.y), 
+				loc.player == null 
+					? LocationFactory.getLocation(loc) 
+					: LocationFactory.getLocation(new EscapePieceImpl(loc.player, pieceTypes.get(loc.pieceName)))
+			);
 	}
 
 	
@@ -68,21 +77,20 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 		if (from == null //TODO: are there any ways to short-circuit this for obviously valid moves?
 			|| to == null 
+			|| from.equals(to) //target and source are same tile
 			|| outOfBounds(to) //target out of bounds
 			|| (fromLoc = positions.get(from)) == null //source has no location (empty)
 			|| fromLoc.getPiece() == null  //no piece, implies BLOCK or EXIT
 			|| fromLoc.getPiece().getPlayer() != curPlayer //wrong player's piece
 			|| ((toLoc = positions.get(to)) != null && toLoc.locationType == LocationType.BLOCK) //target isn't a block
-			|| (!from.equals(to) && toLoc != null && toLoc.getPiece() != null && toLoc.getPiece().getPlayer() == curPlayer)) //target isn't source and has current player's piece TODO: this can be simplified after alpha because moving to your own space won't be valid
+			|| (toLoc != null && toLoc.getPiece() != null && toLoc.getPiece().getPlayer() == curPlayer)) //target isn't source and has current player's piece TODO: this can be simplified after alpha because moving to your own space won't be valid
 			return false;
 
 
-		if (!from.equals(to)) { //do nothing if same space
-			if (toLoc == null) positions.put(to, toLoc = LocationFactory.getLocation(fromLoc.getPiece())); //if null target location (empty), initialize new location with sourcepiece
-			else if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece()); //not exit (must be enemy or empty, already checked for blocks), so set piece
-			positions.remove(from); //no reason to keep the coordinate after moving a piece off it (must be a clear location). Free up some memory (This line can actually be removed by replacing fromLoc in previous two lines with positions.remove(from), but that hurts readability)
-		}
-
+		if (toLoc == null) positions.put(to, toLoc = LocationFactory.getLocation(fromLoc.getPiece())); //if null target location (empty), initialize new location with sourcepiece
+		else if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece()); //not exit (must be enemy or empty, already checked for blocks), so set piece
+		positions.remove(from); //no reason to keep the coordinate after moving a piece off it (must be a clear location). Free up some memory (This line can actually be removed by replacing fromLoc in previous two lines with positions.remove(from), but that hurts readability)
+		
 		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; //Would make this its own method but its only one line and not used anywhere else
 		return true;
 	}
