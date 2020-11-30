@@ -83,3 +83,4 @@
 
 - Edited `test3.egc` for testing square movement patterns
 - Edited other `egc` files to not break earlier tests as a result of assumptions from Alpha
+- Made distance checks work for OMNI movement type
