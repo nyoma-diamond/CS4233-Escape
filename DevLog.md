@@ -78,3 +78,8 @@
   - Class is unused and redundant with `PieceTypeDescriptor`
 - Made `EscapePieceImpl` store a `PieceTypeDescriptor` instead of just a `PieceName` (this way I can call the attributes of the piece instead of needing to store the attributes somewhere else and reference them separately)
 - Added piece initialization to `EscapeGameManagerImpl`
+
+### 11/29
+
+- Edited `test3.egc` for testing square movement patterns
+- Edited other `egc` files to not break earlier tests as a result of assumptions from Alpha

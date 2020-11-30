@@ -184,7 +184,7 @@ class AlphaEscapeGameBuilderTest {
 		assertEquals(p1, p2);
 	}
 
-	// #21
+	// #21 //TODO: will need to change DISTANCE attribute of pieces to not break these (alpha assumed infinite distance attribute)
 	@Test
 	void movePieceToEmptySpace() {
 		Coordinate c1 = manager.makeCoordinate(4, 4);
@@ -392,7 +392,7 @@ class AlphaEscapeGameBuilderTest {
 	// #43
 	@Test
 	void moveToInitializedClear() throws Exception { //This is to try and test if creating a board with a empty clear location initializer causes problems. Test doesn't actually work because EscapeGameBuilder already filters those out
-		EscapeGameManager m = new EscapeGameBuilder("config/egc/test3.egc").makeGameManager();
-		assertTrue(m.move(m.makeCoordinate(4, 4), m.makeCoordinate(5, 5)));
+		EscapeGameManager m = new EscapeGameBuilder("config/egc/test2.egc").makeGameManager();
+		assertTrue(m.move(m.makeCoordinate(1, 1), m.makeCoordinate(5, 5)));
 	}
 }

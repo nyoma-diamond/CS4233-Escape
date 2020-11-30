@@ -5,9 +5,19 @@ Task List
 		[ ] Orthogonal
 		[ ] Diagonal
 		[ ] Linear (not tested on Triangle for Beta)
-		[ ] Omni
-	[ ] Value
+		[ ] Omni (already assumed in Alpha)
+	[ ] Value (Nothing is done with this in Beta)
 	[ ] Distance
+		[ ] Square
+			[ ] Orthogonal
+			[ ] Diagonal
+			[ ] Linear
+			[X] Omni
+		[ ] Triangle
+			[ ] Orthogonal
+			[ ] Diagonal
+			[ ] Linear (not tested on Triangle for Beta)
+			[ ] Omni
 	[ ] Jump/fly
 	[ ] Unblock (not tested for Beta)	
 

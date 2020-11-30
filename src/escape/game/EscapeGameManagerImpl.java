@@ -20,6 +20,8 @@ import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
 import escape.util.PieceTypeDescriptor;
 import escape.required.Player;
+import escape.required.EscapePiece.MovementPattern;
+import escape.required.EscapePiece.PieceAttributeID;
 import escape.required.EscapePiece.PieceName;
 
 public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate> {
@@ -83,8 +85,9 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			|| fromLoc.getPiece() == null  //no piece, implies BLOCK or EXIT
 			|| fromLoc.getPiece().getPlayer() != curPlayer //wrong player's piece
 			|| ((toLoc = positions.get(to)) != null && toLoc.locationType == LocationType.BLOCK) //target isn't a block
-			|| (toLoc != null && toLoc.getPiece() != null && toLoc.getPiece().getPlayer() == curPlayer)) //target isn't source and has current player's piece TODO: this can be simplified after alpha because moving to your own space won't be valid
-			return false;
+			|| (toLoc != null && toLoc.getPiece() != null && toLoc.getPiece().getPlayer() == curPlayer) //target isn't source and has current player's piece TODO: this can be simplified after alpha because moving to your own space won't be valid
+			|| fromLoc.getPiece().getAttribute(PieceAttributeID.DISTANCE).getValue() < from.DistanceTo(to)
+			) return false;
 
 
 		if (toLoc == null) positions.put(to, toLoc = LocationFactory.getLocation(fromLoc.getPiece())); //if null target location (empty), initialize new location with sourcepiece

@@ -29,11 +29,49 @@ import escape.required.EscapePiece.PieceName;
  */
 class BetaEscapeGameBuilderTest {
 
-	private static EscapeGameManager manager;
+	private static EscapeGameManager manager2;
+	private static EscapeGameManager mpManager;
 
 	@BeforeEach
 	void loadGame() throws Exception {
-		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/test1.egc");
-		manager = egb.makeGameManager();
+		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/test2.egc");
+		manager2 = egb.makeGameManager();
+		
+		egb = new EscapeGameBuilder("config/egc/test3.egc");
+		mpManager = egb.makeGameManager();
+	}
+
+	// #1
+	@Test
+	void limitedByDistanceOmni() {
+		assertFalse(manager2.move(
+			manager2.makeCoordinate(1, 1),
+			manager2.makeCoordinate(7, 1)
+		));
+		assertFalse(manager2.move(
+			manager2.makeCoordinate(1, 1),
+			manager2.makeCoordinate(1, 8)
+		));
+		assertFalse(manager2.move(
+			manager2.makeCoordinate(1, 1),
+			manager2.makeCoordinate(9, 10)
+		));
+	}
+
+	// #2
+	@Test
+	void limitedByDistanceLinear() {
+		assertFalse(manager2.move(
+			manager2.makeCoordinate(1, 1),
+			manager2.makeCoordinate(7, 1)
+		));
+		assertFalse(manager2.move(
+			manager2.makeCoordinate(1, 1),
+			manager2.makeCoordinate(1, 8)
+		));
+		assertFalse(manager2.move(
+			manager2.makeCoordinate(1, 1),
+			manager2.makeCoordinate(9, 10)
+		));
 	}
 }
