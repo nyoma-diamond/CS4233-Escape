@@ -58,20 +58,5 @@ class BetaEscapeGameBuilderTest {
 		));
 	}
 
-	// #2
-	@Test
-	void limitedByDistanceLinear() {
-		assertFalse(manager2.move(
-			manager2.makeCoordinate(1, 1),
-			manager2.makeCoordinate(7, 1)
-		));
-		assertFalse(manager2.move(
-			manager2.makeCoordinate(1, 1),
-			manager2.makeCoordinate(1, 8)
-		));
-		assertFalse(manager2.move(
-			manager2.makeCoordinate(1, 1),
-			manager2.makeCoordinate(9, 10)
-		));
-	}
+	
 }
