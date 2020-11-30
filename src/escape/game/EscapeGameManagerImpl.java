@@ -86,7 +86,14 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			|| fromLoc.getPiece().getPlayer() != curPlayer //wrong player's piece
 			|| ((toLoc = positions.get(to)) != null && toLoc.locationType == LocationType.BLOCK) //target isn't a block
 			|| (toLoc != null && toLoc.getPiece() != null && toLoc.getPiece().getPlayer() == curPlayer) //target isn't source and has current player's piece TODO: this can be simplified after alpha because moving to your own space won't be valid
-			|| fromLoc.getPiece().getAttribute(PieceAttributeID.DISTANCE).getValue() < from.DistanceTo(to)
+
+			|| (fromLoc.getPiece().getMovementPattern() == MovementPattern.OMNI 
+				&& from.DistanceTo(to) > fromLoc.getPiece().getAttribute(PieceAttributeID.DISTANCE).getValue()) //OMNI too far distance
+
+			|| (fromLoc.getPiece().getMovementPattern() == MovementPattern.LINEAR  //LINEAR too far distance (this code is awful)
+				&& (Math.abs(to.getX() - from.getX()) != Math.abs(to.getY() - from.getY())
+					&& to.getX() - from.getX() != 0
+					&& to.getY() - from.getY() != 0))
 			) return false;
 
 

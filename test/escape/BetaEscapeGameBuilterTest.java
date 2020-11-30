@@ -44,19 +44,76 @@ class BetaEscapeGameBuilderTest {
 	// #1
 	@Test
 	void limitedByDistanceOmni() {
-		assertFalse(manager2.move(
-			manager2.makeCoordinate(1, 1),
-			manager2.makeCoordinate(7, 1)
-		));
-		assertFalse(manager2.move(
-			manager2.makeCoordinate(1, 1),
-			manager2.makeCoordinate(1, 8)
-		));
-		assertFalse(manager2.move(
-			manager2.makeCoordinate(1, 1),
-			manager2.makeCoordinate(9, 10)
-		));
+		Coordinate c = manager2.makeCoordinate(1, 1);
+		assertFalse(manager2.move(c, manager2.makeCoordinate(7, 1)));
+		assertFalse(manager2.move(c, manager2.makeCoordinate(1, 8)));
+		assertFalse(manager2.move(c, manager2.makeCoordinate(9, 10)));
 	}
 
-	
+	// #2
+	@Test
+	void validLinearMovement() { //this will work by default as a result of Alpha assumptions, but is needed to make sure future tests dont break behavior
+		Coordinate c1 = manager2.makeCoordinate(1, 9);
+		Coordinate c2 = manager2.makeCoordinate(1, 10);
+
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(1, 3), 
+			manager2.makeCoordinate(4, 3)
+		)); //+x
+		manager2.move(c1, c2); //just to make the turn change back
+		
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(4, 3), 
+			manager2.makeCoordinate(4, 8)
+		)); //+y
+		manager2.move(c2, c1); //just to make the turn change back
+
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(4, 8), 
+			manager2.makeCoordinate(2, 6)
+		)); //-x,-y diag
+		manager2.move(c1, c2); //just to make the turn change back
+		
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(2, 6), 
+			manager2.makeCoordinate(4, 4)
+		)); //x,-y diag
+		manager2.move(c2, c1); //just to make the turn change back
+
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(4, 4), 
+			manager2.makeCoordinate(6, 6)
+		)); //x,y diag
+		manager2.move(c1, c2); //just to make the turn change back
+		
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(6, 6), 
+			manager2.makeCoordinate(4, 8)
+		)); //-x,y diag
+		manager2.move(c2, c1); //just to make the turn change back
+
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(4, 8), 
+			manager2.makeCoordinate(2, 8)
+		)); //-x
+		manager2.move(c1, c2); //just to make the turn change back
+		
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(2, 8), 
+			manager2.makeCoordinate(2, 4)
+		)); //-y
+	}
+
+	// #3
+	@Test
+	void invalidLinearMovement() {
+		Coordinate c = manager2.makeCoordinate(6, 8);		
+		assertTrue(manager2.move(manager2.makeCoordinate(1, 3), c)); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
+		assertTrue(manager2.move(manager2.makeCoordinate(1, 9), manager2.makeCoordinate(1, 10))); //change turn back
+
+		assertFalse(manager2.move(c, manager2.makeCoordinate(8, 9))); //+2,+1
+		assertFalse(manager2.move(c, manager2.makeCoordinate(9, 6))); //+3,-2
+		assertFalse(manager2.move(c, manager2.makeCoordinate(2, 9))); //-4,+1
+		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 5))); //-1,-3
+	}
 }

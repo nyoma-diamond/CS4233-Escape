@@ -41,7 +41,7 @@ class EscapePieceImpl implements EscapePiece {
 	 * Gets the movement pattern of this piece
 	 * @return the movement pattern of this piece
 	 */
-	//public MovementPattern getMovementPattern() { return this.descriptor.getMovementPattern(); }
+	public MovementPattern getMovementPattern() { return this.descriptor.getMovementPattern(); }
 
 	public PieceAttribute getAttribute(PieceAttributeID id) { return descriptor.getAttribute(id); }
 }

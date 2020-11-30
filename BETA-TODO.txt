@@ -5,8 +5,8 @@ Task List
 		[ ] Square
 			[ ] Orthogonal
 			[ ] Diagonal
-			[ ] Linear (not tested on Triangle for Beta)
-			[ ] Omni (already assumed in Alpha)
+			[X] Linear
+			[X] Omni (already assumed in Alpha)
 		[ ] Triangle
 			[ ] omni
 			[ ] linear (not tested in Beta)
