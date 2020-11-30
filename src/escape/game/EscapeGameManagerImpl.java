@@ -20,7 +20,6 @@ import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
 import escape.util.PieceTypeDescriptor;
 import escape.required.Player;
-import escape.required.EscapePiece.MovementPattern;
 import escape.required.EscapePiece.PieceAttributeID;
 import escape.required.EscapePiece.PieceName;
 
@@ -47,7 +46,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		this.positions = new HashMap<EscapeCoordinate, EscapeLocation>();
 
 		HashMap<PieceName, PieceTypeDescriptor> pieceTypes = new HashMap<PieceName, PieceTypeDescriptor>(); //this is used to make piece descriptors easily accessible during construction
-		for (PieceTypeDescriptor pieceType : initializer.getPieceTypes()) 
+		for (PieceTypeDescriptor pieceType : initializer.getPieceTypes())  //TODO: maybe do store pieceTypes in the class to to avoid violating Single Responsibility Principle?
 			pieceTypes.put(pieceType.getPieceName(), pieceType);
 
 		//This assumes that the initializer filtered out empty and out of bounds spaces. If an initializer is provided with an empty CLEAR LocationInitializer, bugs may occur(?)
@@ -73,29 +72,45 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			|| coord.getY() < 1; //TODO: this will need to change, but is okay for Alpha because square boards are finite
 	}
 
+
+	/**
+	 * Check if moving a piece from source to target is valid
+	 * @param source starting coordinate
+	 * @param target ending coordinate
+	 * @return validity of move
+	 */
+	private boolean validMove(EscapeCoordinate source, EscapeCoordinate target) { //this code is awful and I hate it
+		EscapeLocation sourceLoc, targetLoc;
+		
+		if (source == null //TODO: are there any ways to short-circuit this for obviously valid moves?
+			|| target == null 
+			|| outOfBounds(target) //target out of bounds
+			|| (sourceLoc = positions.get(source)) == null //source has no location (empty)
+			|| sourceLoc.getPiece() == null  //no piece, implies BLOCK or EXIT
+			|| sourceLoc.getPiece().getPlayer() != curPlayer //wrong player's piece
+			|| ((targetLoc = positions.get(target)) != null && targetLoc.getPiece() != null && targetLoc.getPiece().getPlayer() == curPlayer) //target has current player's piece
+			|| (targetLoc != null && targetLoc.locationType == LocationType.BLOCK) //target a BLOCK
+		) return false;
+
+		switch (sourceLoc.getPiece().getMovementPattern()) {
+			case OMNI:
+				return source.DistanceTo(target) <= sourceLoc.getPiece().getAttribute(PieceAttributeID.DISTANCE).getValue();
+			case LINEAR:
+				return source.DistanceTo(target) <= sourceLoc.getPiece().getAttribute(PieceAttributeID.DISTANCE).getValue()
+					&& (Math.abs(target.getX() - source.getX()) == Math.abs(target.getY() - source.getY())
+						|| target.getX() - source.getX() == 0
+						|| target.getY() - source.getY() == 0);
+			default:
+				return false;
+		}
+	}
+
 	@Override
 	public boolean move(EscapeCoordinate from, EscapeCoordinate to) {
-		EscapeLocation fromLoc, toLoc;
+		if (!validMove(from, to)) return false;
 
-		if (from == null //TODO: are there any ways to short-circuit this for obviously valid moves?
-			|| to == null 
-			|| from.equals(to) //target and source are same tile
-			|| outOfBounds(to) //target out of bounds
-			|| (fromLoc = positions.get(from)) == null //source has no location (empty)
-			|| fromLoc.getPiece() == null  //no piece, implies BLOCK or EXIT
-			|| fromLoc.getPiece().getPlayer() != curPlayer //wrong player's piece
-			|| ((toLoc = positions.get(to)) != null && toLoc.locationType == LocationType.BLOCK) //target isn't a block
-			|| (toLoc != null && toLoc.getPiece() != null && toLoc.getPiece().getPlayer() == curPlayer) //target isn't source and has current player's piece TODO: this can be simplified after alpha because moving to your own space won't be valid
-
-			|| (fromLoc.getPiece().getMovementPattern() == MovementPattern.OMNI 
-				&& from.DistanceTo(to) > fromLoc.getPiece().getAttribute(PieceAttributeID.DISTANCE).getValue()) //OMNI too far distance
-
-			|| (fromLoc.getPiece().getMovementPattern() == MovementPattern.LINEAR  //LINEAR too far distance (this code is awful)
-				&& (Math.abs(to.getX() - from.getX()) != Math.abs(to.getY() - from.getY())
-					&& to.getX() - from.getX() != 0
-					&& to.getY() - from.getY() != 0))
-			) return false;
-
+		EscapeLocation fromLoc = positions.get(from);
+		EscapeLocation toLoc = positions.get(to);
 
 		if (toLoc == null) positions.put(to, toLoc = LocationFactory.getLocation(fromLoc.getPiece())); //if null target location (empty), initialize new location with sourcepiece
 		else if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece()); //not exit (must be enemy or empty, already checked for blocks), so set piece

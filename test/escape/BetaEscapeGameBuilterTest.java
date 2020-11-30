@@ -115,5 +115,6 @@ class BetaEscapeGameBuilderTest {
 		assertFalse(manager2.move(c, manager2.makeCoordinate(9, 6))); //+3,-2
 		assertFalse(manager2.move(c, manager2.makeCoordinate(2, 9))); //-4,+1
 		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 5))); //-1,-3
+		assertFalse(manager2.move(c, manager2.makeCoordinate(16, 8))); // valid direction, too far
 	}
 }
