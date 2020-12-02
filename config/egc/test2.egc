@@ -11,11 +11,11 @@ Locations :
 	(5, 5) clear
 	
 Piece descriptors :
-	SNAIL omni [distance 5]
-	DOG linear [distance 5]
-	HORSE diagonal [distance 5]
-	FROG orthogonal [distance 5]
-	BIRD omni [distance 100]
+	SNAIL omni [fly 5]
+	DOG linear [fly 5]
+	HORSE diagonal [fly 5]
+	FROG orthogonal [fly 5]
+	BIRD omni [fly 100]
 	
 Rules :
 	REMOVE

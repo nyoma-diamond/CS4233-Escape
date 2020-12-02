@@ -9,11 +9,11 @@ Locations :
 	(1, 7) player1 frog
 		
 Piece descriptors :
-	SNAIL orthogonal [distance 1]
-	DOG orthogonal [distance 10]
-	HORSE diagonal [distance 1]
-	FROG diagonal [distance 10]
-	BIRD linear [distance 10]
+	SNAIL orthogonal [fly 1]
+	DOG orthogonal [fly 10]
+	HORSE diagonal [fly 1]
+	FROG diagonal [fly 10]
+	BIRD linear [fly 10]
 	
 	
 Rules :

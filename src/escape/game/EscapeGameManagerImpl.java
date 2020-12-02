@@ -95,14 +95,17 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			|| (targetLoc != null && targetLoc.locationType == LocationType.BLOCK) //target a BLOCK
 		) return false;
 
+		int maxDistance = pieceDescriptors.get(sourceLoc.getPiece().getName()).getAttribute(PieceAttributeID.FLY).getValue(); //TODO: make this work for DISTANCE instead of just FLY (will require pathfinding)
 		switch (pieceDescriptors.get(sourceLoc.getPiece().getName()).getMovementPattern()) { //TODO: split this into another method?
 			case OMNI:
-				return source.DistanceTo(target) <= pieceDescriptors.get(sourceLoc.getPiece().getName()).getAttribute(PieceAttributeID.DISTANCE).getValue();
+				return source.DistanceTo(target) <= maxDistance;
 			case LINEAR:
-				return source.DistanceTo(target) <= pieceDescriptors.get(sourceLoc.getPiece().getName()).getAttribute(PieceAttributeID.DISTANCE).getValue()
+				return source.DistanceTo(target) <= maxDistance
 					&& (Math.abs(target.getX() - source.getX()) == Math.abs(target.getY() - source.getY())
 						|| target.getX() - source.getX() == 0
 						|| target.getY() - source.getY() == 0);
+			case ORTHOGONAL:
+				return Math.abs(target.getX() - source.getX()) + Math.abs(target.getY() - source.getY()) <= maxDistance;
 			default:
 				return false;
 		}

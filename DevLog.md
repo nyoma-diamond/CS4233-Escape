@@ -89,3 +89,5 @@
 ### 12/1
 
 - Refactored some `PieceTypeDescriptor`s our of `EscapePieceImpl` to maintain SRP
+- Changed `egc` files to use FLY attribute instead of DISTANCE because FLY cannot be blocked by pieces along the path (test pathfinding around pieces/blocks with DISTANCE later)
+- Completed Orthogonal FLY movement

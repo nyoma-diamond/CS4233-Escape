@@ -4,15 +4,27 @@ Task List
 	[ ] Movement patterns
 		[ ] Square
 			[ ] Orthogonal
+				[X] Fly
+				[ ] Distance			
 			[ ] Diagonal
+				[X] Fly
+				[ ] Distance
 			[X] Linear
+				[X] Fly
+				[ ] Distance
 			[X] Omni (already assumed in Alpha)
+				[X] Fly
+				[ ] Distance			
 		[ ] Triangle
-			[ ] omni
-			[ ] linear (not tested in Beta)
+			[ ] Omni
+				[ ] Fly
+				[ ] Distance			
+			[ ] Linear (not tested in Beta)
+				[ ] Fly
+				[ ] Distance			
 	[ ] Value (Nothing is done with this in Beta)
-	[X] Distance (initial test on omni. Further tests part of movement patterns)
-	[ ] Jump/fly
+	[ ] Distance (initial test on omni. Further tests part of movement patterns)
+	[ ] Jump
 	[ ] Unblock (not tested for Beta)	
 
 [ ] Triangle coordinates

@@ -10,9 +10,9 @@ Locations :
 	(7, 6) player1 dog 
 	
 Piece descriptors :
-	SNAIL omni [distance 100]
-	DOG omni [distance 100]
-	HORSE omni [distance 100]
+	SNAIL omni [FLY 100]
+	DOG omni [FLY 100]
+	HORSE omni [FLY 100]
 	
 Rules :
 	REMOVE
