@@ -84,10 +84,11 @@
 - Edited `test2.egc` and `test3.egc` for testing square movement patterns
 - Edited other `egc` files to not break earlier tests as a result of assumptions from Alpha
 - Made distance checks work for `OMNI` movement pattern
-- Implemented `LINEAR` movement pattern
+- Implemented `LINEAR` movement pattern (FLY)
 
 ### 12/1
 
 - Refactored some `PieceTypeDescriptor`s our of `EscapePieceImpl` to maintain SRP
 - Changed `egc` files to use FLY attribute instead of DISTANCE because FLY cannot be blocked by pieces along the path (test pathfinding around pieces/blocks with DISTANCE later)
 - Completed Orthogonal FLY movement
+- Completed Diagonal FLY movement

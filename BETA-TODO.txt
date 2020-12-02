@@ -9,10 +9,10 @@ Task List
 			[ ] Diagonal
 				[X] Fly
 				[ ] Distance
-			[X] Linear
+			[ ] Linear
 				[X] Fly
 				[ ] Distance
-			[X] Omni (already assumed in Alpha)
+			[ ] Omni (already assumed in Alpha)
 				[X] Fly
 				[ ] Distance			
 		[ ] Triangle

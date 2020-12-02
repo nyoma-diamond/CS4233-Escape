@@ -15,6 +15,7 @@ package escape.game;
 import java.util.HashMap;
 
 import escape.EscapeGameManager;
+import escape.exception.EscapeException;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
@@ -106,9 +107,12 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 						|| target.getY() - source.getY() == 0);
 			case ORTHOGONAL:
 				return Math.abs(target.getX() - source.getX()) + Math.abs(target.getY() - source.getY()) <= maxDistance;
-			default:
-				return false;
+			case DIAGONAL:
+				return (target.getX() + target.getY()) % 2 == (source.getX() + source.getY()) % 2
+					&& Math.abs(target.getX() - source.getX()) <= maxDistance
+					&& Math.abs(target.getY() - source.getY()) <= maxDistance;
 		}
+		throw new EscapeException("Something went wrong: No valid movement pattern"); //needed to compile.
 	}
 
 	@Override

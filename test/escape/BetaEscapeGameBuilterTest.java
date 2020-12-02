@@ -125,13 +125,13 @@ class BetaEscapeGameBuilderTest {
 		assertTrue(manager2.move(
 			manager2.makeCoordinate(1, 7), 
 			manager2.makeCoordinate(2, 11)
-		)); //+x
+		)); 
 		manager2.move(c1, c2); //just to make the turn change back
 		
 		assertTrue(manager2.move(
 			manager2.makeCoordinate(2, 11), 
 			manager2.makeCoordinate(7, 11)
-		)); //+y
+		)); 
 		manager2.move(c2, c1); //just to make the turn change back
 
 		assertTrue(manager2.move(
@@ -152,5 +152,41 @@ class BetaEscapeGameBuilderTest {
 		assertFalse(manager2.move(c, manager2.makeCoordinate(8, 11))); 
 		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 14))); 
 		assertFalse(manager2.move(c, manager2.makeCoordinate(11, 8)));
+	}
+
+	// #6
+	@Test
+	void validDiagonalMove() {
+		Coordinate c1 = manager2.makeCoordinate(1, 9);
+		Coordinate c2 = manager2.makeCoordinate(1, 10);
+
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(1, 5), 
+			manager2.makeCoordinate(6, 10)
+		)); 
+		manager2.move(c1, c2); //just to make the turn change back
+		
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(6, 10), 
+			manager2.makeCoordinate(7, 5)
+		)); 
+		manager2.move(c2, c1); //just to make the turn change back
+
+		assertTrue(manager2.move(
+			manager2.makeCoordinate(7, 5), 
+			manager2.makeCoordinate(2, 2)
+		));
+	}
+
+	// #7
+	@Test
+	void invalidDiagonalMove() {
+		Coordinate c = manager2.makeCoordinate(1, 5);		
+		
+		assertFalse(manager2.move(c, manager2.makeCoordinate(1, 6))); 
+		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 8))); 
+		assertFalse(manager2.move(c, manager2.makeCoordinate(1, 2))); 
+		assertFalse(manager2.move(c, manager2.makeCoordinate(7, 5))); 
+		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 4)));
 	}
 }
