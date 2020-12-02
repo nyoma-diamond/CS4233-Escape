@@ -92,3 +92,5 @@
 - Changed `egc` files to use FLY attribute instead of DISTANCE because FLY cannot be blocked by pieces along the path (test pathfinding around pieces/blocks with DISTANCE later)
 - Completed Orthogonal FLY movement
 - Completed Diagonal FLY movement
+- Changed `test3.egc` to be used for testing the DISTANCE attribute
+- Completed omni DISTANCE movement

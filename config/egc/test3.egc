@@ -4,17 +4,19 @@ yMax : 20
 
 Locations :
 	(1, 1) player1 snail
-	(1, 3) player1 dog
-	(1, 5) player1 horse
-	(1, 7) player1 frog
-		
-Piece descriptors :
-	SNAIL orthogonal [fly 1]
-	DOG orthogonal [fly 10]
-	HORSE diagonal [fly 1]
-	FROG diagonal [fly 10]
-	BIRD linear [fly 10]
+	(4, 2) player1 dog
+	(1, 3) player1 horse
+	(2, 3) player1 frog
+	(3, 3) player1 horse
+	(1, 9) player2 bird
+	(5, 5) clear
 	
+Piece descriptors :
+	SNAIL omni [distance 5]
+	DOG linear [distance 5]
+	HORSE diagonal [distance 5]
+	FROG orthogonal [distance 5]
+	BIRD omni [fly 100]
 	
 Rules :
 	REMOVE

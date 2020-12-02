@@ -58,7 +58,7 @@ public class EscapeGameBuilder {
 	public EscapeGameBuilder(String fileName) throws Exception {
 		String xmlConfiguration = getXmlConfiguration(fileName);
 		// Uncomment the next instruction if you want to see the XML
-		System.out.println(xmlConfiguration);
+		//System.out.println(xmlConfiguration);
 		gameInitializer = unmarshalXml(xmlConfiguration);
 	}
 

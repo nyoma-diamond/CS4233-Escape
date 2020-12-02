@@ -28,7 +28,7 @@ import escape.required.*;
 class BetaEscapeGameBuilderTest {
 
 	private static EscapeGameManager manager2;
-	private static EscapeGameManager mpManager;
+	private static EscapeGameManager manager3;
 
 	@BeforeEach
 	void loadGame() throws Exception {
@@ -36,7 +36,7 @@ class BetaEscapeGameBuilderTest {
 		manager2 = egb.makeGameManager();
 		
 		egb = new EscapeGameBuilder("config/egc/test3.egc");
-		mpManager = egb.makeGameManager();
+		manager3 = egb.makeGameManager();
 	}
 
 	// #1
@@ -50,7 +50,7 @@ class BetaEscapeGameBuilderTest {
 
 	// #2
 	@Test
-	void validLinearMove() { //this will work by default as a result of Alpha assumptions, but is needed to make sure future tests dont break behavior
+	void validLinearFlyMove() { //this will work by default as a result of Alpha assumptions, but is needed to make sure future tests dont break behavior
 		Coordinate c1 = manager2.makeCoordinate(1, 9);
 		Coordinate c2 = manager2.makeCoordinate(1, 10);
 
@@ -104,7 +104,7 @@ class BetaEscapeGameBuilderTest {
 
 	// #3
 	@Test
-	void invalidLinearMove() {
+	void invalidLinearFlyMove() {
 		Coordinate c = manager2.makeCoordinate(6, 8);		
 		assertTrue(manager2.move(manager2.makeCoordinate(1, 3), c)); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
 		assertTrue(manager2.move(manager2.makeCoordinate(1, 9), manager2.makeCoordinate(1, 10))); //change turn back
@@ -118,7 +118,7 @@ class BetaEscapeGameBuilderTest {
 
 	// #4
 	@Test
-	void validOrthogonalMove() {
+	void validOrthogonalFlyMove() {
 		Coordinate c1 = manager2.makeCoordinate(1, 9);
 		Coordinate c2 = manager2.makeCoordinate(1, 10);
 
@@ -142,7 +142,7 @@ class BetaEscapeGameBuilderTest {
 
 	// #5
 	@Test
-	void invalidOrthogonalMove() {
+	void invalidOrthogonalFlyMove() {
 		Coordinate c = manager2.makeCoordinate(5, 8);		
 		assertTrue(manager2.move(manager2.makeCoordinate(1, 7), c)); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
 		assertTrue(manager2.move(manager2.makeCoordinate(1, 9), manager2.makeCoordinate(1, 10))); //change turn back
@@ -156,7 +156,7 @@ class BetaEscapeGameBuilderTest {
 
 	// #6
 	@Test
-	void validDiagonalMove() {
+	void validDiagonalFlyMove() {
 		Coordinate c1 = manager2.makeCoordinate(1, 9);
 		Coordinate c2 = manager2.makeCoordinate(1, 10);
 
@@ -180,7 +180,7 @@ class BetaEscapeGameBuilderTest {
 
 	// #7
 	@Test
-	void invalidDiagonalMove() {
+	void invalidDiagonalFlyMove() {
 		Coordinate c = manager2.makeCoordinate(1, 5);		
 		
 		assertFalse(manager2.move(c, manager2.makeCoordinate(1, 6))); 
@@ -188,5 +188,47 @@ class BetaEscapeGameBuilderTest {
 		assertFalse(manager2.move(c, manager2.makeCoordinate(1, 2))); 
 		assertFalse(manager2.move(c, manager2.makeCoordinate(7, 5))); 
 		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 4)));
+	}
+
+	// #8
+	@Test
+	void validOmniDistanceMove() {
+		Coordinate c1 = manager3.makeCoordinate(1, 9);
+		Coordinate c2 = manager3.makeCoordinate(1, 10);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(1, 1), 
+			manager3.makeCoordinate(6, 5)
+		)); 
+		manager3.move(c1, c2);
+		
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(6, 5), 
+			manager3.makeCoordinate(1, 5)
+		)); 
+		manager3.move(c2, c1);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(1, 5), 
+			manager3.makeCoordinate(2, 2)
+		));
+		manager3.move(c1, c2);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(2, 2), 
+			manager3.makeCoordinate(6, 6)
+		));
+	}
+
+	// #9
+	@Test
+	void invalidOmniDistanceMove() {
+		Coordinate c = manager3.makeCoordinate(1, 1);
+		
+		assertFalse(manager3.move(c, manager3.makeCoordinate(7, 1))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 4))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 6))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(4, 6))); 
+		
 	}
 }

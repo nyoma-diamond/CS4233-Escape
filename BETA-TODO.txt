@@ -14,7 +14,7 @@ Task List
 				[ ] Distance
 			[ ] Omni (already assumed in Alpha)
 				[X] Fly
-				[ ] Distance			
+				[X] Distance			
 		[ ] Triangle
 			[ ] Omni
 				[ ] Fly
@@ -22,10 +22,9 @@ Task List
 			[ ] Linear (not tested in Beta)
 				[ ] Fly
 				[ ] Distance			
-	[ ] Value (Nothing is done with this in Beta)
-	[ ] Distance (initial test on omni. Further tests part of movement patterns)
 	[ ] Jump
 	[ ] Unblock (not tested for Beta)	
+	[ ] Value (Nothing is done with this in Beta)
 
 [ ] Triangle coordinates
 	[ ] Finite board
