@@ -273,4 +273,138 @@ class BetaEscapeGameBuilderTest {
 		assertFalse(manager3.move(c, manager3.makeCoordinate(2, 2))); //piece in the way
 		assertFalse(manager3.move(c, manager3.makeCoordinate(4, 3))); //nonlinear movement
 	}
+
+	// #12
+	@Test
+	void validOrthoDistanceMove() {
+		Coordinate c1 = manager3.makeCoordinate(1, 9);
+		Coordinate c2 = manager3.makeCoordinate(1, 10);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(2, 3), 
+			manager3.makeCoordinate(4, 3)
+		)); 
+		manager3.move(c1, c2);
+		
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(4, 3), 
+			manager3.makeCoordinate(2, 6)
+		)); 
+		manager3.move(c2, c1);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(2, 6), 
+			manager3.makeCoordinate(1, 2)
+		));
+		manager3.move(c1, c2);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(1, 2), 
+			manager3.makeCoordinate(5, 1)
+		));
+	}
+
+	// #13
+	@Test
+	void invalidOrthoDistanceMove() {
+		/* P = piece, * = valid move, [ ] = invalid move, X = source
+		6 [ ][ ][ ][*][ ][ ][ ][ ]
+		5 [*][ ][*][*][*][ ][ ][ ]
+		4 [*][P][*][*][*][*][ ][ ]
+		3 [*][*][P][*][*][*][*][ ]
+		2 [*][*][X][*][*][*][*][*]
+		1 [P][*][P][*][*][*][*][ ]
+		   1  2  3  4  5  6  7  8
+		*/
+		Coordinate c = manager3.makeCoordinate(2, 3);
+
+		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 1))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 2))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(5, 2)));
+		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 3)));
+		assertFalse(manager3.move(c, manager3.makeCoordinate(2, 9)));
+		
+		
+		/* P = piece, * = valid move, [ ] = invalid move, X = source
+		6 [*][*][ ][ ][ ][ ][ ][ ]
+		5 [*][*][*][ ][ ][ ][ ][ ]
+		4 [*][P][ ][*][ ][ ][ ][ ]
+		3 [*][X][P][*][*][ ][ ][ ]
+		2 [*][*][*][*][*][*][ ][ ]
+		1 [P][*][P][*][*][ ][ ][ ]
+		   1  2  3  4  5  6  7  8
+		*/
+		assertTrue(manager3.move(c, c = manager3.makeCoordinate(3, 2))); //move to another spot
+		assertTrue(manager3.move(manager3.makeCoordinate(1, 9), manager3.makeCoordinate(1, 10))); //change turn back
+
+		assertFalse(manager3.move(c, manager3.makeCoordinate(4, 3))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 3))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(5, 4)));
+		assertFalse(manager3.move(c, manager3.makeCoordinate(3, 6)));
+	}
+
+	// #14
+	@Test
+	void validDiagDistanceMove() {
+		Coordinate c1 = manager3.makeCoordinate(1, 9);
+		Coordinate c2 = manager3.makeCoordinate(1, 10);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(1, 3), 
+			manager3.makeCoordinate(6, 2)
+		)); 
+		manager3.move(c1, c2);
+		
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(6, 2), 
+			manager3.makeCoordinate(5, 1)
+		)); 
+		manager3.move(c2, c1);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(5, 1), 
+			manager3.makeCoordinate(2, 6)
+		));
+		manager3.move(c1, c2);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(2, 6), 
+			manager3.makeCoordinate(3, 1)
+		));
+	}
+
+	// #15
+	@Test
+	void invalidDiagDistanceMove() {
+		/* P = piece, * = valid move, [ ] = invalid move, X = source
+		6 [ ][*][ ][*][ ][*][ ][*]
+		5 [ ][ ][*][ ][*][ ][*][ ]
+		4 [ ][P][ ][*][ ][*][ ][*]
+		3 [*][ ][P][ ][*][ ][*][ ]
+		2 [ ][*][P][*][ ][*][ ][*]
+		1 [P][ ][X][ ][*][ ][*][ ]
+		   1  2  3  4  5  6  7  8
+		*/
+		Coordinate c = manager3.makeCoordinate(1, 3);
+
+		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 2))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(7, 9))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(5, 1)));
+		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 9)));
+			
+		/* P = piece, * = valid move, [ ] = invalid move, X = source
+		6 [ ][*][ ][*][ ][*][ ][ ]
+		5 [*][ ][*][ ][*][ ][*][ ]
+		4 [ ][X][ ][*][ ][*][ ][ ]
+		3 [*][ ][P][ ][*][ ][*][ ]
+		2 [ ][*][P][*][ ][*][ ][ ]
+		1 [P][ ][P][ ][ ][ ][ ][ ]
+		   1  2  3  4  5  6  7  8
+		*/
+		c = manager3.makeCoordinate(3, 2); //other diag piece
+
+		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 5))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 7))); 
+	}
+	
 }

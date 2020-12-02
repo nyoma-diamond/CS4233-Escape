@@ -93,8 +93,11 @@
 - Completed Orthogonal FLY movement
 - Completed Diagonal FLY movement
 - Changed `test3.egc` to be used for testing the DISTANCE attribute
-- Completed omni DISTANCE movement
+- Completed Omni DISTANCE movement
+- Completed Linear DISTANCE movement
 
 ### 12/2
 
 - Reorganized TODO
+- Completed Orthogonal DISTANCE movement
+- Completed Diagonal DISTANCE movement

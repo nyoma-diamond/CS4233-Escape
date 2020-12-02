@@ -84,27 +84,33 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 	/**
 	 * Get the coordinates neighbouring the provided node (does not include out of bounds neighbors)
+	 * This does not work for LINEAR because LINEAR doesn't do neighbour search
 	 * @param coordinate coordinate to get neighbours around
+	 * @param movementPattern movement pattern to designate neighbour limitations
 	 * @return list of neighbouring coordinates
 	 */
-	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate) { 
+	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern) { 
 		List<EscapeCoordinate> neighbours = new LinkedList<EscapeCoordinate>();
 		EscapeCoordinate c;
-		if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()))) neighbours.add(c);
-		if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()))) neighbours.add(c);
-		if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()+1))) neighbours.add(c);
-		if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()-1))) neighbours.add(c);
-		if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()+1))) neighbours.add(c);
-		if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()-1))) neighbours.add(c);
-		if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()+1))) neighbours.add(c);
-		if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()-1))) neighbours.add(c);
+		if (movementPattern != MovementPattern.DIAGONAL) {
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()))) neighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()))) neighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()+1))) neighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()-1))) neighbours.add(c);
+		} 
+		if (movementPattern != MovementPattern.ORTHOGONAL) {
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()+1))) neighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()-1))) neighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()+1))) neighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()-1))) neighbours.add(c);
+		}
 		
 		return neighbours;
 	}
 
 
 	/**
-	 * Find a path from the source to the target with OMNI movement pattern
+	 * Find a path from the source to the target with OMNI movement pattern (assumes already valid with FLY)
 	 * @param source starting coordinate
 	 * @param target target coordinate
 	 * @param descriptor descriptor for piece (movement patterns, max distance, etc.)
@@ -112,7 +118,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	 */
 	private boolean omniPath(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) {
 		LinkedList<EscapeCoordinate> queue = new LinkedList<EscapeCoordinate>();
-		queue.addAll(getNeighbours(source));
+		queue.addAll(getNeighbours(source, descriptor.getMovementPattern()));
 
 		List<EscapeCoordinate> visited = new LinkedList<EscapeCoordinate>();
 		visited.add(source);
@@ -125,16 +131,15 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		while (queue.size() > 0 && distance <= maxDistance) { //while valid distance and nodes to check
 			curNode = queue.pop(); //get next node
 			if (curNode.equals(target)) {
-				System.out.println("Target found!\n");
 				return true; //return true if target
 			}
 			
 			visited.add(curNode);
 
 			if (positions.get(curNode) == null) // empty space (cannot be BLOCK or EXIT)
-				queue.addAll(getNeighbours(curNode).stream() //get unvisited neighbours
-				                                   .filter(node -> visited.indexOf(node) == -1 && queue.indexOf(node) == -1) //filter neighbours to unvisited
-				                                   .collect(Collectors.toList()));
+				queue.addAll(getNeighbours(curNode, descriptor.getMovementPattern()).stream() //get unvisited neighbours
+				                                                                    .filter(node -> visited.indexOf(node) == -1 && queue.indexOf(node) == -1) //filter neighbours to unvisited
+				                                                                    .collect(Collectors.toList()));
 			if (--depthIncrease == 0) {
 				distance++; //curNode was last node in layer
 				depthIncrease = queue.size(); //nodes to check in new layer
@@ -144,10 +149,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		return false;
 	}
 
-	//TODO: REFACTOR THESE FOR GODS SAKE
-
 	/**
-	 * Find a path from the source to the target with LINEAR movement pattern (assumes source and target are in line)
+	 * Find a path from the source to the target with LINEAR movement pattern (assumes path is already valid with FLY)
 	 * @param source starting coordinate
 	 * @param target target coordinate
 	 * @param descriptor descriptor for piece (movement patterns, max distance, etc.)
@@ -176,7 +179,9 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	 * @return if there exists a valid path
 	 */
 	private boolean pathExists(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) {
-		switch (descriptor.getMovementPattern()) {
+		switch (descriptor.getMovementPattern()) { //TODO: REFACTOR THESE FOR GODS SAKE
+			case ORTHOGONAL:
+			case DIAGONAL:
 			case OMNI:
 				return omniPath(source, target, descriptor);
 			case LINEAR:
