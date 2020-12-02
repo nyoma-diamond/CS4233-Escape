@@ -85,38 +85,34 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	/**
 	 * Get the coordinates neighbouring the provided node (does not include out of bounds neighbors)
 	 * @param coordinate coordinate to get neighbours around
-	 * @param movementPattern movement pattern for valid neighbours
 	 * @return list of neighbouring coordinates
 	 */
-	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern) { 
+	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate) { 
 		List<EscapeCoordinate> neighbours = new LinkedList<EscapeCoordinate>();
 		EscapeCoordinate c;
-		if (movementPattern != MovementPattern.DIAGONAL) { //ortho, linear, or omni
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()))) neighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()))) neighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()+1))) neighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()-1))) neighbours.add(c);
-		} 
-		if (movementPattern != MovementPattern.ORTHOGONAL) { //diag, linear, or omni
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()+1))) neighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()-1))) neighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()+1))) neighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()-1))) neighbours.add(c);
-		}
+		if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()))) neighbours.add(c);
+		if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()))) neighbours.add(c);
+		if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()+1))) neighbours.add(c);
+		if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()-1))) neighbours.add(c);
+		if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()+1))) neighbours.add(c);
+		if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()-1))) neighbours.add(c);
+		if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()+1))) neighbours.add(c);
+		if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()-1))) neighbours.add(c);
+		
 		return neighbours;
 	}
 
 
 	/**
-	 * Find a path from the source to the target (assumes source and target are valid)
+	 * Find a path from the source to the target with OMNI movement pattern
 	 * @param source starting coordinate
 	 * @param target target coordinate
 	 * @param descriptor descriptor for piece (movement patterns, max distance, etc.)
 	 * @return if there exists a valid path
 	 */
-	private boolean pathExists(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) {
+	private boolean omniPath(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) {
 		LinkedList<EscapeCoordinate> queue = new LinkedList<EscapeCoordinate>();
-		queue.addAll(getNeighbours(source, descriptor.getMovementPattern()));
+		queue.addAll(getNeighbours(source));
 
 		List<EscapeCoordinate> visited = new LinkedList<EscapeCoordinate>();
 		visited.add(source);
@@ -136,15 +132,56 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			visited.add(curNode);
 
 			if (positions.get(curNode) == null) // empty space (cannot be BLOCK or EXIT)
-				queue.addAll(getNeighbours(curNode, descriptor.getMovementPattern()).stream() //get unvisited neighbours
-				                                                                    .filter(node -> visited.indexOf(node) == -1 && queue.indexOf(node) == -1) //filter neighbours to unvisited
-																					.collect(Collectors.toList()));
+				queue.addAll(getNeighbours(curNode).stream() //get unvisited neighbours
+				                                   .filter(node -> visited.indexOf(node) == -1 && queue.indexOf(node) == -1) //filter neighbours to unvisited
+				                                   .collect(Collectors.toList()));
 			if (--depthIncrease == 0) {
 				distance++; //curNode was last node in layer
 				depthIncrease = queue.size(); //nodes to check in new layer
 			}
 		} 
 
+		return false;
+	}
+
+	//TODO: REFACTOR THESE FOR GODS SAKE
+
+	/**
+	 * Find a path from the source to the target with LINEAR movement pattern (assumes source and target are in line)
+	 * @param source starting coordinate
+	 * @param target target coordinate
+	 * @param descriptor descriptor for piece (movement patterns, max distance, etc.)
+	 * @return if there exists a valid path
+	 */
+	private boolean linearPath(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) { 
+		int dx = target.getX() - source.getX();
+		int dy = target.getY() - source.getY();
+
+		int xStep = dx == 0 ? 0 : (dx) / Math.abs(dx);
+		int yStep = dy == 0 ? 0 : (dy) / Math.abs(dy);
+
+		EscapeCoordinate curCoord = source;
+		while (!curCoord.equals(target)) {
+			curCoord = makeCoordinate(curCoord.getX() + xStep, curCoord.getY() + yStep);
+			if (positions.get(curCoord) != null) return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Find a path from the source to the target (assumes source and target are valid)
+	 * @param source starting coordinate
+	 * @param target target coordinate
+	 * @param descriptor descriptor for piece (movement patterns, max distance, etc.)
+	 * @return if there exists a valid path
+	 */
+	private boolean pathExists(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) {
+		switch (descriptor.getMovementPattern()) {
+			case OMNI:
+				return omniPath(source, target, descriptor);
+			case LINEAR:
+				return linearPath(source, target, descriptor);
+		}
 		return false;
 	}
 
@@ -170,30 +207,41 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		) return false;
 
 
-		PieceTypeDescriptor descriptor = pieceDescriptors.get(sourceLoc.getPiece().getName()); //this is only used to make getting maxDistance mroe readable
-		if (descriptor.getAttribute(PieceAttributeID.FLY) != null) {
-			int maxDistance = descriptor.getAttribute(PieceAttributeID.FLY).getValue();
-			
-			switch (descriptor.getMovementPattern()) { 
-				case OMNI:
-					return source.DistanceTo(target) <= maxDistance;
-				case LINEAR:
-					return source.DistanceTo(target) <= maxDistance
-						&& (Math.abs(target.getX() - source.getX()) == Math.abs(target.getY() - source.getY())
-							|| target.getX() - source.getX() == 0
-							|| target.getY() - source.getY() == 0);
-				case ORTHOGONAL:
-					return Math.abs(target.getX() - source.getX()) + Math.abs(target.getY() - source.getY()) <= maxDistance;
-				case DIAGONAL:
-					return (target.getX() + target.getY()) % 2 == (source.getX() + source.getY()) % 2
-						&& Math.abs(target.getX() - source.getX()) <= maxDistance
-						&& Math.abs(target.getY() - source.getY()) <= maxDistance;
-			}
-		} else { //if FLY is null then DISTANCE must not be
-			return pathExists(source, target, descriptor); 
+		PieceTypeDescriptor descriptor = pieceDescriptors.get(sourceLoc.getPiece().getName()); 
+
+		int maxDistance = descriptor.getAttribute(PieceAttributeID.FLY) != null
+			? descriptor.getAttribute(PieceAttributeID.FLY).getValue()
+			: descriptor.getAttribute(PieceAttributeID.DISTANCE).getValue();
+
+		switch (descriptor.getMovementPattern()) { 
+			case OMNI:
+				if (source.DistanceTo(target) > maxDistance) 
+					return false;
+				break;
+			case LINEAR:
+				if (source.DistanceTo(target) > maxDistance
+					|| (Math.abs(target.getX() - source.getX()) != Math.abs(target.getY() - source.getY())
+						&& target.getX() - source.getX() != 0
+						&& target.getY() - source.getY() != 0))
+						return false;
+				break;
+			case ORTHOGONAL:
+				if (Math.abs(target.getX() - source.getX()) + Math.abs(target.getY() - source.getY()) > maxDistance) 
+					return false;
+				break;
+			case DIAGONAL:
+				if ((target.getX() + target.getY()) % 2 != (source.getX() + source.getY()) % 2
+					|| Math.abs(target.getX() - source.getX()) > maxDistance
+					|| Math.abs(target.getY() - source.getY()) > maxDistance) 
+					return false;
+				break;
 		}
 
-		throw new EscapeException("SOMETHING WENT WRONG"); //needed to compile.
+		if (descriptor.getAttribute(PieceAttributeID.FLY) == null) //if FLY is null then DISTANCE must not be and we need to search
+			return pathExists(source, target, descriptor); 
+
+		return true;
+		
 	}
 
 	@Override

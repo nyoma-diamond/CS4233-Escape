@@ -228,7 +228,49 @@ class BetaEscapeGameBuilderTest {
 		assertFalse(manager3.move(c, manager3.makeCoordinate(7, 1))); 
 		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 4))); 
 		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 6))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(4, 6))); 
+		assertFalse(manager3.move(c, manager3.makeCoordinate(4, 6))); 	
+	}
+
+	// #10
+	@Test
+	void validLinearDistanceMove() { //This worked immediately because these all also work under OMNI, which is the only other thing tested for DISTANCE right now
+		Coordinate c1 = manager3.makeCoordinate(1, 9);
+		Coordinate c2 = manager3.makeCoordinate(1, 10);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(3, 3), 
+			manager3.makeCoordinate(3, 8)
+		)); 
+		manager3.move(c1, c2);
 		
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(3, 8), 
+			manager3.makeCoordinate(8, 3)
+		)); 
+		manager3.move(c2, c1);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(8, 3), 
+			manager3.makeCoordinate(4, 3)
+		));
+		manager3.move(c1, c2);
+
+		assertTrue(manager3.move(
+			manager3.makeCoordinate(4, 3), 
+			manager3.makeCoordinate(2, 1)
+		));
+	}
+
+	// #11
+	@Test
+	void invalidLinearDistanceMove() {
+		Coordinate c = manager3.makeCoordinate(2, 4);
+		assertTrue(manager3.move(manager3.makeCoordinate(3, 3), c)); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
+		assertTrue(manager3.move(manager3.makeCoordinate(1, 9), manager3.makeCoordinate(1, 10))); //change turn back
+
+
+		assertFalse(manager3.move(c, manager3.makeCoordinate(5, 1))); //piece in the way
+		assertFalse(manager3.move(c, manager3.makeCoordinate(2, 2))); //piece in the way
+		assertFalse(manager3.move(c, manager3.makeCoordinate(4, 3))); //nonlinear movement
 	}
 }

@@ -1,34 +1,48 @@
 Task List
 =========
-[ ] Piece attributes
+[ ] Square
 	[ ] Movement patterns
-		[ ] Square
-			[ ] Orthogonal
-				[X] Fly
-				[ ] Distance			
-			[ ] Diagonal
-				[X] Fly
-				[ ] Distance
-			[ ] Linear
-				[X] Fly
-				[ ] Distance
-			[ ] Omni (already assumed in Alpha)
-				[X] Fly
-				[X] Distance			
-		[ ] Triangle
-			[ ] Omni
-				[ ] Fly
-				[ ] Distance			
-			[ ] Linear (not tested in Beta)
-				[ ] Fly
-				[ ] Distance			
-	[ ] Jump
-	[ ] Unblock (not tested for Beta)	
-	[ ] Value (Nothing is done with this in Beta)
-
-[ ] Triangle coordinates
+		[ ] Orthogonal
+			[X] Fly
+			[ ] Distance
+			[ ] Jump
+			[ ] Unblock (not tested for Beta)	
+			[ ] Value (Nothing is done with this in Beta)			
+		[ ] Diagonal
+			[X] Fly
+			[ ] Distance
+			[ ] Jump
+			[ ] Unblock (not tested for Beta)	
+			[ ] Value (Nothing is done with this in Beta)			
+		[ ] Linear
+			[X] Fly
+			[X] Distance
+			[ ] Jump
+			[ ] Unblock (not tested for Beta)	
+			[ ] Value (Nothing is done with this in Beta)							
+		[ ] Omni (already assumed in Alpha)
+			[X] Fly
+			[X] Distance			
+			[ ] Jump
+			[ ] Unblock (not tested for Beta)	
+			[ ] Value (Nothing is done with this in Beta)							
+			
+[ ] Triangle
 	[ ] Finite board
 	[ ] Infinite board
+	[ ] Movement patterns
+		[ ] Omni
+			[ ] Fly
+			[ ] Distance
+			[ ] Jump
+			[ ] Unblock (not tested for Beta)	
+			[ ] Value (Nothing is done with this in Beta)										
+		[ ] Linear (not tested in Beta)
+			[ ] Fly
+			[ ] Distance
+			[ ] Jump
+			[ ] Unblock (not tested for Beta)	
+			[ ] Value (Nothing is done with this in Beta)										
 
 [ ] Gameplay changes
 	[X] Moving a piece to the same location should be invalid
