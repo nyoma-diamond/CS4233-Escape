@@ -14,34 +14,24 @@ package escape.game;
 
 import escape.required.EscapePiece;
 import escape.required.Player;
-import escape.util.PieceAttribute;
-import escape.util.PieceTypeDescriptor;
 
 class EscapePieceImpl implements EscapePiece {
 	private Player player;
-	private PieceTypeDescriptor descriptor;
+	private PieceName pieceName;
 	
 	/**
 	 * EscapeGamePiece constructor
 	 * @param player player that owns piece
-	 * @param descriptor descriptor for piece
+	 * @param pieceName name of piece
 	 */
-	EscapePieceImpl(Player player, PieceTypeDescriptor descriptor) {
+	EscapePieceImpl(Player player, PieceName pieceName) {
 		this.player = player;
-		this.descriptor = descriptor;
+		this.pieceName = pieceName;
 	}
 
 	@Override
-	public PieceName getName() { return this.descriptor.getPieceName(); }
+	public PieceName getName() { return this.pieceName; }
 
 	@Override
 	public Player getPlayer() { return this.player; }
-
-	/**
-	 * Gets the movement pattern of this piece
-	 * @return the movement pattern of this piece
-	 */
-	public MovementPattern getMovementPattern() { return this.descriptor.getMovementPattern(); }
-
-	public PieceAttribute getAttribute(PieceAttributeID id) { return descriptor.getAttribute(id); }
 }

@@ -29,7 +29,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private Player curPlayer;
 	
 	private HashMap<EscapeCoordinate, EscapeLocation> positions; //This could just use Coordinates, but the change isn't necessary
-	
+	private HashMap<PieceName, PieceTypeDescriptor> pieceDescriptors; //stores information about pieces
+
 	/**
 	 * EscapeGameManagerImpl constructor
 	 * @param initializer the game initializer to use
@@ -45,18 +46,20 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 		this.positions = new HashMap<EscapeCoordinate, EscapeLocation>();
 
-		HashMap<PieceName, PieceTypeDescriptor> pieceTypes = new HashMap<PieceName, PieceTypeDescriptor>(); //this is used to make piece descriptors easily accessible during construction
-		for (PieceTypeDescriptor pieceType : initializer.getPieceTypes())  //TODO: maybe do store pieceTypes in the class to to avoid violating Single Responsibility Principle?
-			pieceTypes.put(pieceType.getPieceName(), pieceType);
-
-		//This assumes that the initializer filtered out empty and out of bounds spaces. If an initializer is provided with an empty CLEAR LocationInitializer, bugs may occur(?)
-		for (LocationInitializer loc : initializer.getLocationInitializers()) 
+		// This assumes that the initializer filtered out empty and out of bounds
+		// spaces. If an initializer is provided with an empty CLEAR
+		// LocationInitializer, bugs may occur(?)
+		for(LocationInitializer loc : initializer.getLocationInitializers())
 			positions.put(
 				makeCoordinate(loc.x, loc.y), 
 				loc.player == null 
-					? LocationFactory.getLocation(loc) 
-					: LocationFactory.getLocation(new EscapePieceImpl(loc.player, pieceTypes.get(loc.pieceName)))
+					? LocationFactory.getLocation(loc)
+					: LocationFactory.getLocation(new EscapePieceImpl(loc.player, loc.pieceName))
 			);
+
+		this.pieceDescriptors = new HashMap<PieceName, PieceTypeDescriptor>(); 
+		for(PieceTypeDescriptor pieceDescriptor : initializer.getPieceTypes())
+			pieceDescriptors.put(pieceDescriptor.getPieceName(), pieceDescriptor);
 	}
 
 	
@@ -92,11 +95,11 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			|| (targetLoc != null && targetLoc.locationType == LocationType.BLOCK) //target a BLOCK
 		) return false;
 
-		switch (sourceLoc.getPiece().getMovementPattern()) {
+		switch (pieceDescriptors.get(sourceLoc.getPiece().getName()).getMovementPattern()) { //TODO: split this into another method?
 			case OMNI:
-				return source.DistanceTo(target) <= sourceLoc.getPiece().getAttribute(PieceAttributeID.DISTANCE).getValue();
+				return source.DistanceTo(target) <= pieceDescriptors.get(sourceLoc.getPiece().getName()).getAttribute(PieceAttributeID.DISTANCE).getValue();
 			case LINEAR:
-				return source.DistanceTo(target) <= sourceLoc.getPiece().getAttribute(PieceAttributeID.DISTANCE).getValue()
+				return source.DistanceTo(target) <= pieceDescriptors.get(sourceLoc.getPiece().getName()).getAttribute(PieceAttributeID.DISTANCE).getValue()
 					&& (Math.abs(target.getX() - source.getX()) == Math.abs(target.getY() - source.getY())
 						|| target.getX() - source.getX() == 0
 						|| target.getY() - source.getY() == 0);

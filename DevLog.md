@@ -85,3 +85,7 @@
 - Edited other `egc` files to not break earlier tests as a result of assumptions from Alpha
 - Made distance checks work for `OMNI` movement pattern
 - Implemented `LINEAR` movement pattern
+
+### 12/1
+
+- Refactored some `PieceTypeDescriptor`s our of `EscapePieceImpl` to maintain SRP
