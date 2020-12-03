@@ -101,3 +101,4 @@
 - Reorganized TODO
 - Completed Orthogonal DISTANCE movement
 - Completed Diagonal DISTANCE movement
+- Refactored some tests to be automated instead of needing to type them out every single time

@@ -41,224 +41,157 @@ class BetaEscapeGameBuilderTest {
 
 	// #1
 	@Test
-	void limitedByDistanceOmni() {
+	void limitedByDistanceOmni() { //this test is kind of unnecessary :p
 		Coordinate c = manager2.makeCoordinate(1, 1);
 		assertFalse(manager2.move(c, manager2.makeCoordinate(7, 1)));
 		assertFalse(manager2.move(c, manager2.makeCoordinate(1, 8)));
 		assertFalse(manager2.move(c, manager2.makeCoordinate(9, 10)));
 	}
 
+	/**
+	 * Test valid moves
+	 * (First values of x/ySequence are the starting space)
+	 * @param manager manager to act on
+	 * @param xSequence X values (paired with corresponding Y in Ys to build coordinates). Must be same length as ySequence
+	 * @param ySequence Y values (paired with corresponding X in Xs to build coordinates). Must be same length as xSequence
+	 * @param dummyFrom start space of dummy piece (shouldn't get in the way of anything being tested)
+	 * @param dummyTo spot to move dummy piece to (shouldn't get in the way of anything being tested)
+	 */
+	void validMoves(EscapeGameManager manager, int[] xSequence, int[] ySequence, Coordinate dummyFrom, Coordinate dummyTo) {
+		for (int i = 1; i < xSequence.length; i++) {
+			assertTrue(
+				"<"+xSequence[i-1]+","+ySequence[i-1]+"> to <"+xSequence[i]+","+ySequence[i]+">",
+				manager.move(
+					manager.makeCoordinate(xSequence[i-1], ySequence[i-1]),
+					manager.makeCoordinate(xSequence[i], ySequence[i])));	
+			
+			manager.move(dummyFrom, dummyTo); //move dummy to change turn
+			Coordinate temp = dummyFrom;
+			dummyFrom = dummyTo;
+			dummyTo = temp;
+		}
+	}
+
+
 	// #2
 	@Test
-	void validLinearFlyMove() { //this will work by default as a result of Alpha assumptions, but is needed to make sure future tests dont break behavior
-		Coordinate c1 = manager2.makeCoordinate(1, 9);
-		Coordinate c2 = manager2.makeCoordinate(1, 10);
+	void validLinearFlyMove() {
+		validMoves(
+			manager2, 
+			new int[]{1,4,4,2,4,6,4,2,2}, 
+			new int[]{3,3,8,6,4,6,8,8,4}, 
+			manager2.makeCoordinate(1, 9), 
+			manager2.makeCoordinate(1, 10));
+	}
 
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(1, 3), 
-			manager2.makeCoordinate(4, 3)
-		)); //+x
-		manager2.move(c1, c2); //just to make the turn change back
-		
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(4, 3), 
-			manager2.makeCoordinate(4, 8)
-		)); //+y
-		manager2.move(c2, c1); //just to make the turn change back
-
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(4, 8), 
-			manager2.makeCoordinate(2, 6)
-		)); //-x,-y diag
-		manager2.move(c1, c2); //just to make the turn change back
-		
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(2, 6), 
-			manager2.makeCoordinate(4, 4)
-		)); //x,-y diag
-		manager2.move(c2, c1); //just to make the turn change back
-
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(4, 4), 
-			manager2.makeCoordinate(6, 6)
-		)); //x,y diag
-		manager2.move(c1, c2); //just to make the turn change back
-		
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(6, 6), 
-			manager2.makeCoordinate(4, 8)
-		)); //-x,y diag
-		manager2.move(c2, c1); //just to make the turn change back
-
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(4, 8), 
-			manager2.makeCoordinate(2, 8)
-		)); //-x
-		manager2.move(c1, c2); //just to make the turn change back
-		
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(2, 8), 
-			manager2.makeCoordinate(2, 4)
-		)); //-y
+	/**
+	 * Test invalid moves
+	 * @param manager manager to act on
+	 * @param c coordinate of piece to attempt to move
+	 * @param xSequence X values (paired with corresponding Y in Ys to build coordinates). Must be same length as ySequence 
+	 * @param ySequence Y values (paired with corresponding X in Xs to build coordinates). Must be same length as xSequence
+	 */
+	void invalidMoves(EscapeGameManager manager, Coordinate c, int[] xSequence, int[] ySequence) {
+		for (int i = 0; i < xSequence.length; i++) 
+			assertFalse(
+				"<"+xSequence[i]+","+ySequence[i]+">",
+				manager.move(c, manager.makeCoordinate(xSequence[i], ySequence[i])));
 	}
 
 	// #3
 	@Test
 	void invalidLinearFlyMove() {
-		Coordinate c = manager2.makeCoordinate(6, 8);		
+		Coordinate c = manager2.makeCoordinate(6, 8);
 		assertTrue(manager2.move(manager2.makeCoordinate(1, 3), c)); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
 		assertTrue(manager2.move(manager2.makeCoordinate(1, 9), manager2.makeCoordinate(1, 10))); //change turn back
-
-		assertFalse(manager2.move(c, manager2.makeCoordinate(8, 9))); //+2,+1
-		assertFalse(manager2.move(c, manager2.makeCoordinate(9, 6))); //+3,-2
-		assertFalse(manager2.move(c, manager2.makeCoordinate(2, 9))); //-4,+1
-		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 5))); //-1,-3
-		assertFalse(manager2.move(c, manager2.makeCoordinate(16, 8))); // valid direction, too far
+		
+		invalidMoves(
+			manager2,
+			c,
+			new int[]{8,9,2,5,16}, 
+			new int[]{9,6,9,5,8});
 	}
 
 	// #4
 	@Test
 	void validOrthogonalFlyMove() {
-		Coordinate c1 = manager2.makeCoordinate(1, 9);
-		Coordinate c2 = manager2.makeCoordinate(1, 10);
-
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(1, 7), 
-			manager2.makeCoordinate(2, 11)
-		)); 
-		manager2.move(c1, c2); //just to make the turn change back
-		
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(2, 11), 
-			manager2.makeCoordinate(7, 11)
-		)); 
-		manager2.move(c2, c1); //just to make the turn change back
-
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(7, 11), 
-			manager2.makeCoordinate(5, 8)
-		));
+		validMoves(
+			manager2, 
+			new int[]{1,2,7,5}, 
+			new int[]{7,11,11,8}, 
+			manager2.makeCoordinate(1, 9), 
+			manager2.makeCoordinate(1, 10));
 	}
 
 	// #5
 	@Test
 	void invalidOrthogonalFlyMove() {
-		Coordinate c = manager2.makeCoordinate(5, 8);		
+		Coordinate c = manager2.makeCoordinate(5, 8);
 		assertTrue(manager2.move(manager2.makeCoordinate(1, 7), c)); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
 		assertTrue(manager2.move(manager2.makeCoordinate(1, 9), manager2.makeCoordinate(1, 10))); //change turn back
 
-		assertFalse(manager2.move(c, manager2.makeCoordinate(6, 3))); 
-		assertFalse(manager2.move(c, manager2.makeCoordinate(1, 6))); 
-		assertFalse(manager2.move(c, manager2.makeCoordinate(8, 11))); 
-		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 14))); 
-		assertFalse(manager2.move(c, manager2.makeCoordinate(11, 8)));
+		invalidMoves(
+			manager2, 
+			c,
+			new int[]{6,1,8, 5, 11}, 
+			new int[]{3,6,11,14,8});
 	}
 
 	// #6
 	@Test
 	void validDiagonalFlyMove() {
-		Coordinate c1 = manager2.makeCoordinate(1, 9);
-		Coordinate c2 = manager2.makeCoordinate(1, 10);
-
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(1, 5), 
-			manager2.makeCoordinate(6, 10)
-		)); 
-		manager2.move(c1, c2); //just to make the turn change back
-		
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(6, 10), 
-			manager2.makeCoordinate(7, 5)
-		)); 
-		manager2.move(c2, c1); //just to make the turn change back
-
-		assertTrue(manager2.move(
-			manager2.makeCoordinate(7, 5), 
-			manager2.makeCoordinate(2, 2)
-		));
+		validMoves(
+			manager2, 
+			new int[]{1,6,7,2}, 
+			new int[]{5,10,5,2}, 
+			manager2.makeCoordinate(1, 9), 
+			manager2.makeCoordinate(1, 10));
 	}
 
 	// #7
 	@Test
 	void invalidDiagonalFlyMove() {
-		Coordinate c = manager2.makeCoordinate(1, 5);		
-		
-		assertFalse(manager2.move(c, manager2.makeCoordinate(1, 6))); 
-		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 8))); 
-		assertFalse(manager2.move(c, manager2.makeCoordinate(1, 2))); 
-		assertFalse(manager2.move(c, manager2.makeCoordinate(7, 5))); 
-		assertFalse(manager2.move(c, manager2.makeCoordinate(5, 4)));
+		invalidMoves(
+			manager2, 
+			manager2.makeCoordinate(1, 5),
+			new int[]{1,5,1,7,5}, 
+			new int[]{6,8,2,5,4});
 	}
 
 	// #8
 	@Test
 	void validOmniDistanceMove() {
-		Coordinate c1 = manager3.makeCoordinate(1, 9);
-		Coordinate c2 = manager3.makeCoordinate(1, 10);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(1, 1), 
-			manager3.makeCoordinate(6, 5)
-		)); 
-		manager3.move(c1, c2);
-		
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(6, 5), 
-			manager3.makeCoordinate(1, 5)
-		)); 
-		manager3.move(c2, c1);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(1, 5), 
-			manager3.makeCoordinate(2, 2)
-		));
-		manager3.move(c1, c2);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(2, 2), 
-			manager3.makeCoordinate(6, 6)
-		));
+		validMoves(
+			manager3, 
+			new int[]{1,6,1,2,6}, 
+			new int[]{1,5,5,2,6}, 
+			manager3.makeCoordinate(1, 9), 
+			manager3.makeCoordinate(1, 10));
 	}
+
+
+	// ========================= DISTANCE ==========================
+
 
 	// #9
 	@Test
 	void invalidOmniDistanceMove() {
-		Coordinate c = manager3.makeCoordinate(1, 1);
-		
-		assertFalse(manager3.move(c, manager3.makeCoordinate(7, 1))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 4))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 6))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(4, 6))); 	
+		invalidMoves(
+			manager3, 
+			manager3.makeCoordinate(1, 1),
+			new int[]{7,1,6,4}, 
+			new int[]{1,4,6,6});
 	}
 
 	// #10
 	@Test
 	void validLinearDistanceMove() { //This worked immediately because these all also work under OMNI, which is the only other thing tested for DISTANCE right now
-		Coordinate c1 = manager3.makeCoordinate(1, 9);
-		Coordinate c2 = manager3.makeCoordinate(1, 10);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(3, 3), 
-			manager3.makeCoordinate(3, 8)
-		)); 
-		manager3.move(c1, c2);
-		
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(3, 8), 
-			manager3.makeCoordinate(8, 3)
-		)); 
-		manager3.move(c2, c1);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(8, 3), 
-			manager3.makeCoordinate(4, 3)
-		));
-		manager3.move(c1, c2);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(4, 3), 
-			manager3.makeCoordinate(2, 1)
-		));
+		validMoves(
+			manager3, 
+			new int[]{3,3,8,4,2}, 
+			new int[]{3,8,3,3,1}, 
+			manager3.makeCoordinate(1, 9), 
+			manager3.makeCoordinate(1, 10));
 	}
 
 	// #11
@@ -268,40 +201,22 @@ class BetaEscapeGameBuilderTest {
 		assertTrue(manager3.move(manager3.makeCoordinate(3, 3), c)); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
 		assertTrue(manager3.move(manager3.makeCoordinate(1, 9), manager3.makeCoordinate(1, 10))); //change turn back
 
-
-		assertFalse(manager3.move(c, manager3.makeCoordinate(5, 1))); //piece in the way
-		assertFalse(manager3.move(c, manager3.makeCoordinate(2, 2))); //piece in the way
-		assertFalse(manager3.move(c, manager3.makeCoordinate(4, 3))); //nonlinear movement
+		invalidMoves(
+			manager3, 
+			c,
+			new int[]{5,2,4}, 
+			new int[]{1,2,3});
 	}
 
 	// #12
 	@Test
 	void validOrthoDistanceMove() {
-		Coordinate c1 = manager3.makeCoordinate(1, 9);
-		Coordinate c2 = manager3.makeCoordinate(1, 10);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(2, 3), 
-			manager3.makeCoordinate(4, 3)
-		)); 
-		manager3.move(c1, c2);
-		
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(4, 3), 
-			manager3.makeCoordinate(2, 6)
-		)); 
-		manager3.move(c2, c1);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(2, 6), 
-			manager3.makeCoordinate(1, 2)
-		));
-		manager3.move(c1, c2);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(1, 2), 
-			manager3.makeCoordinate(5, 1)
-		));
+		validMoves(
+			manager3, 
+			new int[]{2,4,2,1,5}, 
+			new int[]{3,3,6,2,1}, 
+			manager3.makeCoordinate(1, 9), 
+			manager3.makeCoordinate(1, 10));
 	}
 
 	// #13
@@ -316,14 +231,13 @@ class BetaEscapeGameBuilderTest {
 		1 [P][*][P][*][*][*][*][ ]
 		   1  2  3  4  5  6  7  8
 		*/
-		Coordinate c = manager3.makeCoordinate(2, 3);
 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 1))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 2))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(5, 2)));
-		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 3)));
-		assertFalse(manager3.move(c, manager3.makeCoordinate(2, 9)));
-		
+		Coordinate c = manager3.makeCoordinate(2, 3);
+		invalidMoves(
+			manager3, 
+			c,
+			new int[]{6,6,5,6,2}, 
+			new int[]{1,2,2,3,9});
 		
 		/* P = piece, * = valid move, [ ] = invalid move, X = source
 		6 [*][*][ ][ ][ ][ ][ ][ ]
@@ -337,40 +251,22 @@ class BetaEscapeGameBuilderTest {
 		assertTrue(manager3.move(c, c = manager3.makeCoordinate(3, 2))); //move to another spot
 		assertTrue(manager3.move(manager3.makeCoordinate(1, 9), manager3.makeCoordinate(1, 10))); //change turn back
 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(4, 3))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(6, 3))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(5, 4)));
-		assertFalse(manager3.move(c, manager3.makeCoordinate(3, 6)));
+		invalidMoves(
+			manager3, 
+			c,
+			new int[]{4,6,5,3}, 
+			new int[]{3,3,4,6});
 	}
 
 	// #14
 	@Test
 	void validDiagDistanceMove() {
-		Coordinate c1 = manager3.makeCoordinate(1, 9);
-		Coordinate c2 = manager3.makeCoordinate(1, 10);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(1, 3), 
-			manager3.makeCoordinate(6, 2)
-		)); 
-		manager3.move(c1, c2);
-		
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(6, 2), 
-			manager3.makeCoordinate(5, 1)
-		)); 
-		manager3.move(c2, c1);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(5, 1), 
-			manager3.makeCoordinate(2, 6)
-		));
-		manager3.move(c1, c2);
-
-		assertTrue(manager3.move(
-			manager3.makeCoordinate(2, 6), 
-			manager3.makeCoordinate(3, 1)
-		));
+		validMoves(
+			manager3, 
+			new int[]{1,6,5,2,3}, 
+			new int[]{3,2,1,6,1}, 
+			manager3.makeCoordinate(1, 9), 
+			manager3.makeCoordinate(1, 10));
 	}
 
 	// #15
@@ -385,13 +281,12 @@ class BetaEscapeGameBuilderTest {
 		1 [P][ ][X][ ][*][ ][*][ ]
 		   1  2  3  4  5  6  7  8
 		*/
-		Coordinate c = manager3.makeCoordinate(1, 3);
+		invalidMoves(
+			manager3, 
+			manager3.makeCoordinate(1, 3),
+			new int[]{1,7,5,1}, 
+			new int[]{2,9,1,9});
 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 2))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(7, 9))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(5, 1)));
-		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 9)));
-			
 		/* P = piece, * = valid move, [ ] = invalid move, X = source
 		6 [ ][*][ ][*][ ][*][ ][ ]
 		5 [*][ ][*][ ][*][ ][*][ ]
@@ -401,10 +296,11 @@ class BetaEscapeGameBuilderTest {
 		1 [P][ ][P][ ][ ][ ][ ][ ]
 		   1  2  3  4  5  6  7  8
 		*/
-		c = manager3.makeCoordinate(3, 2); //other diag piece
-
-		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 5))); 
-		assertFalse(manager3.move(c, manager3.makeCoordinate(1, 7))); 
+		invalidMoves(
+			manager3, 
+			manager3.makeCoordinate(3, 2), //other diag piece
+			new int[]{1,1}, 
+			new int[]{5,7});
 	}
 	
 }
