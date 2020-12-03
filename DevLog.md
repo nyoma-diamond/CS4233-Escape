@@ -137,7 +137,7 @@ As long as the `distance` from the source is less than the maximum allowed dista
     - Empty `nextLayer` into `curLayer`
     - Increment `distance` by one
     - If the piece can jump, empty `jumpLayer` into `nextLayer` (note: `jumpLayer` needs to be filtered again to make sure it doesn't contain any nodes that were in `nextLayer` because it is possible a node is added to `jumpLayer` before a closer path is found and added to `nextLayer`)
-  - else if the piece can jump: (This is needed for the case where the you can only access further nodes via jumping, such as if the piece is completely surrounded by BLOCKs)
+  - else if the piece can jump: (This is needed for the case where the piece can only access further nodes via jumping, such as if the piece is completely surrounded by BLOCKs)
     - Empty `jumpLayer` into `curLayer`
     - Increment `distance` by *two*
 
