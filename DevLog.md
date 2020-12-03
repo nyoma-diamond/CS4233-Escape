@@ -142,3 +142,8 @@ As long as the `distance` from the source is less than the maximum allowed dista
     - Increment `distance` by *two*
 
 If this completes without returning true (finding a path) it will return false, indicating no path found.
+
+### 12/3
+
+- Started on triangles
+- Refactored out `TwoAndOneFunction` (replaced with `ToIntBiFunction` taking two `EscapeCoordinate`s)

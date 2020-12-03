@@ -12,25 +12,17 @@
 
 package escape.game;
 
-import escape.required.Coordinate;
+import java.util.function.ToIntBiFunction;
+
 import escape.required.Coordinate.CoordinateType;
 
-@FunctionalInterface
-interface TwoAndOneFunction<A,B,R> {
-	/**
-	 * Takes two inputs of the same type, one of a different type, and returns a third type
-	 * @param a1 first A-type input
-	 * @param a2 second A-type input
-	 * @param b b-type input
-	 * @return an R-type output
-	 */
-	R apply(A a1, A a2, B b);
-}
-
 class CoordinateFactory {
-	static TwoAndOneFunction<Integer, Coordinate, Integer> sqDistance = (Integer x, Integer y, Coordinate c) -> {
-		EscapeCoordinate coord = (EscapeCoordinate) c;
-		return Math.max(Math.abs(coord.getX() - x), Math.abs(coord.getY() - y));
+	static ToIntBiFunction<EscapeCoordinate, EscapeCoordinate> sqDistance = (EscapeCoordinate c1, EscapeCoordinate c2) -> {
+		return Math.max(Math.abs(c1.getX() - c2.getX()), Math.abs(c1.getY() - c2.getY()));
+	};
+
+	static ToIntBiFunction<EscapeCoordinate, EscapeCoordinate> trDistance = (EscapeCoordinate c1, EscapeCoordinate c2) -> {
+		return 1;
 	};
 
 	/**
@@ -41,7 +33,13 @@ class CoordinateFactory {
 	 * @return a new coordinate based on provided parameters
 	 */
 	static EscapeCoordinate getCoordinate(CoordinateType coordinateType, int x, int y) {
-		if(coordinateType == CoordinateType.SQUARE)	return new EscapeCoordinate(x, y, coordinateType, sqDistance);
-		return null; //No way to test, but it's needed so this compiles
+		switch (coordinateType) {
+			case SQUARE: 
+				return new EscapeCoordinate(x, y, coordinateType, sqDistance);
+			case TRIANGLE:
+				return new EscapeCoordinate(x, y, coordinateType, trDistance);
+			default:
+				return null; //No way to test, but it's needed so this compiles
+		}
 	}
 }

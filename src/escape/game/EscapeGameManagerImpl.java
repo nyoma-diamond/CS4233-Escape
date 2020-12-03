@@ -19,11 +19,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import escape.EscapeGameManager;
-import escape.exception.EscapeException;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
-import escape.util.PieceAttribute;
 import escape.util.PieceTypeDescriptor;
 import escape.required.Player;
 import escape.required.EscapePiece.MovementPattern;
@@ -202,7 +200,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 				}
 			}
 		} 
-		
+
 		return false;
 	}
 

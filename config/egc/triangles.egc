@@ -1,0 +1,17 @@
+Coordinate type : TRIANGLE
+xMax : 25
+yMax : 20
+
+Locations :
+	(1, 1) clear
+
+
+Piece descriptors :
+	SNAIL omni [fly 5]
+	DOG linear [fly 5]
+	BIRD omni [fly 100]
+	
+Rules :
+	REMOVE
+	SCORE 10
+	TURN_LIMIT 20

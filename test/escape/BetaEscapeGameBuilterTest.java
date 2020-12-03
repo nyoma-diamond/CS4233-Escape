@@ -27,7 +27,7 @@ import escape.required.*;
  */
 class BetaEscapeGameBuilderTest {
 
-	private static EscapeGameManager manager2, manager3, manager4, manager5, manager6, manager7, manager8;
+	private static EscapeGameManager manager2, manager3, manager4, manager5, manager6, manager7, manager8, tManager;
 
 	@BeforeEach
 	void loadGame() throws Exception {
@@ -38,6 +38,7 @@ class BetaEscapeGameBuilderTest {
 		manager6 = new EscapeGameBuilder("config/egc/test6.egc").makeGameManager();
 		manager7 = new EscapeGameBuilder("config/egc/test7.egc").makeGameManager();
 		manager8 = new EscapeGameBuilder("config/egc/test8.egc").makeGameManager();
+		tManager = new EscapeGameBuilder("config/egc/triangles.egc").makeGameManager();
 	}
 
 	// #1
@@ -474,5 +475,27 @@ class BetaEscapeGameBuilderTest {
 			manager8.makeCoordinate(5, 4), 
 			new int[]{2,1}, 
 			new int[]{8,7});
+	}
+
+
+	// ========================= TRIANGLES =========================
+
+
+	// #28
+	@Test
+	void triangleAdjacentDistance() {
+		Coordinate c = tManager.makeCoordinate(3, 3);
+		assertEquals(1, c.DistanceTo(tManager.makeCoordinate(4, 3)));
+		assertEquals(1, c.DistanceTo(tManager.makeCoordinate(3, 4)));
+		assertEquals(1, c.DistanceTo(tManager.makeCoordinate(3, 2)));
+	}
+
+	// #28
+	@Test
+	void triangleHorizontalDistance() {
+		Coordinate c = tManager.makeCoordinate(3, 3);
+		assertEquals(2, c.DistanceTo(tManager.makeCoordinate(3, 1)));
+		assertEquals(3, c.DistanceTo(tManager.makeCoordinate(3, 7)));
+		assertEquals(5, c.DistanceTo(tManager.makeCoordinate(3, 9)));
 	}
 }

@@ -13,6 +13,7 @@
 package escape.game;
 
 import java.util.Objects;
+import java.util.function.ToIntBiFunction;
 
 import escape.exception.EscapeException;
 import escape.required.Coordinate;
@@ -20,7 +21,8 @@ import escape.required.Coordinate;
 class EscapeCoordinate implements Coordinate {
 	private int x, y;
 	private CoordinateType coordinateType;
-	private TwoAndOneFunction<Integer, Coordinate, Integer> distanceToFunc;
+	private ToIntBiFunction<EscapeCoordinate, EscapeCoordinate> distanceToFunc;
+	//private TwoAndOneFunction<Integer, Coordinate> distanceToFunc;
 	
 	/**
 	 * Constructor for EscapeCoordinate
@@ -29,7 +31,7 @@ class EscapeCoordinate implements Coordinate {
 	 * @param coordinateType associated coordinate type (used for same type validation in DistanceTo)
 	 * @param distanceToFunc how to calculate DistanceTo
 	 */
-	EscapeCoordinate(int x, int y, CoordinateType coordinateType, TwoAndOneFunction<Integer, Coordinate, Integer> distanceToFunc) {
+	EscapeCoordinate(int x, int y, CoordinateType coordinateType, ToIntBiFunction<EscapeCoordinate, EscapeCoordinate> distanceToFunc) {
 		this.x = x;
 		this.y = y;
 		this.coordinateType = coordinateType;
@@ -59,7 +61,7 @@ class EscapeCoordinate implements Coordinate {
 		if (!(c instanceof EscapeCoordinate) || ((EscapeCoordinate)c).getCoordinateType() != coordinateType) 
 				throw new EscapeException("Mismatched coordinate type. Cannot get distance between different coordinate types.");
 			
-		return distanceToFunc.apply(x, y, c);
+		return distanceToFunc.applyAsInt(this, (EscapeCoordinate)c);
 	}	
 
 	@Override

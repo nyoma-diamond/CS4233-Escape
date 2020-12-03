@@ -28,6 +28,7 @@ Task List
 			[ ] Value (Nothing is done with this in Beta)							
 
 [ ] Triangle
+	[ ] Coordinate distance
 	[ ] Finite board
 	[ ] Infinite board
 	[ ] Movement patterns
