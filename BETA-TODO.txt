@@ -5,7 +5,7 @@ Task List
 		[ ] Orthogonal
 			[X] Fly
 			[X] Distance
-			[ ] Jump
+			[X] Jump
 			[ ] Unblock (not tested for Beta)	
 			[ ] Value (Nothing is done with this in Beta)			
 		[ ] Diagonal
@@ -23,7 +23,7 @@ Task List
 		[ ] Omni (already assumed in Alpha)
 			[X] Fly
 			[X] Distance			
-			[ ] Jump
+			[X] Jump
 			[ ] Unblock (not tested for Beta)	
 			[ ] Value (Nothing is done with this in Beta)							
 

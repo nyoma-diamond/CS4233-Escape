@@ -162,40 +162,73 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 		curLayer.add(source);
 
+		//AAAAAAAH THIS ALGORITHM IS SMARTER THAN I AM
 		int distance = 0; //start at source
 		EscapeCoordinate curNode;
 		while (curLayer.size() > 0 && distance <= maxDistance) { //while valid distance and there are nodes to check
 			curNode = curLayer.pop(); //get next node
-			if (curNode.equals(target)) return true; //return true if target
-	
+			//if (curNode.equals(target)) return true; //return true if target
+
+			// DEBUG PRINTING
+			System.out.print(distance+": <"+curNode.getX()+","+curNode.getY()+">");
+			if (curNode.equals(target)) { 
+				System.out.println("TARGET FOUND\n");
+				return true;
+			}
+			
 			visited.add(curNode);
 
 			if (positions.get(curNode) == null || curNode == source) { // empty space (cannot be BLOCK or EXIT) or starting node (need this to avoid repeating code). This means we can move forward from here
-				nextLayer.addAll(
-					getNeighbours(curNode, descriptor.getMovementPattern()).stream()
-																		   .filter(validNeighbour)
-																		   .collect(Collectors.toList()));
-				if (canJump) jumpLayer.addAll(
-					getJumpNeighbours(curNode, descriptor.getMovementPattern()).stream()
-																			   .filter(validNeighbour)
-																			   .collect(Collectors.toList()));
+				//nextLayer.addAll(
+				//	getNeighbours(curNode, descriptor.getMovementPattern()).stream()
+				//														   .filter(validNeighbour)
+				//														   .collect(Collectors.toList()));
+				//if (canJump) jumpLayer.addAll(
+				//	getJumpNeighbours(curNode, descriptor.getMovementPattern()).stream()
+				//															   .filter(validNeighbour)
+				//															   .collect(Collectors.toList()));
+
+				// DEBUG PRINTING
+				System.out.print(" | ");
+				List<EscapeCoordinate> neighbours = getNeighbours(curNode, descriptor.getMovementPattern()).stream()
+																										   .filter(validNeighbour)
+				  																						   .collect(Collectors.toList());
+				nextLayer.addAll(neighbours);
+				for (EscapeCoordinate c : neighbours) System.out.print(" <"+c.getX()+","+c.getY()+"> ");
+				if (canJump) {
+					System.out.print(" | ");
+					List<EscapeCoordinate> jumpNeighbours = getJumpNeighbours(curNode, descriptor.getMovementPattern()).stream()
+																													   .filter(validNeighbour)
+																													   .collect(Collectors.toList());
+					jumpLayer.addAll(jumpNeighbours);													
+					for (EscapeCoordinate c : jumpNeighbours) System.out.print(" <"+c.getX()+","+c.getY()+"> ");											   
+				}
+				
 			}
+			System.out.println();
 			
 			if (curLayer.size() == 0) {
-				curLayer.addAll(nextLayer); //move to next layer
-				nextLayer.clear();
-				distance++; //increment distance from source
-				
-				if (canJump) {
-					nextLayer.addAll(jumpLayer.stream() //move forward jump layer
-									          .filter(coord -> curLayer.indexOf(coord) == -1) //make sure we're not moving forward a node we can access earlier
-									          .distinct()
-											  .collect(Collectors.toList()));
+				if (nextLayer.size() != 0) {
+					curLayer.addAll(nextLayer); //move to next layer
+					nextLayer.clear();
+					distance++; //increment distance from source
+					
+					if (canJump) {
+						nextLayer.addAll(jumpLayer.stream() //move forward jump layer
+										          .filter(coord -> curLayer.indexOf(coord) == -1) //make sure we're not moving forward a node we can access earlier
+										          .distinct()
+												  .collect(Collectors.toList()));
+					}
+					jumpLayer.clear(); //clear jump layer (already empty if cannot jump)
+				} else if (canJump) { // this is a hack for the case where the only possible moves are jumps
+					curLayer.addAll(jumpLayer);
+					jumpLayer.clear();
+					distance += 2;
 				}
-				jumpLayer.clear(); //clear jump layer (already empty if cannot jump)
 			}
 		} 
 
+		System.out.println("NO PATH\n"); // DEBUG PRINTING
 		return false;
 	}
 

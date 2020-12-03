@@ -105,4 +105,6 @@
 - Created `test4.egc` for testing JUMP attribute
 - Implemented JUMP for linear
 - Gonna stop logging `egc` changes because I keep making them and I'm gonna start making new files for more cases because trying to fit things into single boards is too difficult
-- rewrote pathfinding to work with jumps (and possibly unintentionally made it work for all movement patterns)
+- Rewrote pathfinding to work with jumps (and possibly unintentionally made it work for all movement patterns)
+- Implemented JUMP for omni (I did unintentionally make the algorithm work for things I haven't tested yet)
+- **This algorithm is smarter than me I keep screwing up my tests and my code is calling me out on it**

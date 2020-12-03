@@ -27,7 +27,7 @@ import escape.required.*;
  */
 class BetaEscapeGameBuilderTest {
 
-	private static EscapeGameManager manager2, manager3, manager4, manager5;
+	private static EscapeGameManager manager2, manager3, manager4, manager5, manager6;
 
 	@BeforeEach
 	void loadGame() throws Exception {
@@ -35,6 +35,7 @@ class BetaEscapeGameBuilderTest {
 		manager3 = new EscapeGameBuilder("config/egc/test3.egc").makeGameManager();
 		manager4 = new EscapeGameBuilder("config/egc/test4.egc").makeGameManager();
 		manager5 = new EscapeGameBuilder("config/egc/test5.egc").makeGameManager();
+		manager6 = new EscapeGameBuilder("config/egc/test6.egc").makeGameManager();
 	}
 
 	// #1
@@ -156,6 +157,10 @@ class BetaEscapeGameBuilderTest {
 			new int[]{6,8,2,5,4});
 	}
 
+
+	// ========================= DISTANCE ==========================
+
+
 	// #8
 	@Test
 	void validOmniDistanceMove() {
@@ -166,10 +171,6 @@ class BetaEscapeGameBuilderTest {
 			manager3.makeCoordinate(1, 9), 
 			manager3.makeCoordinate(1, 10));
 	}
-
-
-	// ========================= DISTANCE ==========================
-
 
 	// #9
 	@Test
@@ -374,8 +375,52 @@ class BetaEscapeGameBuilderTest {
 	// #22
 	@Test
 	void invalidOrthoJump() {
-		assertTrue(manager5.move(manager5.makeCoordinate(1, 3), manager5.makeCoordinate(2, 2))); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
+		assertTrue(manager5.move(manager5.makeCoordinate(1, 1), manager5.makeCoordinate(2, 2))); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
 		assertTrue(manager5.move(manager5.makeCoordinate(15, 15), manager5.makeCoordinate(15, 16))); //change turn back
+		
 		assertFalse(manager5.move(manager5.makeCoordinate(2, 2), manager5.makeCoordinate(2, 7)));
+	}
+
+	// #23
+	@Test
+	void validMultiOrthoJump() {
+		validMoves(
+			manager5, 
+			new int[]{1,1,5}, 
+			new int[]{1,6,6}, 
+			manager5.makeCoordinate(15, 15), 
+			manager5.makeCoordinate(15, 16));
+	}
+
+	// #24
+	@Test
+	void validSingleOmniJump() {
+		validMoves(
+			manager6, 
+			new int[]{1,3,3}, 
+			new int[]{1,1,4}, 
+			manager6.makeCoordinate(15, 15), 
+			manager6.makeCoordinate(15, 16));
+	}
+
+	// #25
+	@Test
+	void invalidOmniJump() {
+		invalidMoves(
+			manager6, 
+			manager6.makeCoordinate(1, 1), 
+			new int[]{1,4}, 
+			new int[]{5,4});
+	}
+
+	// #26
+	@Test
+	void validMultiOmniJump() {
+		validMoves(
+			manager6, 
+			new int[]{1,6,1,5}, 
+			new int[]{1,1,1,4}, 
+			manager6.makeCoordinate(15, 15), 
+			manager6.makeCoordinate(15, 16));
 	}
 }
