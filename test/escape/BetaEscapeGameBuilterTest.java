@@ -29,14 +29,15 @@ class BetaEscapeGameBuilderTest {
 
 	private static EscapeGameManager manager2;
 	private static EscapeGameManager manager3;
+	private static EscapeGameManager manager4;
 
 	@BeforeEach
 	void loadGame() throws Exception {
-		EscapeGameBuilder egb = new EscapeGameBuilder("config/egc/test2.egc");
-		manager2 = egb.makeGameManager();
-		
-		egb = new EscapeGameBuilder("config/egc/test3.egc");
-		manager3 = egb.makeGameManager();
+		manager2 = new EscapeGameBuilder("config/egc/test2.egc").makeGameManager();
+		manager3 = new EscapeGameBuilder("config/egc/test3.egc").makeGameManager();
+		manager4 = new EscapeGameBuilder("config/egc/test4.egc").makeGameManager();
+
+
 	}
 
 	// #1
@@ -302,5 +303,63 @@ class BetaEscapeGameBuilderTest {
 			new int[]{1,1}, 
 			new int[]{5,7});
 	}
-	
+
+
+	// ========================= JUMP ========================== 
+	//TODO: MAKE SURE THAT JUMP + FLY DOESN'T CAUSE PROBLEMS
+
+	// Testing linear first because it has different pathfinding
+	// #16
+	@Test //This is expected to already work. Needed just to make sure I don't break earlier code.
+	void validLinearMoveWithJump() {
+		validMoves( 
+			manager4, 
+			new int[]{3,6,1,6,5,3}, 
+			new int[]{7,4,4,9,9,7}, 
+			manager4.makeCoordinate(1, 9), 
+			manager4.makeCoordinate(1,10));
+	}
+
+	// #17
+	@Test
+	void validSingleLinearJump() {
+		validMoves(
+			manager4, 
+			new int[]{3,3,5,5,7}, 
+			new int[]{7,4,6,8,6}, 
+			manager4.makeCoordinate(1, 9), 
+			manager4.makeCoordinate(1,10));	
+	}
+
+	// #18
+	@Test
+	void invalidLinearJump() { //trying to jump over two+ in the same jump
+		invalidMoves(
+			manager4, 
+			manager4.makeCoordinate(3,7), 
+			new int[]{7,3,3}, 
+			new int[]{7,12,11});
+	}
+
+	// #19
+	@Test
+	void validMultiLinearJump() {
+		validMoves(
+			manager4, 
+			new int[]{3,3,2,2,6}, 
+			new int[]{7,2,3,4,8}, 
+			manager4.makeCoordinate(1, 9), 
+			manager4.makeCoordinate(1,10));	
+	}
+
+	// #20
+	@Test //TODO: write this
+	void LinearJumpIntoValidNonEmpty() {
+		validMoves(
+			manager4, 
+			new int[]{3,6,8}, 
+			new int[]{7,7,9}, 
+			manager4.makeCoordinate(1, 9), 
+			manager4.makeCoordinate(1,10));
+	}
 }

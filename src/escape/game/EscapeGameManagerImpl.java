@@ -163,12 +163,26 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		int xStep = dx == 0 ? 0 : (dx) / Math.abs(dx);
 		int yStep = dy == 0 ? 0 : (dy) / Math.abs(dy);
 
-		EscapeCoordinate curCoord = source;
-		while (!curCoord.equals(target)) {
-			curCoord = makeCoordinate(curCoord.getX() + xStep, curCoord.getY() + yStep);
-			if (positions.get(curCoord) != null) return false;
+		boolean jumping = false;
+		EscapeCoordinate curCoord = makeCoordinate(source.getX() + xStep, source.getY() + yStep); //set curCoord to next coord
+
+		while (!curCoord.equals(target)) { //while current coordinate isn't the target
+			if (positions.get(curCoord) != null) { //current coordinate is not empty
+				if (descriptor.getAttribute(PieceAttributeID.JUMP) == null //no jumping
+					|| (descriptor.getAttribute(PieceAttributeID.JUMP) != null && jumping)) //jumping but we just jumped
+					return false;
+				else jumping = true;
+			} else jumping = false;
+
+			curCoord = makeCoordinate(curCoord.getX() + xStep, curCoord.getY() + yStep); //next coordinate
 		}
-		return true;
+
+		EscapeLocation targetLoc = positions.get(target);
+		return targetLoc == null //target is empty space
+			|| (jumping //jumping over something onto target
+				&& (targetLoc.locationType == LocationType.EXIT //target is exit
+					|| (targetLoc.getPiece() != null //target has piece
+						&& targetLoc.getPiece().getPlayer() != positions.get(source).getPiece().getPlayer()))); //target piece is enemy's
 	}
 
 	/**

@@ -17,7 +17,7 @@ Task List
 		[ ] Linear
 			[X] Fly
 			[X] Distance
-			[ ] Jump
+			[X] Jump
 			[ ] Unblock (not tested for Beta)	
 			[ ] Value (Nothing is done with this in Beta)							
 		[ ] Omni (already assumed in Alpha)
