@@ -27,7 +27,7 @@ import escape.required.*;
  */
 class BetaEscapeGameBuilderTest {
 
-	private static EscapeGameManager manager2, manager3, manager4, manager5, manager6;
+	private static EscapeGameManager manager2, manager3, manager4, manager5, manager6, manager7, manager8;
 
 	@BeforeEach
 	void loadGame() throws Exception {
@@ -36,6 +36,8 @@ class BetaEscapeGameBuilderTest {
 		manager4 = new EscapeGameBuilder("config/egc/test4.egc").makeGameManager();
 		manager5 = new EscapeGameBuilder("config/egc/test5.egc").makeGameManager();
 		manager6 = new EscapeGameBuilder("config/egc/test6.egc").makeGameManager();
+		manager7 = new EscapeGameBuilder("config/egc/test7.egc").makeGameManager();
+		manager8 = new EscapeGameBuilder("config/egc/test8.egc").makeGameManager();
 	}
 
 	// #1
@@ -304,8 +306,7 @@ class BetaEscapeGameBuilderTest {
 
 
 	// ========================= JUMP ========================== 
-	//TODO: MAKE SURE THAT JUMP + FLY DOESN'T CAUSE PROBLEMS
-
+	
 	// Testing linear first because it has different pathfinding
 	// #16
 	@Test //This is expected to already work. Needed just to make sure I don't break earlier code.
@@ -422,5 +423,56 @@ class BetaEscapeGameBuilderTest {
 			new int[]{1,1,1,4}, 
 			manager6.makeCoordinate(15, 15), 
 			manager6.makeCoordinate(15, 16));
+	}
+
+	// #24
+	@Test //OOPS i accidentally tested ortho again. Forgot I already did it
+	void validOrthoJump() {
+		validMoves(
+			manager7, 
+			new int[]{1,6,3,3,1}, 
+			new int[]{1,1,2,4,1}, 
+			manager7.makeCoordinate(15, 15), 
+			manager7.makeCoordinate(15, 16));
+	}
+
+	// #25
+	@Test
+	void invalidOrthJump() {
+		invalidMoves(
+			manager7, 
+			manager7.makeCoordinate(1, 1), 
+			new int[]{1,2,4}, 
+			new int[]{4,3,3});
+	}
+
+	// #26
+	@Test
+	void validDiagJump() {
+		validMoves(
+			manager8, 
+			new int[]{1,5,5}, 
+			new int[]{1,5,1}, 
+			manager8.makeCoordinate(15, 15), 
+			manager8.makeCoordinate(15, 16));
+	}
+
+	// #27
+	@Test
+	void invalidDiagJump() {
+		invalidMoves(
+			manager8, 
+			manager8.makeCoordinate(1, 1), 
+			new int[]{6,5}, 
+			new int[]{2,3});
+		
+		assertTrue(manager8.move(manager8.makeCoordinate(1, 1), manager8.makeCoordinate(6, 4))); // move to another spot
+		assertTrue(manager8.move(manager8.makeCoordinate(15, 15), manager8.makeCoordinate(15, 16))); // change turn
+
+		invalidMoves(
+			manager8, 
+			manager8.makeCoordinate(5, 4), 
+			new int[]{2,1}, 
+			new int[]{8,7});
 	}
 }

@@ -2,25 +2,25 @@ Task List
 =========
 [ ] Square
 	[ ] Movement patterns
-		[ ] Orthogonal
+		[X] Orthogonal
 			[X] Fly
 			[X] Distance
 			[X] Jump
 			[ ] Unblock (not tested for Beta)	
 			[ ] Value (Nothing is done with this in Beta)			
-		[ ] Diagonal
+		[X] Diagonal
 			[X] Fly
 			[X] Distance
-			[ ] Jump
+			[X] Jump
 			[ ] Unblock (not tested for Beta)	
 			[ ] Value (Nothing is done with this in Beta)			
-		[ ] Linear
+		[X] Linear
 			[X] Fly
 			[X] Distance
 			[X] Jump
 			[ ] Unblock (not tested for Beta)	
 			[ ] Value (Nothing is done with this in Beta)							
-		[ ] Omni (already assumed in Alpha)
+		[X] Omni (already assumed in Alpha)
 			[X] Fly
 			[X] Distance			
 			[X] Jump

@@ -106,5 +106,38 @@
 - Implemented JUMP for linear
 - Gonna stop logging `egc` changes because I keep making them and I'm gonna start making new files for more cases because trying to fit things into single boards is too difficult
 - Rewrote pathfinding to work with jumps (and possibly unintentionally made it work for all movement patterns)
+- Implemented JUMP for ortho
 - Implemented JUMP for omni (I did unintentionally make the algorithm work for things I haven't tested yet)
-- **This algorithm is smarter than me I keep screwing up my tests and my code is calling me out on it**
+- **This algorithm is smarter than I am. I keep screwing up my tests and my code is calling me out on it**
+- tmw you forget you wrote code and tests for something and then write new tests :^) (wrote more tests for ortho jumps)
+- Implemented JUMP for diag
+- Decision: not testing FLY + JUMP because (a) the code is visibly written in a way that means they won't conflict (JUMP code is handled in pathfinding, which doesn't run if the piece can FLY) and (b) it isn't worth my sanity and it's 4am and my sanity is worth more than that.
+- Decision: Ignoring UNBLOCK and VALUE for beta because as far as I know they aren't being tested (please don't be tested I don't even know how they could possibly be used in Beta).
+
+PATHFINDING ALGORITHM EXPLANATION:
+
+The pathfinding algorithm is used to ensure that a valid path exists between a source coordinate and a target coordinate for a piece that cannot fly (but may or may not be able to jump). It is specifically used for OMNI, ORTHOGONAL, and DIAGONAL movement patterns (LINEAR is a special case with its own code). It is a modified depth-limited breadth-first search. Rather than storing a full queue of all the nodes to check, it stores three separate queues:
+
+- `curLayer`: Nodes in the "layer" closest to the starting node (so the cost of getting to any node in that `curLayer` is equal and the smallest of all unvisited nodes)
+- `nextLayer`: Nodes in the "layer" immediately after `curLayer` (so the cost of getting to any node in `nextLayer` is one more than the cost of getting to any node in `curLayer`)
+- `jumpLayer`: Nodes in the "layer" immediately after `nextLayer` **that require jumping to** (so the cost of getting to any node in `jumpLayer` is *two* more than the cost of getting to any node in `curLayer`)
+
+The algorithm starts with `curLayer` containing only the source node and a stored `distance` of 0.
+
+As long as the `distance` from the source is less than the maximum allowed distance for the piece the algorithm will do the following:
+
+- Take the front-most node in `curLayer` out and store it
+- Check if the node is the target node (if it is, return true)
+- Add the node to the list of `visited` nodes
+- if the corresponding location is empty (or the source node):
+  - Get all the valid neighbours (clear spaces, exits, or spaces with enemy pieces that haven't been visited or aren't already queued) of the node and add them to `nextLayer`
+  - If the piece can jump, get all valid jump neighbours (clear spaces, exits, or spaces with enemy pieces that haven't been visited or aren't already queued *that must be jumped to*) of the node and add them to `jumpLayer`
+- if `curLayer` is empty (no more nodes at this distance):
+  - if there are nodes in `nextLayer`:
+    - Empty `nextLayer` into `curLayer`
+    - Increment `distance` by one
+    - If the piece can jump, empty `jumpLayer` into `nextLayer`
+  - else if the piece can jump: (This is needed for the case where the you can only access further nodes via jumping, such as if the piece is completely surrounded by BLOCKs)
+    - Empty `jumpLayer` into `curLayer`
+    - Increment `distance` by *two*
+- If `curLayer` is empty or `distance` exceeds the maximum distance return false (no path found)

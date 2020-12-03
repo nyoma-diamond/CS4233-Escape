@@ -167,45 +167,20 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		EscapeCoordinate curNode;
 		while (curLayer.size() > 0 && distance <= maxDistance) { //while valid distance and there are nodes to check
 			curNode = curLayer.pop(); //get next node
-			//if (curNode.equals(target)) return true; //return true if target
-
-			// DEBUG PRINTING
-			System.out.print(distance+": <"+curNode.getX()+","+curNode.getY()+">");
-			if (curNode.equals(target)) { 
-				System.out.println("TARGET FOUND\n");
-				return true;
-			}
+			if (curNode.equals(target)) return true; //return true if target
 			
 			visited.add(curNode);
 
 			if (positions.get(curNode) == null || curNode == source) { // empty space (cannot be BLOCK or EXIT) or starting node (need this to avoid repeating code). This means we can move forward from here
-				//nextLayer.addAll(
-				//	getNeighbours(curNode, descriptor.getMovementPattern()).stream()
-				//														   .filter(validNeighbour)
-				//														   .collect(Collectors.toList()));
-				//if (canJump) jumpLayer.addAll(
-				//	getJumpNeighbours(curNode, descriptor.getMovementPattern()).stream()
-				//															   .filter(validNeighbour)
-				//															   .collect(Collectors.toList()));
-
-				// DEBUG PRINTING
-				System.out.print(" | ");
-				List<EscapeCoordinate> neighbours = getNeighbours(curNode, descriptor.getMovementPattern()).stream()
-																										   .filter(validNeighbour)
-				  																						   .collect(Collectors.toList());
-				nextLayer.addAll(neighbours);
-				for (EscapeCoordinate c : neighbours) System.out.print(" <"+c.getX()+","+c.getY()+"> ");
-				if (canJump) {
-					System.out.print(" | ");
-					List<EscapeCoordinate> jumpNeighbours = getJumpNeighbours(curNode, descriptor.getMovementPattern()).stream()
-																													   .filter(validNeighbour)
-																													   .collect(Collectors.toList());
-					jumpLayer.addAll(jumpNeighbours);													
-					for (EscapeCoordinate c : jumpNeighbours) System.out.print(" <"+c.getX()+","+c.getY()+"> ");											   
-				}
-				
+				nextLayer.addAll(
+					getNeighbours(curNode, descriptor.getMovementPattern()).stream()
+																		   .filter(validNeighbour)
+																		   .collect(Collectors.toList()));
+				if (canJump) jumpLayer.addAll(
+					getJumpNeighbours(curNode, descriptor.getMovementPattern()).stream()
+																			   .filter(validNeighbour)
+																			   .collect(Collectors.toList()));				
 			}
-			System.out.println();
 			
 			if (curLayer.size() == 0) {
 				if (nextLayer.size() != 0) {
@@ -227,8 +202,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 				}
 			}
 		} 
-
-		System.out.println("NO PATH\n"); // DEBUG PRINTING
+		
 		return false;
 	}
 
