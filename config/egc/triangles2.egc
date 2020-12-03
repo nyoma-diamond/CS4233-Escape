@@ -1,9 +1,9 @@
 Coordinate type : TRIANGLE
-xMax : 25
-yMax : 20
+xMax : 0
+yMax : 0
 
 Locations :
-	(4, 5) player1 snail
+	(1, 1) player1 snail
 	(1, 10) player2 bird
 
 

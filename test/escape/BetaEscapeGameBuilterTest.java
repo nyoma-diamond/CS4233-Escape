@@ -27,7 +27,7 @@ import escape.required.*;
  */
 class BetaEscapeGameBuilderTest {
 
-	private static EscapeGameManager manager2, manager3, manager4, manager5, manager6, manager7, manager8, tManager;
+	private static EscapeGameManager manager2, manager3, manager4, manager5, manager6, manager7, manager8, tManager, tManager2, tManager3, tManager4;
 
 	@BeforeEach
 	void loadGame() throws Exception {
@@ -39,6 +39,9 @@ class BetaEscapeGameBuilderTest {
 		manager7 = new EscapeGameBuilder("config/egc/test7.egc").makeGameManager();
 		manager8 = new EscapeGameBuilder("config/egc/test8.egc").makeGameManager();
 		tManager = new EscapeGameBuilder("config/egc/triangles.egc").makeGameManager();
+		tManager2 = new EscapeGameBuilder("config/egc/triangles2.egc").makeGameManager();
+		tManager3 = new EscapeGameBuilder("config/egc/triangles3.egc").makeGameManager();
+		tManager4 = new EscapeGameBuilder("config/egc/triangles4.egc").makeGameManager();
 	}
 
 	// #1
@@ -483,19 +486,189 @@ class BetaEscapeGameBuilderTest {
 
 	// #28
 	@Test
-	void triangleAdjacentDistance() {
+	void triangleDistanceSameColSameO() {
 		Coordinate c = tManager.makeCoordinate(3, 3);
-		assertEquals(1, c.DistanceTo(tManager.makeCoordinate(4, 3)));
-		assertEquals(1, c.DistanceTo(tManager.makeCoordinate(3, 4)));
-		assertEquals(1, c.DistanceTo(tManager.makeCoordinate(3, 2)));
+		assertEquals(4, c.DistanceTo(tManager.makeCoordinate(5, 3)));
+		assertEquals(4, c.DistanceTo(tManager.makeCoordinate(1, 3)));
+		assertEquals(8, c.DistanceTo(tManager.makeCoordinate(7, 3)));
 	}
 
-	// #28
+	// #29
 	@Test
-	void triangleHorizontalDistance() {
-		Coordinate c = tManager.makeCoordinate(3, 3);
-		assertEquals(2, c.DistanceTo(tManager.makeCoordinate(3, 1)));
-		assertEquals(3, c.DistanceTo(tManager.makeCoordinate(3, 7)));
-		assertEquals(5, c.DistanceTo(tManager.makeCoordinate(3, 9)));
+	void triangleDistanceDownToUpDownward() {
+		Coordinate c = tManager.makeCoordinate(5, 3);
+		assertEquals(3, c.DistanceTo(tManager.makeCoordinate(4, 3)));
+		assertEquals(7, c.DistanceTo(tManager.makeCoordinate(2, 3)));
+	}
+
+	// #30
+	@Test
+	void triangleDistanceDownToUpUpward() {
+		Coordinate c = tManager.makeCoordinate(1, 3);
+		assertEquals(1, c.DistanceTo(tManager.makeCoordinate(2, 3)));
+		assertEquals(5, c.DistanceTo(tManager.makeCoordinate(4, 3)));
+	}
+
+	// #31
+	@Test
+	void triangleDistanceUpToDownDownward() {
+		Coordinate c = tManager.makeCoordinate(5, 2);
+		assertEquals(1, c.DistanceTo(tManager.makeCoordinate(4, 2)));
+		assertEquals(5, c.DistanceTo(tManager.makeCoordinate(2, 2)));
+	}
+
+	// #32
+	@Test
+	void triangleDistanceUpToDownUpward() {
+		Coordinate c = tManager.makeCoordinate(1, 2);
+		assertEquals(3, c.DistanceTo(tManager.makeCoordinate(2, 2)));
+		assertEquals(7, c.DistanceTo(tManager.makeCoordinate(4, 2)));
+	}
+
+	// #33
+	@Test
+	void triangleDistanceDxLessThanDy() {
+		Coordinate c = tManager.makeCoordinate(3, 5);
+		assertEquals(3, c.DistanceTo(tManager.makeCoordinate(4, 3)));
+		assertEquals(2, c.DistanceTo(tManager.makeCoordinate(3, 3)));
+		assertEquals(4, c.DistanceTo(tManager.makeCoordinate(2, 2)));
+		assertEquals(3, c.DistanceTo(tManager.makeCoordinate(4, 7)));
+		assertEquals(4, c.DistanceTo(tManager.makeCoordinate(2, 8)));
+		assertEquals(5, c.DistanceTo(tManager.makeCoordinate(2, 9)));
+	}
+
+	// #34
+	@Test
+	void triangleDistanceDxGreaterThanDySameOrientation() { //NOTE: this also includes Dx = Dy
+		Coordinate c = tManager.makeCoordinate(5, 4);
+		assertEquals(2, c.DistanceTo(tManager.makeCoordinate(6, 5)));
+		assertEquals(6, c.DistanceTo(tManager.makeCoordinate(8, 5)));
+		assertEquals(4, c.DistanceTo(tManager.makeCoordinate(7, 2)));
+		assertEquals(6, c.DistanceTo(tManager.makeCoordinate(8, 7)));
+		assertEquals(8, c.DistanceTo(tManager.makeCoordinate(9, 2)));
+		assertEquals(2, c.DistanceTo(tManager.makeCoordinate(4, 5)));
+		assertEquals(6, c.DistanceTo(tManager.makeCoordinate(2, 5)));
+		assertEquals(4, c.DistanceTo(tManager.makeCoordinate(3, 2)));
+		assertEquals(6, c.DistanceTo(tManager.makeCoordinate(2, 7)));
+		assertEquals(8, c.DistanceTo(tManager.makeCoordinate(1, 2)));
+	}
+
+	// #35
+	@Test
+	void triangleDistanceDxGreaterThanDyDifferentOrientationDownDownward() {
+		Coordinate c = tManager.makeCoordinate(4, 4);
+		assertEquals(5, c.DistanceTo(tManager.makeCoordinate(2, 5)));
+		assertEquals(5, c.DistanceTo(tManager.makeCoordinate(2, 1)));
+		assertEquals(7, c.DistanceTo(tManager.makeCoordinate(1, 2)));
+	}
+
+	// #36
+	@Test
+	void triangleDistanceDxGreaterThanDyDifferentOrientationDownUpward() {
+		Coordinate c = tManager.makeCoordinate(1, 5);
+		assertEquals(1, c.DistanceTo(tManager.makeCoordinate(2, 5)));
+		assertEquals(7, c.DistanceTo(tManager.makeCoordinate(5, 4)));
+	}
+
+	// #37
+	@Test
+	void triangleDistanceDxGreaterThanDyDifferentOrientationUpDownward() {
+		Coordinate c = tManager.makeCoordinate(5, 4);
+		assertEquals(3, c.DistanceTo(tManager.makeCoordinate(3, 5)));
+		assertEquals(5, c.DistanceTo(tManager.makeCoordinate(2, 2)));
+		assertEquals(7, c.DistanceTo(tManager.makeCoordinate(1, 5)));
+	}
+
+	// #38
+	@Test
+	void triangleDistanceDxGreaterThanDyDifferentOrientationUpUpward() {
+		Coordinate c = tManager.makeCoordinate(1, 4);
+		assertEquals(3, c.DistanceTo(tManager.makeCoordinate(2, 6)));
+		assertEquals(5, c.DistanceTo(tManager.makeCoordinate(3, 3)));
+		assertEquals(6, c.DistanceTo(tManager.makeCoordinate(4, 5)));
+	}
+
+	// #39
+	@Test //already worked as a result of earlier code being well written :)
+	void triangleFiniteBoardInvalidMoves() {
+		invalidMoves(
+			tManager, 
+			tManager.makeCoordinate(4, 5),
+			new int[]{1,1,5,7}, 
+			new int[]{4,6,11,5});
+	}
+	
+	// #40
+	@Test //already worked as a result of earlier code being well written :)
+	void triangleFiniteBoardValidMoves() {
+		validMoves(
+			tManager, 
+			new int[]{4,1,4,4,7}, 
+			new int[]{5,5,3,8,8}, 
+			tManager.makeCoordinate(1, 10), 
+			tManager.makeCoordinate(1, 11));
+	}
+
+	// #41
+	@Test
+	void triangleInfiteBoardValidMoves() {
+		validMoves(
+			tManager2, 
+			new int[]{1,0, 0, 2, 2}, 
+			new int[]{1,0,-5,-6,-1}, 
+			tManager2.makeCoordinate(1, 10), 
+			tManager2.makeCoordinate(1, 11));
+	}
+
+	// #42
+	@Test //already worked as a result of earlier code being well written :)
+	void triangleInfiniteBoardInvalidMoves() {
+		invalidMoves(
+			tManager2, 
+			tManager2.makeCoordinate(1, 1),
+			new int[]{4,-2, 0}, 
+			new int[]{0, 1,-4});
+	}
+
+	// #43
+	@Test
+	void triangleDistanceInvalidMoves() {
+		invalidMoves(
+			tManager3, 
+			tManager3.makeCoordinate(1, 1), 
+			new int[]{3,3,4,3,4}, 
+			new int[]{2,1,1,3,3});
+	}
+
+	// #44
+	@Test
+	void triangleDistanceValidMoves() {
+		validMoves(
+			tManager3, 
+			new int[]{1,3,4,2,2,1}, 
+			new int[]{1,4,1,4,1,4},
+			tManager3.makeCoordinate(1, 10),
+			tManager3.makeCoordinate(1, 11));
+	}
+
+	// #45
+	@Test
+	void triangleInvalidJump() {
+		invalidMoves(
+			tManager4, 
+			tManager4.makeCoordinate(1, 1), 
+			new int[]{3,1,3}, 
+			new int[]{2,6,3});
+	}
+
+	// #46
+	@Test
+	void triangleValidJump() {
+		validMoves(
+			tManager4, 
+			new int[]{1,2,1,2,4,2,4},		
+			new int[]{1,4,6,2,2,2,4},				
+			tManager4.makeCoordinate(1, 10),
+			tManager4.makeCoordinate(1, 11));
 	}
 }

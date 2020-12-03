@@ -1,7 +1,7 @@
 Task List
 =========
-[ ] Square
-	[ ] Movement patterns
+[X] Square
+	[X] Movement patterns
 		[X] Orthogonal
 			[X] Fly
 			[X] Distance
@@ -27,15 +27,15 @@ Task List
 			[ ] Unblock (not tested for Beta)	
 			[ ] Value (Nothing is done with this in Beta)							
 
-[ ] Triangle
-	[ ] Coordinate distance
-	[ ] Finite board
-	[ ] Infinite board
-	[ ] Movement patterns
-		[ ] Omni
-			[ ] Fly
-			[ ] Distance
-			[ ] Jump
+[X] Triangle
+	[X] Coordinate distance
+	[X] Finite board
+	[X] Infinite board
+	[X] Movement patterns
+		[X] Omni
+			[X] Fly
+			[X] Distance
+			[X] Jump
 			[ ] Unblock (not tested for Beta)	
 			[ ] Value (Nothing is done with this in Beta)										
 		[ ] Linear (not tested in Beta)
@@ -45,6 +45,6 @@ Task List
 			[ ] Unblock (not tested for Beta)	
 			[ ] Value (Nothing is done with this in Beta)										
 
-[ ] Gameplay changes
+[X] Gameplay changes
 	[X] Moving a piece to the same location should be invalid
-	??? [ ] No pieces -> game over (other player wins) 
+	[ ] No pieces -> game over (other player wins) (I don't think this will be tested?)

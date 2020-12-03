@@ -147,3 +147,5 @@ If this completes without returning true (finding a path) it will return false, 
 
 - Started on triangles
 - Refactored out `TwoAndOneFunction` (replaced with `ToIntBiFunction` taking two `EscapeCoordinate`s)
+- Completed TRIANGLE coordinate `DistanceTo`
+- Completed everything Beta needs for triangle (I kinda forgot to keep track of things, but uhhhhhhhh it should hopefully work. Only pathfinding changes necessary were just changing how neighbours were calculated)

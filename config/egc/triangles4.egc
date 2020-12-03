@@ -3,12 +3,20 @@ xMax : 25
 yMax : 20
 
 Locations :
-	(4, 5) player1 snail
+	(1, 1) player1 snail
+	(2, 1) block
+	(2, 3) block
+	(1, 4) block
+	(1, 5) block
+	(3, 1) block
+	(4, 1) block
+	(4, 3) block
+	(2, 2) player2 dog
 	(1, 10) player2 bird
 
 
 Piece descriptors :
-	SNAIL omni [fly 5]
+	SNAIL omni [distance 5, jump]
 	DOG linear [fly 5]
 	BIRD omni [fly 100]
 	

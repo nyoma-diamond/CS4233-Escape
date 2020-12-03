@@ -20,7 +20,7 @@ import escape.required.Coordinate;
 
 class EscapeCoordinate implements Coordinate {
 	private int x, y;
-	private CoordinateType coordinateType;
+	CoordinateType coordinateType;
 	private ToIntBiFunction<EscapeCoordinate, EscapeCoordinate> distanceToFunc;
 	//private TwoAndOneFunction<Integer, Coordinate> distanceToFunc;
 	
@@ -50,15 +50,9 @@ class EscapeCoordinate implements Coordinate {
 	 */
 	int getY() { return this.y; }
 
-	/**
-	 * coordinate type getter
-	 * @return coordinate type of this coordinate
-	 */
-	CoordinateType getCoordinateType() { return this.coordinateType; }
-
 	@Override
 	public int DistanceTo(Coordinate c) {
-		if (!(c instanceof EscapeCoordinate) || ((EscapeCoordinate)c).getCoordinateType() != coordinateType) 
+		if (!(c instanceof EscapeCoordinate) || ((EscapeCoordinate)c).coordinateType != coordinateType) 
 				throw new EscapeException("Mismatched coordinate type. Cannot get distance between different coordinate types.");
 			
 		return distanceToFunc.applyAsInt(this, (EscapeCoordinate)c);
@@ -73,6 +67,6 @@ class EscapeCoordinate implements Coordinate {
 	public boolean equals(Object o) {
 		if (!(o instanceof EscapeCoordinate)) return false;
 		EscapeCoordinate c = (EscapeCoordinate)o;
-		return c.getX() == x && c.getY() == y && c.getCoordinateType() == coordinateType;
+		return c.getX() == x && c.getY() == y && c.coordinateType == coordinateType;
 	}
 }
