@@ -114,11 +114,11 @@
 - Decision: not testing FLY + JUMP because (a) the code is visibly written in a way that means they won't conflict (JUMP code is handled in pathfinding, which doesn't run if the piece can FLY) and (b) it isn't worth my sanity and it's 4am and my sanity is worth more than that.
 - Decision: Ignoring UNBLOCK and VALUE for beta because as far as I know they aren't being tested (please don't be tested I don't even know how they could possibly be used in Beta).
 
-PATHFINDING ALGORITHM EXPLANATION:
+**PATHFINDING ALGORITHM EXPLANATION:**
 
 The pathfinding algorithm is used to ensure that a valid path exists between a source coordinate and a target coordinate for a piece that cannot fly (but may or may not be able to jump). It is specifically used for OMNI, ORTHOGONAL, and DIAGONAL movement patterns (LINEAR is a special case with its own code). It is a modified depth-limited breadth-first search. Rather than storing a full queue of all the nodes to check, it stores three separate queues:
 
-- `curLayer`: Nodes in the "layer" closest to the starting node (so the cost of getting to any node in that `curLayer` is equal and the smallest of all unvisited nodes)
+- `curLayer`: Nodes in the "layer" closest to the starting node (so the cost of getting to any node in `curLayer` is equal and the smallest of all unvisited nodes)
 - `nextLayer`: Nodes in the "layer" immediately after `curLayer` (so the cost of getting to any node in `nextLayer` is one more than the cost of getting to any node in `curLayer`)
 - `jumpLayer`: Nodes in the "layer" immediately after `nextLayer` **that require jumping to** (so the cost of getting to any node in `jumpLayer` is *two* more than the cost of getting to any node in `curLayer`)
 
@@ -140,4 +140,5 @@ As long as the `distance` from the source is less than the maximum allowed dista
   - else if the piece can jump: (This is needed for the case where the you can only access further nodes via jumping, such as if the piece is completely surrounded by BLOCKs)
     - Empty `jumpLayer` into `curLayer`
     - Increment `distance` by *two*
-- If `curLayer` is empty or `distance` exceeds the maximum distance return false (no path found)
+
+If this completes without returning true (finding a path) it will return false, indicating no path found.
