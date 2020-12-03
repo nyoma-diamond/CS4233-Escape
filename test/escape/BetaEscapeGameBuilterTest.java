@@ -27,17 +27,14 @@ import escape.required.*;
  */
 class BetaEscapeGameBuilderTest {
 
-	private static EscapeGameManager manager2;
-	private static EscapeGameManager manager3;
-	private static EscapeGameManager manager4;
+	private static EscapeGameManager manager2, manager3, manager4, manager5;
 
 	@BeforeEach
 	void loadGame() throws Exception {
 		manager2 = new EscapeGameBuilder("config/egc/test2.egc").makeGameManager();
 		manager3 = new EscapeGameBuilder("config/egc/test3.egc").makeGameManager();
 		manager4 = new EscapeGameBuilder("config/egc/test4.egc").makeGameManager();
-
-
+		manager5 = new EscapeGameBuilder("config/egc/test5.egc").makeGameManager();
 	}
 
 	// #1
@@ -353,7 +350,7 @@ class BetaEscapeGameBuilderTest {
 	}
 
 	// #20
-	@Test //TODO: write this
+	@Test
 	void LinearJumpIntoValidNonEmpty() {
 		validMoves(
 			manager4, 
@@ -361,5 +358,24 @@ class BetaEscapeGameBuilderTest {
 			new int[]{7,7,9}, 
 			manager4.makeCoordinate(1, 9), 
 			manager4.makeCoordinate(1,10));
+	}
+
+	// #21
+	@Test
+	void validSingleOrthoJump() {
+		validMoves(
+			manager5, 
+			new int[]{1,3,3,3,5}, 
+			new int[]{1,4,9,4,6}, 
+			manager5.makeCoordinate(15, 15), 
+			manager5.makeCoordinate(15, 16));
+	}
+
+	// #22
+	@Test
+	void invalidOrthoJump() {
+		assertTrue(manager5.move(manager5.makeCoordinate(1, 3), manager5.makeCoordinate(2, 2))); //move piece to better spot for testing (these have asserts to ensure these went through and we're not getting false positives)
+		assertTrue(manager5.move(manager5.makeCoordinate(15, 15), manager5.makeCoordinate(15, 16))); //change turn back
+		assertFalse(manager5.move(manager5.makeCoordinate(2, 2), manager5.makeCoordinate(2, 7)));
 	}
 }

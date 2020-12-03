@@ -15,6 +15,7 @@ package escape.game;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import escape.EscapeGameManager;
@@ -78,13 +79,12 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		return coord.getX() > settings.xMax 
 			|| coord.getY() > settings.yMax 
 			|| coord.getX() < 1 
-			|| coord.getY() < 1; //TODO: this will need to change, but is okay for Alpha because square boards are finite
+			|| coord.getY() < 1; //TODO: this will need to change for infinite boards
 	}
 
 
 	/**
-	 * Get the coordinates neighbouring the provided node (does not include out of bounds neighbors)
-	 * This does not work for LINEAR because LINEAR doesn't do neighbour search
+	 * Get the coordinates neighbouring the provided node (filters out of bounds neighbors)
 	 * @param coordinate coordinate to get neighbours around
 	 * @param movementPattern movement pattern to designate neighbour limitations
 	 * @return list of neighbouring coordinates
@@ -108,6 +108,30 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		return neighbours;
 	}
 
+	/**
+	 * Get the coordinates that can be jumped to from the provided node (filters out of bounds neighbors)
+	 * @param coordinate coordinate to get neighbours around
+	 * @param movementPattern movement pattern to designate neighbour limitations
+	 * @return list of neighbouring coordinates accessible via jump
+	 */
+	private List<EscapeCoordinate> getJumpNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern) {
+		List<EscapeCoordinate> jumpNeighbours = new LinkedList<EscapeCoordinate>();
+		EscapeCoordinate c;
+		if (movementPattern != MovementPattern.DIAGONAL) {
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+2, coordinate.getY()))) jumpNeighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-2, coordinate.getY()))) jumpNeighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()+2))) jumpNeighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()-2))) jumpNeighbours.add(c);
+		} 
+		if (movementPattern != MovementPattern.ORTHOGONAL) {
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+2, coordinate.getY()+2))) jumpNeighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+2, coordinate.getY()-2))) jumpNeighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-2, coordinate.getY()+2))) jumpNeighbours.add(c);
+			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-2, coordinate.getY()-2))) jumpNeighbours.add(c);
+		}
+		
+		return jumpNeighbours;
+	}
 
 	/**
 	 * Find a path from the source to the target with OMNI movement pattern (assumes already valid with FLY)
@@ -117,32 +141,58 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	 * @return if there exists a valid path
 	 */
 	private boolean omniPath(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) {
-		LinkedList<EscapeCoordinate> queue = new LinkedList<EscapeCoordinate>();
-		queue.addAll(getNeighbours(source, descriptor.getMovementPattern()));
+		LinkedList<EscapeCoordinate> curLayer = new LinkedList<EscapeCoordinate>(); //current layer to check
+		List<EscapeCoordinate> visited = new LinkedList<EscapeCoordinate>(); //visited nodes
+		List<EscapeCoordinate> nextLayer = new LinkedList<EscapeCoordinate>(); //next layer to check. Becomes curLayer
+		List<EscapeCoordinate> jumpLayer = new LinkedList<EscapeCoordinate>(); //layer of nodes to jump to. Becomes nextLayer
+		
+		Predicate<EscapeCoordinate> validNeighbour = coord -> { //Predicate indicating whether the neighbour is a valid space to move to and not already queued
+			EscapeLocation loc = positions.get(coord);
+			return visited.indexOf(coord) == -1 //haven't already visited this neighbour
+				&& curLayer.indexOf(coord) == -1 //isn't already queued in current layer
+				&& nextLayer.indexOf(coord) == -1 //isn't already queued in next layer
+				&& (loc == null //empty spaces are good
+					|| loc.locationType == LocationType.EXIT //exits are good
+					|| (loc.getPiece() != null 
+						&& loc.getPiece().getPlayer() != positions.get(source).getPiece().getPlayer())); //enemy piece spaces are good
+		};
 
-		List<EscapeCoordinate> visited = new LinkedList<EscapeCoordinate>();
-		visited.add(source);
+		int maxDistance = descriptor.getAttribute(PieceAttributeID.DISTANCE).getValue(); //set maximum distance
+		boolean canJump = descriptor.getAttribute(PieceAttributeID.JUMP) != null; //set whether we can jump
 
-		int maxDistance = descriptor.getAttribute(PieceAttributeID.DISTANCE).getValue();
+		curLayer.add(source);
 
-		int distance = 1;
-		int depthIncrease = queue.size();
+		int distance = 0; //start at source
 		EscapeCoordinate curNode;
-		while (queue.size() > 0 && distance <= maxDistance) { //while valid distance and nodes to check
-			curNode = queue.pop(); //get next node
-			if (curNode.equals(target)) {
-				return true; //return true if target
-			}
-			
+		while (curLayer.size() > 0 && distance <= maxDistance) { //while valid distance and there are nodes to check
+			curNode = curLayer.pop(); //get next node
+			if (curNode.equals(target)) return true; //return true if target
+	
 			visited.add(curNode);
 
-			if (positions.get(curNode) == null) // empty space (cannot be BLOCK or EXIT)
-				queue.addAll(getNeighbours(curNode, descriptor.getMovementPattern()).stream() //get unvisited neighbours
-				                                                                    .filter(node -> visited.indexOf(node) == -1 && queue.indexOf(node) == -1) //filter neighbours to unvisited
-				                                                                    .collect(Collectors.toList()));
-			if (--depthIncrease == 0) {
-				distance++; //curNode was last node in layer
-				depthIncrease = queue.size(); //nodes to check in new layer
+			if (positions.get(curNode) == null || curNode == source) { // empty space (cannot be BLOCK or EXIT) or starting node (need this to avoid repeating code). This means we can move forward from here
+				nextLayer.addAll(
+					getNeighbours(curNode, descriptor.getMovementPattern()).stream()
+																		   .filter(validNeighbour)
+																		   .collect(Collectors.toList()));
+				if (canJump) jumpLayer.addAll(
+					getJumpNeighbours(curNode, descriptor.getMovementPattern()).stream()
+																			   .filter(validNeighbour)
+																			   .collect(Collectors.toList()));
+			}
+			
+			if (curLayer.size() == 0) {
+				curLayer.addAll(nextLayer); //move to next layer
+				nextLayer.clear();
+				distance++; //increment distance from source
+				
+				if (canJump) {
+					nextLayer.addAll(jumpLayer.stream() //move forward jump layer
+									          .filter(coord -> curLayer.indexOf(coord) == -1) //make sure we're not moving forward a node we can access earlier
+									          .distinct()
+											  .collect(Collectors.toList()));
+				}
+				jumpLayer.clear(); //clear jump layer (already empty if cannot jump)
 			}
 		} 
 
@@ -215,7 +265,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private boolean validMove(EscapeCoordinate source, EscapeCoordinate target) { //this code is awful and I hate it
 		EscapeLocation sourceLoc, targetLoc;
 		
-		if (source == null //TODO: are there any ways to short-circuit this for obviously valid moves?
+		if (source == null
 			|| target == null 
 			|| outOfBounds(target) //target out of bounds
 			|| (sourceLoc = positions.get(source)) == null //source has no location (empty)
