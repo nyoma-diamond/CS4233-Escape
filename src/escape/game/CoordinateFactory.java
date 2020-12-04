@@ -27,27 +27,12 @@ class CoordinateFactory {
 		boolean c1Down = (c1.getX() + c1.getY()) % 2 == 0;
 		boolean c2Down = (c2.getX() + c2.getY()) % 2 == 0;
 		
-		//TODO: REFACTOR THIS (can't be arsed to do it right now)
-
-		if (yDif == 0) { //same row
+		if (yDif == 0 || xDif >= yDif) { //same row or move more or equal rows than columns
 			if (c1Down == c2Down) return 2 * xDif; //same orientation
-			if (c1Down) { //start points down
-				if (c1.getX() - c2.getX() > 0) return (2 * xDif) + 1; //GOING DOWN
-				return (2 * xDif) - 1; //GOING UP
-			} else { //start points up
-				if (c1.getX() - c2.getX() > 0) return  (2 * xDif) - 1; //GOING DOWN
-				return (2 * xDif) + 1;
-			}
+			if (c1Down == c1.getX() - c2.getX() > 0) return (2 * xDif) + 1; //moving in direction of orientation
+			return (2 * xDif) - 1; //moving against orientation
 		}
-		if (xDif < yDif) return xDif + yDif; //move more columns than rows
-		if (c1Down == c2Down) return 2 * xDif; // same orientation
-		if (c1Down) { //start points down
-			if (c1.getX() - c2.getX() > 0) return (2 * xDif) + 1; //GOING DOWN
-			return (2 * xDif) - 1; //GOING UP
-		} else { //start points up
-			if (c1.getX() - c2.getX() > 0) return  (2 * xDif) - 1; //GOING DOWN
-			return (2 * xDif) + 1;
-		}
+		return xDif + yDif; 
 	};
 
 	/**

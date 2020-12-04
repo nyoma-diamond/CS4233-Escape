@@ -37,6 +37,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private HashMap<EscapeCoordinate, EscapeLocation> positions; //This could just use Coordinates, but the change isn't necessary
 	private HashMap<PieceName, PieceTypeDescriptor> pieceDescriptors; //stores information about pieces
 
+
 	/**
 	 * EscapeGameManagerImpl constructor
 	 * @param initializer the game initializer to use
@@ -81,74 +82,47 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 
 	/**
-	 * Get the coordinates neighbouring the provided node (filters out of bounds neighbors)
+	 * Get the coordinates neighbouring the provided node
+	 * Note: does not do any checks on coordinates
 	 * @param coordinate coordinate to get neighbours around
 	 * @param movementPattern movement pattern to designate neighbour limitations
+	 * @param jump whether to get jump neighbours intead of adjacent neighbours
 	 * @return list of neighbouring coordinates
 	 */
-	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern) { 
+	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern, boolean jump) { 
 		List<EscapeCoordinate> neighbours = new LinkedList<EscapeCoordinate>();
-		EscapeCoordinate c;
-
+		int d = jump ? 2 : 1;
+		
 		if (coordinate.coordinateType == CoordinateType.SQUARE) {
 			if (movementPattern != MovementPattern.DIAGONAL) {
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()))) neighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()))) neighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()+1))) neighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()-1))) neighbours.add(c);
+				neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY()));
+				neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY()));
+				neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() + d));
+				neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() - d));
 			} 
 			if (movementPattern != MovementPattern.ORTHOGONAL) {
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()+1))) neighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()-1))) neighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()+1))) neighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()-1))) neighbours.add(c);
+				neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() + d));
+				neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() - d));
+				neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() + d));
+				neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() - d));
 			}
 		} else { //Currently only works for triangle
-			if ((coordinate.getX() + coordinate.getY()) % 2 == 0) {//points down
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()))) neighbours.add(c);
-			} else if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()))) neighbours.add(c);
+			if (jump) { //we're getting jump neighbours
+				neighbours.add(makeCoordinate(coordinate.getX()+1, coordinate.getY()+1));
+				neighbours.add(makeCoordinate(coordinate.getX()-1, coordinate.getY()+1));
+				neighbours.add(makeCoordinate(coordinate.getX()+1, coordinate.getY()-1));
+				neighbours.add(makeCoordinate(coordinate.getX()-1, coordinate.getY()-1));
+			} else if ((coordinate.getX() + coordinate.getY()) % 2 == 0) { //points down
+				neighbours.add(makeCoordinate(coordinate.getX()+1, coordinate.getY()));
+			} else neighbours.add(makeCoordinate(coordinate.getX()-1, coordinate.getY())); 
 
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()-1))) neighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()+1))) neighbours.add(c);
+			neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() - d));
+			neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() + d));
 		}
 		
 		return neighbours;
 	}
 
-	/**
-	 * Get the coordinates that can be jumped to from the provided node (filters out of bounds neighbors)
-	 * @param coordinate coordinate to get neighbours around
-	 * @param movementPattern movement pattern to designate neighbour limitations
-	 * @return list of neighbouring coordinates accessible via jump
-	 */
-	private List<EscapeCoordinate> getJumpNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern) {
-		List<EscapeCoordinate> jumpNeighbours = new LinkedList<EscapeCoordinate>();
-		EscapeCoordinate c;
-		
-		if (coordinate.coordinateType == CoordinateType.SQUARE) {
-			if (movementPattern != MovementPattern.DIAGONAL) {
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()+2, coordinate.getY()))) jumpNeighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()-2, coordinate.getY()))) jumpNeighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()+2))) jumpNeighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()-2))) jumpNeighbours.add(c);
-			} 
-			if (movementPattern != MovementPattern.ORTHOGONAL) {
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()+2, coordinate.getY()+2))) jumpNeighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()+2, coordinate.getY()-2))) jumpNeighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()-2, coordinate.getY()+2))) jumpNeighbours.add(c);
-				if (!outOfBounds(c = makeCoordinate(coordinate.getX()-2, coordinate.getY()-2))) jumpNeighbours.add(c);
-			}
-		} else { //currently only works for triangle
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()+1))) jumpNeighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()+1))) jumpNeighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()-2))) jumpNeighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX(), coordinate.getY()+2))) jumpNeighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()+1, coordinate.getY()-1))) jumpNeighbours.add(c);
-			if (!outOfBounds(c = makeCoordinate(coordinate.getX()-1, coordinate.getY()-1))) jumpNeighbours.add(c);
-		}
-		
-		return jumpNeighbours;
-	}
 
 	/**
 	 * Find a path from the source to the target with OMNI movement pattern (assumes already valid with FLY)
@@ -165,7 +139,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		
 		Predicate<EscapeCoordinate> validNeighbour = coord -> { //Predicate indicating whether the neighbour is a valid space to move to and not already queued
 			EscapeLocation loc = positions.get(coord);
-			return visited.indexOf(coord) == -1 //haven't already visited this neighbour
+			return !outOfBounds(coord) //not out of bounds
+				&& visited.indexOf(coord) == -1 //haven't already visited this neighbour
 				&& curLayer.indexOf(coord) == -1 //isn't already queued in current layer
 				&& nextLayer.indexOf(coord) == -1 //isn't already queued in next layer
 				&& (loc == null //empty spaces are good
@@ -183,57 +158,36 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		EscapeCoordinate curNode;
 		while (curLayer.size() > 0 && distance <= maxDistance) { //while valid distance and there are nodes to check
 			curNode = curLayer.pop(); //get next node
-			System.out.print(distance+": <"+curNode.getX()+","+curNode.getY()+"> ");
-			if (curNode.equals(target)) {
-				System.out.println("\nTARGET FOUND\n");
-				return true; //return true if target
-			}
+			if (curNode.equals(target)) return true; //return true if target
 			
 			visited.add(curNode);
 
 			if (positions.get(curNode) == null || curNode == source) { // empty space (cannot be BLOCK or EXIT) or starting node (need this to avoid repeating code). This means we can move forward from here
-				List<EscapeCoordinate> neighbours = getNeighbours(curNode, descriptor.getMovementPattern()).stream()
-																		   								   .filter(validNeighbour)
-																										   .collect(Collectors.toList());
-				System.out.print("| ");
-				for (EscapeCoordinate c : neighbours) System.out.print("<"+c.getX()+","+c.getY()+"> ");
-				nextLayer.addAll(neighbours);
-
-				if (canJump) {
-					System.out.print("| ");
-					List<EscapeCoordinate> jumpNeighbours = getJumpNeighbours(curNode, descriptor.getMovementPattern()).stream()
-																			   									       .filter(validNeighbour)
-																			   									       .collect(Collectors.toList());				
-					for (EscapeCoordinate c : neighbours) System.out.print("<"+c.getX()+","+c.getY()+"> ");
-					jumpLayer.addAll(jumpNeighbours);					
-				}
+				nextLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), false).stream().filter(validNeighbour).collect(Collectors.toList())); //add neighbours to next layer
+				if (canJump) jumpLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), true).stream().filter(validNeighbour).collect(Collectors.toList())); //add jumping neighbours to jump layer
 			}
 			
-			if (curLayer.size() == 0) {
-				if (nextLayer.size() != 0) {
+			if (curLayer.size() == 0) { //done with layer
+				if (nextLayer.size() != 0) { //next layer isn't empty
 					curLayer.addAll(nextLayer); //move to next layer
 					nextLayer.clear();
 					distance++; //increment distance from source
 					
-					if (canJump) {
-						nextLayer.addAll(jumpLayer.stream() //move forward jump layer
-										          .filter(coord -> curLayer.indexOf(coord) == -1) //make sure we're not moving forward a node we can access earlier
-										          .distinct()
-												  .collect(Collectors.toList()));
-					}
+					//move forward jump layer  //filter to make sure we're not moving forward a node we can access earlier
+					if (canJump) nextLayer.addAll(jumpLayer.stream().filter(coord -> curLayer.indexOf(coord) == -1).distinct().collect(Collectors.toList()));
+															 
 					jumpLayer.clear(); //clear jump layer (already empty if cannot jump)
-				} else if (canJump) { // this is a hack for the case where the only possible moves are jumps
-					curLayer.addAll(jumpLayer);
+				} else if (canJump) { //next layer is empty (only possible moves are jumps)
+					curLayer.addAll(jumpLayer); //move to jump layer
 					jumpLayer.clear();
-					distance += 2;
+					distance += 2; //increment distance from source
 				}
 			}
-			System.out.println();
 		} 
 
-		System.out.println("NO PATH\n");
 		return false;
 	}
+
 
 	/**
 	 * Find a path from the source to the target with LINEAR movement pattern (assumes path is already valid with FLY)
@@ -243,14 +197,12 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	 * @return if there exists a valid path
 	 */
 	private boolean linearPath(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) { 
-		int dx = target.getX() - source.getX();
-		int dy = target.getY() - source.getY();
+		int dx, dy;
+		int xStep = (dx = target.getX() - source.getX()) == 0 ? 0 : (dx) / Math.abs(dx);
+		int yStep = (dy = target.getY() - source.getY()) == 0 ? 0 : (dy) / Math.abs(dy);
 
-		int xStep = dx == 0 ? 0 : (dx) / Math.abs(dx);
-		int yStep = dy == 0 ? 0 : (dy) / Math.abs(dy);
-
-		boolean jumping = false;
-		EscapeCoordinate curCoord = makeCoordinate(source.getX() + xStep, source.getY() + yStep); //set curCoord to next coord
+		boolean jumping = false; //whether we just jumped
+		EscapeCoordinate curCoord = makeCoordinate(source.getX() + xStep, source.getY() + yStep); //set curCoord to next coord in line
 
 		while (!curCoord.equals(target)) { //while current coordinate isn't the target
 			if (positions.get(curCoord) != null) { //current coordinate is not empty
@@ -267,9 +219,9 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		return targetLoc == null //target is empty space
 			|| (jumping //jumping over something onto target
 				&& (targetLoc.locationType == LocationType.EXIT //target is exit
-					|| (targetLoc.getPiece() != null //target has piece
-						&& targetLoc.getPiece().getPlayer() != positions.get(source).getPiece().getPlayer()))); //target piece is enemy's
+					|| targetLoc.getPiece() != null)); //target has piece (don't need to check piece owner because we assume valid FLY)
 	}
+
 
 	/**
 	 * Find a path from the source to the target (assumes source and target are valid)
@@ -279,7 +231,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	 * @return if there exists a valid path
 	 */
 	private boolean pathExists(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) {
-		switch (descriptor.getMovementPattern()) { //TODO: REFACTOR THESE FOR GODS SAKE
+		switch (descriptor.getMovementPattern()) {
 			case ORTHOGONAL:
 			case DIAGONAL:
 			case OMNI:
@@ -294,7 +246,6 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 	/**
 	 * Check if moving a piece from source to target is valid
-	 * 
 	 * @param source starting coordinate
 	 * @param target ending coordinate
 	 * @return validity of move
@@ -350,6 +301,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		
 	}
 
+
 	@Override
 	public boolean move(EscapeCoordinate from, EscapeCoordinate to) {
 		if (!validMove(from, to)) return false;
@@ -365,12 +317,14 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		return true;
 	}
 
+
 	@Override
 	public EscapePiece getPieceAt(EscapeCoordinate coordinate) {
 		if (positions.get(coordinate) == null) return null; //this should catch any bad coordinate.
 		return positions.get(coordinate).getPiece();
 	}
 
+	
 	@Override
 	public EscapeCoordinate makeCoordinate(int x, int y) {
 		return CoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
