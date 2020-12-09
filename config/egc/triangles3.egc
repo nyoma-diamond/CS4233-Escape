@@ -4,7 +4,7 @@ yMax : 20
 
 Locations :
 	(1, 1) player1 snail
-	(2, 2) block
+	(2, 2) player2 bird
 	(1, 10) player2 bird
 
 

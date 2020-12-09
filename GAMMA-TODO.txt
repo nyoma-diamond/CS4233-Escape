@@ -1,0 +1,32 @@
+Task List
+=========
+[ ] Game Rules
+	[ ] TURN_LIMIT
+	[ ] SCORE
+		[ ] Removing piece through exit adds piece's score to player score
+	[ ] REMOVE (Not tested in Gamma)
+	[ ] POINT_CONFLICT (Not tested in Gamma)
+
+[ ] Fix BLOCKs
+	[ ] Can't jump over blocks
+
+[ ] Fix piece capture
+	[ ] Can't capture pieces
+
+[ ] Piece Attributes
+	[ ] UNBLOCK
+	[ ] VALUE
+		[ ] Default to 1
+		[ ] Set to specified value
+
+[ ] Observers
+	[ ] addObserver
+	[ ] removeObserver
+	[ ] Notifications
+		[ ] Failed move
+		[ ] Player wins (game is over)
+		[ ] Move when game is over (should fail)
+
+[ ] Linear Triangles (extra credit)
+
+[ ] Report

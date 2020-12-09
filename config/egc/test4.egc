@@ -3,16 +3,16 @@ xMax : 25
 yMax : 20
 
 Locations :
-	(3, 3) block
-	(3, 5) block
 	(3, 7) player1 dog
-	(5, 7) block
+	(3, 3) player2 snail
+	(3, 5) player2 snail
+	(5, 7) player2 snail
 	(6, 7) player2 snail
 	(1, 9) player2 bird
-	(3, 9) block
-	(3, 10) block
+	(3, 9) player2 snail
+	(3, 10) player2 snail
 	(3, 11) player2 horse
-	(7, 8) block
+	(7, 8) player2 snail
 	(7, 9) exit
 
 	

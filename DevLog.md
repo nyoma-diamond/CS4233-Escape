@@ -150,3 +150,11 @@ If this completes without returning true (finding a path) it will return false, 
 - Completed TRIANGLE coordinate `DistanceTo`
 - Completed everything Beta needs for triangle (I kinda forgot to keep track of things, but uhhhhhhhh it should hopefully work. Only pathfinding changes necessary were just changing how neighbours were calculated)
 - Hella refactoring (primarily reducing redundant code)
+
+
+## Gamma
+
+### 12/9
+
+- Changed BLOCKs to player2 pieces in most of my test because BLOCKs dont act how i thought they did and while they worked for testing in Alpha and Beta they wont work in Gamma 
+- Created Gamma TODO

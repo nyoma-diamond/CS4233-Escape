@@ -4,11 +4,11 @@ yMax : 20
 
 Locations :
 	(1, 1) player1 horse
-	(2, 2) block
-	(4, 2) block
-	(4, 4) block
-	(4, 6) block
-	(3, 7) block
+	(2, 2) player2 bird
+	(4, 2) player2 bird
+	(4, 4) player2 bird
+	(4, 6) player2 bird
+	(3, 7) player2 bird
 	(5, 1) player2 dog
 	(15, 15) player2 bird
 
