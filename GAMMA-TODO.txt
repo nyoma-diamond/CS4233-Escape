@@ -5,11 +5,13 @@ Task List
 	[ ] TURN_LIMIT
 	[ ] SCORE
 		[ ] Removing piece through exit adds piece's score to player score
-	[ ] REMOVE (Not tested in Gamma)
+	[X] REMOVE (Not tested in Gamma)
 	[ ] POINT_CONFLICT (Not tested in Gamma)
 
-[ ] Fix BLOCKs
-	[ ] Can't jump over blocks
+[X] Fix BLOCKs
+	[X] Can't jump over blocks
+		[X] SQUARE board
+		[ ] TRIANGLE board (NOT BEING TESTED, DON'T DO)
 
 [X] Fix piece capture
 	[X] Can't capture pieces

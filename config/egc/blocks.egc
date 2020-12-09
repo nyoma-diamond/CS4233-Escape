@@ -3,10 +3,15 @@ xMax : 25
 yMax : 20
 
 Locations :
-	(1, 1) player1 snail
-	(1, 2) block
-	(2, 1) block
+	(3, 3) player1 snail
+	(4, 2) block
+	(4, 3) block
+	(4, 4) block
+	(3, 2) block
+	(3, 4) block
 	(2, 2) block
+	(2, 3) block
+	(2, 4) block
 
 	
 Piece descriptors :

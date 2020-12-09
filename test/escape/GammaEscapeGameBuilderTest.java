@@ -17,6 +17,7 @@ import static org.junit.Assert.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static escape.BetaEscapeGameBuilderTest.*;
 
 public class GammaEscapeGameBuilderTest {
 	
@@ -36,7 +37,13 @@ public class GammaEscapeGameBuilderTest {
 
 	// #2
 	@Test
-	void cantJumpOverBlock() {
-		assertFalse(bManager.move(bManager.makeCoordinate(1, 1), bManager.makeCoordinate(3, 1)));
+	void cantJumpOverBlockSQUARE() {
+		invalidMoves(
+			bManager, 
+			bManager.makeCoordinate(3, 3),
+			new int[]{5,5,5,3,3,1,1,1}, 
+			new int[]{1,3,5,1,5,1,3,5});
 	}
+
+	
 }

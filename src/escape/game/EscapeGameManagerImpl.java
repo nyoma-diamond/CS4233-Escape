@@ -109,29 +109,30 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern, boolean jump) { 
 		List<EscapeCoordinate> neighbours = new LinkedList<EscapeCoordinate>();
 		int d = jump ? 2 : 1;
-		
+		EscapeLocation loc;
+
 		if (coordinate.coordinateType == CoordinateType.SQUARE) {
-			if (movementPattern != MovementPattern.DIAGONAL) {
-				neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY()));
-				neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY()));
-				neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() + d));
-				neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() - d));
+			if (movementPattern != MovementPattern.DIAGONAL) { //TODO: REFACTOR THIS FOR FUCKS SAKE HOLY SHIT
+				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() + 1, coordinate.getY()))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY()));
+				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY()))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY()));
+				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX(), coordinate.getY() + 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() + d));
+				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX(), coordinate.getY() - 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() - d));
 			} 
 			if (movementPattern != MovementPattern.ORTHOGONAL) {
-				neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() + d));
-				neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() - d));
-				neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() + d));
-				neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() - d));
+				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() + 1, coordinate.getY() + 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() + d));
+				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() + 1, coordinate.getY() - 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() - d));
+				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY() + 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() + d));
+				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY() - 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() - d));
 			}
 		} else { //Currently only works for triangle
 			if (jump) { //we're getting jump neighbours
-				neighbours.add(makeCoordinate(coordinate.getX()+1, coordinate.getY()+1));
-				neighbours.add(makeCoordinate(coordinate.getX()-1, coordinate.getY()+1));
-				neighbours.add(makeCoordinate(coordinate.getX()+1, coordinate.getY()-1));
-				neighbours.add(makeCoordinate(coordinate.getX()-1, coordinate.getY()-1));
+				neighbours.add(makeCoordinate(coordinate.getX() + 1, coordinate.getY() + 1));
+				neighbours.add(makeCoordinate(coordinate.getX() - 1, coordinate.getY() + 1));
+				neighbours.add(makeCoordinate(coordinate.getX() + 1, coordinate.getY() - 1));
+				neighbours.add(makeCoordinate(coordinate.getX() - 1, coordinate.getY() - 1));
 			} else if ((coordinate.getX() + coordinate.getY()) % 2 == 0) { //points down
-				neighbours.add(makeCoordinate(coordinate.getX()+1, coordinate.getY()));
-			} else neighbours.add(makeCoordinate(coordinate.getX()-1, coordinate.getY())); 
+				neighbours.add(makeCoordinate(coordinate.getX() + 1, coordinate.getY()));
+			} else neighbours.add(makeCoordinate(coordinate.getX() - 1, coordinate.getY())); 
 
 			neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() - d));
 			neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() + d));

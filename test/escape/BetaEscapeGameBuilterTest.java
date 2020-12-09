@@ -62,7 +62,7 @@ class BetaEscapeGameBuilderTest {
 	 * @param dummyFrom start space of dummy piece (shouldn't get in the way of anything being tested)
 	 * @param dummyTo spot to move dummy piece to (shouldn't get in the way of anything being tested)
 	 */
-	void validMoves(EscapeGameManager manager, int[] xSequence, int[] ySequence, Coordinate dummyFrom, Coordinate dummyTo) {
+	public static void validMoves(EscapeGameManager manager, int[] xSequence, int[] ySequence, Coordinate dummyFrom, Coordinate dummyTo) {
 		for (int i = 1; i < xSequence.length; i++) {
 			assertTrue(
 				"<"+xSequence[i-1]+","+ySequence[i-1]+"> to <"+xSequence[i]+","+ySequence[i]+">",
@@ -96,7 +96,7 @@ class BetaEscapeGameBuilderTest {
 	 * @param xSequence X values (paired with corresponding Y in Ys to build coordinates). Must be same length as ySequence 
 	 * @param ySequence Y values (paired with corresponding X in Xs to build coordinates). Must be same length as xSequence
 	 */
-	void invalidMoves(EscapeGameManager manager, Coordinate c, int[] xSequence, int[] ySequence) {
+	public static void invalidMoves(EscapeGameManager manager, Coordinate c, int[] xSequence, int[] ySequence) {
 		for (int i = 0; i < xSequence.length; i++) 
 			assertFalse(
 				"<"+xSequence[i]+","+ySequence[i]+">",
