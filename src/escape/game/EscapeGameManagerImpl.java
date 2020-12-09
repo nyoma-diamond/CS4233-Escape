@@ -23,6 +23,7 @@ import escape.required.*;
 import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
 import escape.util.PieceTypeDescriptor;
+import escape.util.RuleDescriptor;
 import escape.required.Player;
 import escape.required.Coordinate.CoordinateType;
 import escape.required.EscapePiece.MovementPattern;
@@ -47,7 +48,22 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		this.settings.coordinateType = initializer.getCoordinateType();
 		this.settings.xMax = initializer.getxMax();
 		this.settings.yMax = initializer.getyMax();
-		this.settings.rules = initializer.getRules();
+
+		for (RuleDescriptor rule : initializer.getRules())
+			switch (rule.id) {
+				case POINT_CONFLICT:
+					this.settings.pointConflict = true;
+					break;
+				case REMOVE:
+					this.settings.remove = true;
+					break;
+				case SCORE:
+					this.settings.scoreLimit = rule.value;
+					break;
+				case TURN_LIMIT:
+					this.settings.turnLimit = rule.value;
+					break;
+			}
 
 		this.curPlayer = Player.PLAYER1;
 
@@ -56,8 +72,9 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		// This assumes that the initializer filtered out empty and out of bounds
 		// spaces. If an initializer is provided with an empty CLEAR
 		// LocationInitializer, bugs may occur(?)
-		for(LocationInitializer loc : initializer.getLocationInitializers())
-			positions.put(
+		for (LocationInitializer loc : initializer.getLocationInitializers())
+			if (loc.player == null && loc.locationType == LocationType.CLEAR) continue; //This is to skip empty CLEAR spaces (so the code can assume if it isn't in positions it's an empty clear)
+			else positions.put(
 				makeCoordinate(loc.x, loc.y), 
 				loc.player == null 
 					? LocationFactory.getLocation(loc)
@@ -65,7 +82,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			);
 
 		this.pieceDescriptors = new HashMap<PieceName, PieceTypeDescriptor>(); 
-		for(PieceTypeDescriptor pieceDescriptor : initializer.getPieceTypes())
+		for (PieceTypeDescriptor pieceDescriptor : initializer.getPieceTypes())
 			pieceDescriptors.put(pieceDescriptor.getPieceName(), pieceDescriptor);
 	}
 
@@ -259,7 +276,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			|| (sourceLoc = positions.get(source)) == null //source has no location (empty)
 			|| sourceLoc.getPiece() == null  //no piece, implies BLOCK or EXIT
 			|| sourceLoc.getPiece().getPlayer() != curPlayer //wrong player's piece
-			|| ((targetLoc = positions.get(target)) != null && targetLoc.getPiece() != null && targetLoc.getPiece().getPlayer() == curPlayer) //target has current player's piece
+			|| ((targetLoc = positions.get(target)) != null 
+				&& targetLoc.getPiece() != null 
+				&& (targetLoc.getPiece().getPlayer() == curPlayer 
+					|| (targetLoc.getPiece().getPlayer() != curPlayer && !settings.remove))) //target has current player's piece or enemy piece and not allowed to remove
 			|| (targetLoc != null && targetLoc.locationType == LocationType.BLOCK) //target a BLOCK
 		) return false;
 

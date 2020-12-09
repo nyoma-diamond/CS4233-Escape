@@ -15,5 +15,4 @@ Piece descriptors :
 	HORSE omni [FLY 100]
 	
 Rules :
-	REMOVE
 	TURN_LIMIT 50

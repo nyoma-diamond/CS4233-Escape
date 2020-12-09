@@ -4,7 +4,7 @@ yMax : 30
 
 Locations :
 	(1, 1) player1 snail
-	(1, 3) player1 dog
+	(1, 3) clear player1 dog
 	(1, 5) player1 horse
 	(1, 7) player1 frog
 	(1, 9) player2 bird
@@ -19,5 +19,4 @@ Piece descriptors :
 	
 Rules :
 	REMOVE
-	SCORE 10
-	TURN_LIMIT 20
+	TURN_LIMIT 50

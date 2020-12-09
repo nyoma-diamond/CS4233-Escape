@@ -158,3 +158,7 @@ If this completes without returning true (finding a path) it will return false, 
 
 - Changed BLOCKs to player2 pieces in most of my test because BLOCKs dont act how i thought they did and while they worked for testing in Alpha and Beta they wont work in Gamma 
 - Created Gamma TODO
+- Turns out something about my code made it work despite not following my initial assumption that if a location is stored it must be either filled, a BLOCK, or an EXIT. Changing my code to not allow capturing pieces made it *actually* follow the assumption, breaking my test for the assumption that shouldve failed but didn't because my code didn't follow the assumption. Fixed it. So now my code *actually* follows the assumption (tl;dr im stupid but my code worked before and still works now so idc)
+- Changed rules in all configuration files to avoid breaking tests
+- Changed `EscapeSettings` to store each possible rule as a separate variable
+- Made REMOVE work so I dont break old tests for piece capture

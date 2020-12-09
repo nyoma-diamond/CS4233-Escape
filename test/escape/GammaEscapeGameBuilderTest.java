@@ -12,6 +12,31 @@
 
 package escape;
 
+import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+
 public class GammaEscapeGameBuilderTest {
 	
+	private static EscapeGameManager manager, bManager;
+
+	@BeforeEach
+	void loadGame() throws Exception {
+		manager = new EscapeGameBuilder("config/egc/gtest1.egc").makeGameManager();
+		bManager = new EscapeGameBuilder("config/egc/blocks.egc").makeGameManager();
+	}
+
+	// #1
+	@Test
+	void cantCapturePieceWithoutRemove() {
+		assertFalse(manager.move(manager.makeCoordinate(4, 4), manager.makeCoordinate(10, 12)));
+	}
+
+	// #2
+	@Test
+	void cantJumpOverBlock() {
+		assertFalse(bManager.move(bManager.makeCoordinate(1, 1), bManager.makeCoordinate(3, 1)));
+	}
 }

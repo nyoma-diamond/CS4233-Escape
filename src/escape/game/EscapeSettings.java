@@ -12,16 +12,24 @@
 
 package escape.game;
 
-import escape.util.*;
 import escape.required.Coordinate.CoordinateType;
 
 class EscapeSettings {
 	CoordinateType coordinateType;
 	int xMax, yMax;
-	RuleDescriptor[] rules;
+	boolean remove;
+	boolean pointConflict;
+	Integer scoreLimit;
+	Integer turnLimit;
 
 	/**
 	 * EscapeSettings constructor
 	 */
-	EscapeSettings() { }
+	EscapeSettings() { 
+		this.coordinateType = null;
+		this.remove = false;
+		this.pointConflict = false;
+		this.scoreLimit = null;
+		this.turnLimit = null;
+	}
 }

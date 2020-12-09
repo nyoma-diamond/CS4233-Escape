@@ -1,6 +1,7 @@
 Task List
 =========
 [ ] Game Rules
+	[X] Store game rules (EscapeSettings change)
 	[ ] TURN_LIMIT
 	[ ] SCORE
 		[ ] Removing piece through exit adds piece's score to player score
@@ -10,8 +11,9 @@ Task List
 [ ] Fix BLOCKs
 	[ ] Can't jump over blocks
 
-[ ] Fix piece capture
-	[ ] Can't capture pieces
+[X] Fix piece capture
+	[X] Can't capture pieces
+	[X] Fix broken tests
 
 [ ] Piece Attributes
 	[ ] UNBLOCK

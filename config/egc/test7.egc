@@ -24,5 +24,4 @@ Piece descriptors :
 	
 Rules :
 	REMOVE
-	SCORE 10
-	TURN_LIMIT 20
+	TURN_LIMIT 50

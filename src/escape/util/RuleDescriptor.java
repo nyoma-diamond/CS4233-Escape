@@ -26,8 +26,8 @@ import escape.required.Rule.RuleID;
  * REQUIRED: NO
  */
 public class RuleDescriptor {
-	public RuleID ruleId;
-	public int ruleValue;
+	public RuleID id;
+	public int value;
 
 	public RuleDescriptor() {
 		// needed for JAXB unmarshalling
@@ -39,8 +39,8 @@ public class RuleDescriptor {
 	 * @param ruleValue
 	 */
 	public RuleDescriptor(RuleID ruleId, int ruleValue) {
-		this.ruleId = ruleId;
-		this.ruleValue = ruleValue;
+		this.id = ruleId;
+		this.value = ruleValue;
 	}
 
 	/*
@@ -48,6 +48,6 @@ public class RuleDescriptor {
 	 */
 	@Override
 	public String toString() {
-		return "RuleDescriptor [ruleId=" + ruleId + ", ruleValue=" + ruleValue + "]";
+		return "RuleDescriptor [ruleId=" + id + ", ruleValue=" + value + "]";
 	}
 }
