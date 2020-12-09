@@ -7,22 +7,18 @@ Task List
 		[ ] Removing piece through exit adds piece's score to player score
 	[X] REMOVE (Not tested in Gamma)
 	[ ] POINT_CONFLICT (Not tested in Gamma)
-
 [X] Fix BLOCKs
 	[X] Can't jump over blocks
 		[X] SQUARE board
 		[ ] TRIANGLE board (NOT BEING TESTED, DON'T DO)
-
 [X] Fix piece capture
 	[X] Can't capture pieces
 	[X] Fix broken tests
-
 [ ] Piece Attributes
 	[ ] UNBLOCK
-	[ ] VALUE
+	[ ] VALUE (I think I need game end states to work to test this)
 		[ ] Default to 1
 		[ ] Set to specified value
-
 [ ] Observers
 	[ ] addObserver
 	[ ] removeObserver

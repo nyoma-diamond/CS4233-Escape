@@ -165,3 +165,4 @@ If this completes without returning true (finding a path) it will return false, 
 - Fixed pathfinding so you can't jump over BLOCKs anymore
   - I thought you could jump over blocks in Beta and wrote my code based on that :/
   - MY CODE IS AWFUL AND I ABSOLUTELY HATE IT. Originally `getNeighbours` just provided the neighbours without caring for if they'd be valid moves and they'd just be filtered, except to make it so you can't jump over blocks I needed to make it filter out anything that'd require jumping over a block to get to. I wanna see if I can pull this out so the check isn't done in `getNeighbours` but I'm pretty sure to do that I'd need to completely rewrite my pathfinding.
+    - Maybe I can make another predicate like `validNeighbour` or put something inside `validNeighbour` to take the filter out of `getNeighbours`?
