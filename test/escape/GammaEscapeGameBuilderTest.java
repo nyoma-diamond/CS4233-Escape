@@ -309,4 +309,41 @@ public class GammaEscapeGameBuilderTest {
 		assertFalse(fManager.move(fManager.makeCoordinate(1, 2), fManager.makeCoordinate(3, 3)));
 		assertEquals("PLAYER1 wins", obs.message);
 	}
+
+	// #23
+	@Test
+	void sourceIsExit() {
+		TestObserver obs = new TestObserver();
+		fManager.addObserver(obs);
+		assertFalse(fManager.move(fManager.makeCoordinate(3, 3), fManager.makeCoordinate(1, 1)));
+		assertEquals("Invalid move: Source is a BLOCK or EXIT", obs.message);
+	}
+
+	// #24
+	@Test
+	void player1AlreadyWinTurn() {
+		TestObserver obs = new TestObserver();
+		manager.addObserver(obs);
+		assertTrue(manager.move(manager.makeCoordinate(4, 4), manager.makeCoordinate(5, 12)));
+		assertTrue(manager.move(manager.makeCoordinate(15, 15), manager.makeCoordinate(15, 16)));
+		assertTrue(manager.move(manager.makeCoordinate(16, 16), manager.makeCoordinate(16, 15)));
+		assertTrue(manager.move(manager.makeCoordinate(15, 16), manager.makeCoordinate(15, 15)));
+		assertEquals("PLAYER1 wins", obs.message);
+		assertFalse(manager.move(manager.makeCoordinate(5, 12), manager.makeCoordinate(4, 4)));
+		assertEquals("Game is already won by PLAYER1", obs.message);
+	}
+
+	// #25
+	@Test
+	void player2AlreadyWinTurn() {
+		TestObserver obs = new TestObserver();
+		manager.addObserver(obs);
+		assertTrue(manager.move(manager.makeCoordinate(4, 4), manager.makeCoordinate(5, 5)));
+		assertTrue(manager.move(manager.makeCoordinate(10, 12), manager.makeCoordinate(5, 12)));
+		assertTrue(manager.move(manager.makeCoordinate(5, 5), manager.makeCoordinate(4, 4)));
+		assertTrue(manager.move(manager.makeCoordinate(15, 15), manager.makeCoordinate(15, 16)));
+		assertEquals("PLAYER2 wins", obs.message);
+		assertFalse(manager.move(manager.makeCoordinate(4, 4), manager.makeCoordinate(5, 5)));
+		assertEquals("Game is already won by PLAYER2", obs.message);
+	}
 }

@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -206,15 +207,26 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		int distance = 0; //start at source
 		EscapeCoordinate curNode;
 		while (curLayer.size() > 0 && distance <= maxDistance) { //while valid distance and there are nodes to check
-			curNode = curLayer.pop(); //get next node
+			curNode = curLayer.pop(); //get next node 
 			if (curNode.equals(target)) return true; //return true if target
 			
 			visited.add(curNode);
 
+			//Predicate<EscapeCoordinate> validJumpNeighbour = to -> {
+			//	int xDif = curNode.getX() - to.getX();
+			//	int yDif = curNode.getY() - to.getY();
+	//
+			//	if (source.coordinateType != CoordinateType.SQUARE) return true; //not coded for other cases right now, this is to catch for them
+			//	
+			//	EscapeLocation jumpOver = positions.get(makeCoordinate(curNode.getX() + (xDif / 2), curNode.getY() + (yDif / 2))); //get the location being jumped over
+			//	if (jumpOver == null || jumpOver.locationType == LocationType.CLEAR) return true; //the location being jumped over is a piece (can only jump over pieces)
+			//	return false;
+			//};
+
 			// current node is empty, source, or a block when we have UNBLOCK
 			if (positions.get(curNode) == null || curNode == source || (descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null && positions.get(curNode).locationType == LocationType.BLOCK)) { // empty space (cannot be BLOCK or EXIT) or starting node (need this to avoid repeating code). This means we can move forward from here
 				nextLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), false, descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null).stream().filter(validNeighbour).collect(Collectors.toList())); //add neighbours to next layer
-				if (canJump) jumpLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), true, descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null).stream().filter(validNeighbour).collect(Collectors.toList())); //add jumping neighbours to jump layer
+				if (canJump) jumpLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), true, descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null).stream().filter(validNeighbour)/*.filter(validJumpNeighbour)*/.collect(Collectors.toList())); //add jumping neighbours to jump layer
 			}
 			
 			if (curLayer.size() == 0) { //done with layer
@@ -472,13 +484,11 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		if (positions.get(coordinate) == null) return null; //this should catch any bad coordinate.
 		return positions.get(coordinate).getPiece();
 	}
-
 	
 	@Override
 	public EscapeCoordinate makeCoordinate(int x, int y) {
 		return CoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
 	}
-
 	
 	@Override
 	public GameObserver addObserver(GameObserver observer) {
@@ -486,7 +496,6 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		return observer;
 	}
 
-	
 	@Override
 	public GameObserver removeObserver(GameObserver observer) {
 		return observers.remove(observer) ? observer : null;
