@@ -1,0 +1,14 @@
+Coordinate type : SQUARE
+xMax : 25
+yMax : 20
+
+Locations :
+	(1, 1) player1 snail
+	(1, 2) player2 snail
+	(3, 3) exit
+	
+Piece descriptors :
+	SNAIL omni [FLY 100]
+	
+Rules :
+	TURN_LIMIT 2

@@ -173,3 +173,9 @@ If this completes without returning true (finding a path) it will return false, 
   - This is why I hate unclear specifications, because I have to literally UNDO and UNFACTOR code to make fixes for things that are unclear or aren't required in an immediate release. Just tell me clearly what I need instead of being vague until I need it because it just makes more work for me :_( This would have been a complete non-issue if I understood this was the case earlier because I wouldn't have written my code in the way I did.
 - I THINK UNBLOCK WORKS
   - Spent like an hour trying to debug what was apparently just a single conditional I forgot existed that filtered out all non-clear spaces
+- Implemented observers
+	- I just have one function that notifies all observers with a provided message. Anywhere that observers need to be notified (failed move, game win, etc.) it just calls that
+
+### 12/10
+
+- Doing more tests with observers to make sure I have all win states covered and specific observer notifications handled.

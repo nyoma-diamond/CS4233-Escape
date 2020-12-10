@@ -56,6 +56,7 @@ class BetaEscapeGameBuilderTest {
 	/**
 	 * Test valid moves
 	 * (First values of x/ySequence are the starting space)
+	 * Last move will be the last move indicated in the sequences (NOT A DUMMY MOVE)
 	 * @param manager manager to act on
 	 * @param xSequence X values (paired with corresponding Y in Ys to build coordinates). Must be same length as ySequence
 	 * @param ySequence Y values (paired with corresponding X in Xs to build coordinates). Must be same length as xSequence
@@ -70,10 +71,12 @@ class BetaEscapeGameBuilderTest {
 					manager.makeCoordinate(xSequence[i-1], ySequence[i-1]),
 					manager.makeCoordinate(xSequence[i], ySequence[i])));	
 			
-			manager.move(dummyFrom, dummyTo); //move dummy to change turn
-			Coordinate temp = dummyFrom;
-			dummyFrom = dummyTo;
-			dummyTo = temp;
+			if (i != xSequence.length-1) {
+				manager.move(dummyFrom, dummyTo); //move dummy to change turn
+				Coordinate temp = dummyFrom;
+				dummyFrom = dummyTo;
+				dummyTo = temp;
+			}
 		}
 	}
 

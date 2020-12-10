@@ -8,6 +8,8 @@ Locations :
 	(10, 12) player2 horse
 	(5, 12) exit
 	(7, 6) player2 dog 
+	(15, 15) player2 dog 
+	(16, 16) player1 snail
 	
 Piece descriptors :
 	SNAIL omni [FLY 100]

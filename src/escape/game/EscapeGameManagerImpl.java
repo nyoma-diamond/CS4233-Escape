@@ -285,7 +285,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			case LINEAR:
 				return linearPath(source, target, descriptor);
 			default: 
-				return false; //This isn't possible to get but is needed to compile
+				return false; //This isn't possible to get but is needed to compile for some reason
 		}
 	}
 
@@ -385,27 +385,56 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 
 	/**
-	 * Return if the game is in progress (might change this later but for the time being it's fine)
-	 * @return if the game is in progress
-	 */
-	private boolean isInProgress() { 
-		return (settings.turnLimit == null || curTurn < settings.turnLimit) 
-			&& (settings.scoreLimit == null || (scores[0] < settings.scoreLimit && scores[1] < settings.scoreLimit)); 
-	}
-
-
-	/**
 	 * Notifies all observers with the provided message
 	 * @param message message to notify with
 	 */
 	private void notifyObservers(String message) {
-		for (GameObserver observer : observers) observer.notify(message);
+		for (GameObserver observer : observers) 
+			observer.notify(message);
+	}
+
+
+	/**
+	 * Return if the game is over (also notifies observers)
+	 * @return if the game is over
+	 */ 
+	private boolean gameIsOver() { //TODO: refactor gameIsOver and checkForWin into one function
+		if (settings.scoreLimit != null && (scores[0] >= settings.scoreLimit || scores[1] >= settings.scoreLimit)) {
+			notifyObservers(scores[0] > scores[1] ? "Game is already won by PLAYER1" : "Game is already won by PLAYER2"); //if player1 has more points they must have been the won to win
+			return true;
+		} else if (settings.turnLimit != null && curTurn >= settings.turnLimit) {
+			notifyObservers(
+				scores[0] > scores[1] 
+				? "Game is already won by PLAYER1" 
+				: scores[1] > scores[0] 
+					? "Game is already won by PLAYER2" 
+					: "Game is already over: Draw");
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Checks if there was a win and notifies observers (also notifies observers)
+	 */
+	private void checkForWin() {
+		if (settings.scoreLimit != null && (scores[0] >= settings.scoreLimit || scores[1] >= settings.scoreLimit)) {
+			notifyObservers(scores[0] > scores[1] ? "PLAYER1 wins" : "PLAYER2 wins"); //if player1 has more points they must have been the won to win
+		} else if (settings.turnLimit != null && curTurn >= settings.turnLimit) {
+			notifyObservers(
+				scores[0] > scores[1] 
+				? "PLAYER1 wins" 
+				: scores[1] > scores[0] 
+					? "PLAYER2 wins" 
+					: "Draw");
+		}
 	}
 
 
 	@Override
 	public boolean move(EscapeCoordinate from, EscapeCoordinate to) {
-		if (!isInProgress()) return false;
+		if (gameIsOver()) return false;
 		if (!validMove(from, to)) return false;
 
 		EscapeLocation fromLoc = positions.get(from);
@@ -420,6 +449,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			curPlayer = Player.PLAYER1;
 			curTurn++;
 		} else curPlayer = Player.PLAYER2;
+
+		checkForWin();
 		
 		return true;
 	}

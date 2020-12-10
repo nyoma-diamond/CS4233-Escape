@@ -24,7 +24,7 @@ import static escape.BetaEscapeGameBuilderTest.*;
 
 public class GammaEscapeGameBuilderTest {
 	
-	private static EscapeGameManager manager, bManager, vManager, uManager;
+	private static EscapeGameManager manager, bManager, vManager, uManager, tvManager, fManager;
 
 	@BeforeEach
 	void loadGame() throws Exception {
@@ -32,6 +32,9 @@ public class GammaEscapeGameBuilderTest {
 		bManager = new EscapeGameBuilder("config/egc/blocks.egc").makeGameManager();
 		vManager = new EscapeGameBuilder("config/egc/values.egc").makeGameManager();
 		uManager = new EscapeGameBuilder("config/egc/unblock.egc").makeGameManager();
+		tvManager = new EscapeGameBuilder("config/egc/turnAndVals.egc").makeGameManager();
+		fManager = new EscapeGameBuilder("config/egc/fewPieces.egc").makeGameManager();
+
 	}
 
 	private class TestObserver implements GameObserver {
@@ -84,7 +87,7 @@ public class GammaEscapeGameBuilderTest {
 
 	// #4
 	@Test
-	void noTurnLimit() {
+	void noTurnLimitDoesntError() {
 		assertTrue(vManager.move(vManager.makeCoordinate(1, 1), vManager.makeCoordinate(3, 4)));
 	}
 
@@ -177,5 +180,120 @@ public class GammaEscapeGameBuilderTest {
 	void removeNeverAddedObserver() {
 		TestObserver obs = new TestObserver();
 		assertNull(manager.removeObserver(obs));
+	}
+
+	// #12
+	@Test
+	void notifyPlayer1ScoreWin() {
+		TestObserver obs = new TestObserver();
+		vManager.addObserver(obs);
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 5), vManager.makeCoordinate(5, 5)));
+		assertEquals("PLAYER1 wins", obs.message);
+	}
+
+	// #13
+	@Test
+	void notifyPlayer2ScoreWin() {
+		TestObserver obs = new TestObserver();
+		vManager.addObserver(obs);
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 5), vManager.makeCoordinate(2, 5)));
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 6), vManager.makeCoordinate(5, 5)));
+		assertEquals("PLAYER2 wins", obs.message);
+	}
+
+	// #14
+	@Test
+	void notifyPlayer1TurnWin() {
+		TestObserver obs = new TestObserver();
+		manager.addObserver(obs);
+		assertTrue(manager.move(manager.makeCoordinate(4, 4), manager.makeCoordinate(5, 12)));
+		assertTrue(manager.move(manager.makeCoordinate(15, 15), manager.makeCoordinate(15, 16)));
+		assertTrue(manager.move(manager.makeCoordinate(16, 16), manager.makeCoordinate(16, 15)));
+		assertNull(obs.message);
+		assertTrue(manager.move(manager.makeCoordinate(15, 16), manager.makeCoordinate(15, 15)));
+		assertEquals("PLAYER1 wins", obs.message);
+	}
+
+	// #15
+	@Test
+	void notifyPlayer2TurnWin() {
+		TestObserver obs = new TestObserver();
+		manager.addObserver(obs);
+		assertTrue(manager.move(manager.makeCoordinate(4, 4), manager.makeCoordinate(5, 5)));
+		assertTrue(manager.move(manager.makeCoordinate(10, 12), manager.makeCoordinate(5, 12)));
+		assertTrue(manager.move(manager.makeCoordinate(5, 5), manager.makeCoordinate(4, 4)));
+		assertNull(obs.message);
+		assertTrue(manager.move(manager.makeCoordinate(15, 15), manager.makeCoordinate(15, 16)));
+		assertEquals("PLAYER2 wins", obs.message);
+	}
+
+	// #16
+	@Test
+	void notifyTurnDraw() {
+		TestObserver obs = new TestObserver();
+		manager.addObserver(obs);
+		assertTrue(manager.move(manager.makeCoordinate(4, 4), manager.makeCoordinate(5, 5)));
+		assertTrue(manager.move(manager.makeCoordinate(15, 15), manager.makeCoordinate(15, 16)));
+		assertTrue(manager.move(manager.makeCoordinate(5, 5), manager.makeCoordinate(4, 4)));
+		assertNull(obs.message);
+		assertTrue(manager.move(manager.makeCoordinate(15, 16), manager.makeCoordinate(15, 15)));
+		assertEquals("Draw", obs.message);
+	}
+
+	// #17
+	@Test
+	void notifyScoreBeforeTurn() {
+		TestObserver obs = new TestObserver();
+		tvManager.addObserver(obs);
+		tvManager.move(tvManager.makeCoordinate(1, 5), tvManager.makeCoordinate(5, 5));
+		assertEquals("PLAYER1 wins", obs.message);		
+	}
+
+	// #18
+	@Test
+	void notifyTurnBeforeScore() {
+		TestObserver obs = new TestObserver();
+		tvManager.addObserver(obs);
+		assertTrue(tvManager.move(tvManager.makeCoordinate(1, 1), tvManager.makeCoordinate(5, 5)));
+		validMoves(
+			tvManager, 
+			new int[]{1,2,2,3}, 
+			new int[]{2,2,3,3}, 
+			tvManager.makeCoordinate(1, 3), 
+			tvManager.makeCoordinate(15, 15));
+		assertEquals("PLAYER1 wins", obs.message);		
+	}
+
+	// #19
+	@Test
+	void notifyGameAlreadyOverPlayer1() {
+		TestObserver obs = new TestObserver();
+		vManager.addObserver(obs);
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 5), vManager.makeCoordinate(5, 5)));
+		assertFalse(vManager.move(vManager.makeCoordinate(1, 2), vManager.makeCoordinate(2, 2)));
+		assertEquals("Game is already won by PLAYER1", obs.message);
+	}
+
+	// #20
+	@Test
+	void notifyGameAlreadyOverPlayer2() {
+		TestObserver obs = new TestObserver();
+		vManager.addObserver(obs);
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 5), vManager.makeCoordinate(2, 5)));
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 6), vManager.makeCoordinate(5, 5)));
+		assertFalse(vManager.move(vManager.makeCoordinate(1, 1), vManager.makeCoordinate(2, 1)));
+		assertEquals("Game is already won by PLAYER2", obs.message);
+	}
+
+	// #21
+	@Test
+	void player1OutOfPieces() {
+		TestObserver obs = new TestObserver();
+		fManager.addObserver(obs);
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 1), vManager.makeCoordinate(3, 3)));
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 2), vManager.makeCoordinate(1, 1)));
+		assertNull(obs.message);
+		assertFalse(vManager.move(vManager.makeCoordinate(1, 2), vManager.makeCoordinate(3, 3)));
+		assertEquals("PLAYER2 wins", obs.message);
 	}
 }

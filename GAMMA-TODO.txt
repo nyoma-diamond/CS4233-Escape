@@ -7,8 +7,7 @@ Task List
 		[X] Removing piece through exit adds piece's score to player score
 	[X] REMOVE (Not tested in Gamma)
 	[ ] POINT_CONFLICT (Not tested in Gamma)
-[ ] End game when player has no pieces (can't test this until observers are in place)
-[] Fix BLOCKs
+[X] Fix BLOCKs
 	[X] Can't jump over blocks
 		[X] SQUARE board
 		[ ] TRIANGLE board (NOT BEING TESTED, DON'T DO)
@@ -33,7 +32,14 @@ Task List
 		[X] Returns null if never added
 	[ ] Notifications
 		[X] Failed move
-		[ ] Player wins (game is over)
+		[X] Player wins (game is over)
+			[X] Score
+				[X] Score alone
+				[X] Score + Turn limit
+			[X] Turn limit
+				[X] Turn limit alone
+				[X] Turn limit + score
+			[ ] A player has no more pieces
 		[ ] Move when game is over
 
 [ ] Linear Triangles (extra credit)
