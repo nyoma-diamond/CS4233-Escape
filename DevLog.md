@@ -179,3 +179,5 @@ If this completes without returning true (finding a path) it will return false, 
 ### 12/10
 
 - Doing more tests with observers to make sure I have all win states covered and specific observer notifications handled.
+- Implemented game end states. Code checks at the beginning of `move` to see if the game is already over (so observers can be told "{player} already won") and at the end to see if the move caused a win (so observers can be told "{player} wins").
+  - There is an exception to this: for the case where a player runs out of pieces, the "{player} wins" case needs to be checked at the beginning of the move of the player with no more pieces instead of at the end of the other player's move. I strongly disagree with needing to do it this way. IMO it should the observers should be notified "{player} wins" at the *end* of the turn of the player that *didn't* run out of pieces so that because (a) you should already know the game is over then and (b) it's more consistent with the other cases (trying to implement it the way we're told to makes the code much less coherent)

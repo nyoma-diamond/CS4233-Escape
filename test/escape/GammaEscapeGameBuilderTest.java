@@ -290,10 +290,23 @@ public class GammaEscapeGameBuilderTest {
 	void player1OutOfPieces() {
 		TestObserver obs = new TestObserver();
 		fManager.addObserver(obs);
-		assertTrue(vManager.move(vManager.makeCoordinate(1, 1), vManager.makeCoordinate(3, 3)));
-		assertTrue(vManager.move(vManager.makeCoordinate(1, 2), vManager.makeCoordinate(1, 1)));
+		assertTrue(fManager.move(fManager.makeCoordinate(1, 1), fManager.makeCoordinate(3, 3)));
+		assertTrue(fManager.move(fManager.makeCoordinate(1, 2), fManager.makeCoordinate(1, 1)));
 		assertNull(obs.message);
-		assertFalse(vManager.move(vManager.makeCoordinate(1, 2), vManager.makeCoordinate(3, 3)));
+		assertFalse(fManager.move(fManager.makeCoordinate(1, 2), fManager.makeCoordinate(3, 3)));
 		assertEquals("PLAYER2 wins", obs.message);
+	}
+
+	// #22
+	@Test
+	void player2OutOfPieces() {
+		TestObserver obs = new TestObserver();
+		fManager.addObserver(obs);
+		assertTrue(fManager.move(fManager.makeCoordinate(1, 1), fManager.makeCoordinate(2, 2)));
+		assertTrue(fManager.move(fManager.makeCoordinate(1, 2), fManager.makeCoordinate(3, 3)));
+		assertTrue(fManager.move(fManager.makeCoordinate(2, 2), fManager.makeCoordinate(1, 1)));
+		assertNull(obs.message);
+		assertFalse(fManager.move(fManager.makeCoordinate(1, 2), fManager.makeCoordinate(3, 3)));
+		assertEquals("PLAYER1 wins", obs.message);
 	}
 }

@@ -38,6 +38,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private Player curPlayer;
 	private int curTurn;
 	private int[] scores;
+	private int[] piecesRemaining;
 	
 	private HashMap<EscapeCoordinate, EscapeLocation> positions; //This could just use Coordinates, but the change isn't necessary
 	private HashMap<PieceName, PieceTypeDescriptor> pieceDescriptors; //stores information about pieces
@@ -74,20 +75,23 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		this.curPlayer = Player.PLAYER1;
 		this.curTurn = 0;
 		this.scores = new int[]{0,0};
+		this.piecesRemaining = new int[]{0,0};
 
 		this.positions = new HashMap<EscapeCoordinate, EscapeLocation>();
 
 		// This assumes that the initializer filtered out empty and out of bounds
 		// spaces. If an initializer is provided with an empty CLEAR
 		// LocationInitializer, bugs may occur(?)
-		for (LocationInitializer loc : initializer.getLocationInitializers())
+		for (LocationInitializer loc : initializer.getLocationInitializers()) {
+			EscapeCoordinate coord = makeCoordinate(loc.x, loc.y);
 			if (loc.player == null && loc.locationType == LocationType.CLEAR) continue; //This is to skip empty CLEAR spaces (so the code can assume if it isn't in positions it's an empty clear)
-			else positions.put(
-				makeCoordinate(loc.x, loc.y), 
-				loc.player == null 
-					? LocationFactory.getLocation(loc)
-					: LocationFactory.getLocation(new EscapePieceImpl(loc.player, loc.pieceName))
-			);
+			else if (loc.player == null) positions.put(coord, LocationFactory.getLocation(loc));
+			else { //piece is present
+				positions.put(coord, LocationFactory.getLocation(new EscapePieceImpl(loc.player, loc.pieceName)));
+				piecesRemaining[loc.player == Player.PLAYER1 ? 0 : 1] += 1;
+			}
+		}
+			
 
 		this.pieceDescriptors = new HashMap<PieceName, PieceTypeDescriptor>(); 
 		for (PieceTypeDescriptor descriptor : initializer.getPieceTypes()) {
@@ -96,7 +100,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 				attributes.add(new PieceAttribute(PieceAttributeID.VALUE, 1));
 				descriptor.setAttributes(attributes.toArray(new PieceAttribute[attributes.size()]));
 			}
-			pieceDescriptors.put(descriptor.getPieceName(), descriptor);	
+			pieceDescriptors.put(descriptor.getPieceName(), descriptor);
 		}		
 
 		this.observers = new LinkedList<GameObserver>();
@@ -410,6 +414,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 					? "Game is already won by PLAYER2" 
 					: "Game is already over: Draw");
 			return true;
+		} else if (piecesRemaining[curPlayer == Player.PLAYER1 ? 0 : 1] == 0) {
+			if (curPlayer == Player.PLAYER1) notifyObservers("PLAYER2 wins");
+			else notifyObservers("PLAYER1 wins");
+			return true;
 		}
 		return false;
 	}
@@ -442,7 +450,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 		if (toLoc == null) positions.put(to, toLoc = LocationFactory.getLocation(fromLoc.getPiece())); //if null target location (empty), initialize new location with sourcepiece
 		else if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece()); //not exit (must be enemy or empty, already checked for blocks), so set piece
-		else if (toLoc.locationType == LocationType.EXIT) scores[curPlayer == Player.PLAYER1 ? 0 : 1] += pieceDescriptors.get(fromLoc.getPiece().getName()).getAttribute(PieceAttributeID.VALUE).getValue();
+		else if (toLoc.locationType == LocationType.EXIT) {
+			scores[curPlayer == Player.PLAYER1 ? 0 : 1] += pieceDescriptors.get(fromLoc.getPiece().getName()).getAttribute(PieceAttributeID.VALUE).getValue();
+			piecesRemaining[curPlayer == Player.PLAYER1 ? 0 : 1] -= 1;
+		}
 		positions.remove(from); //no reason to keep the coordinate after moving a piece off it (must be a clear location). Free up some memory (This line can actually be removed by replacing fromLoc with positions.remove(from), but that hurts readability)
 		
 		if (curPlayer == Player.PLAYER2) {

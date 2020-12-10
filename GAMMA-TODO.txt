@@ -22,7 +22,7 @@ Task List
 	[X] VALUE
 		[X] Default to 1
 		[X] Set to specified value
-[ ] Observers
+[X] Observers
 	[X] addObserver
 		[X] Returns added observer
 		[X] Actually adds the observer
@@ -30,7 +30,7 @@ Task List
 		[X] Returns removed observer
 		[X] Actually removes the observer
 		[X] Returns null if never added
-	[ ] Notifications
+	[X] Notifications
 		[X] Failed move
 		[X] Player wins (game is over)
 			[X] Score
@@ -39,8 +39,12 @@ Task List
 			[X] Turn limit
 				[X] Turn limit alone
 				[X] Turn limit + score
-			[ ] A player has no more pieces
-		[ ] Move when game is over
+			[X] A player has no more pieces
+				[X] Player1 out
+				[X] Player2 out
+		[X] Move when game is over
+			[X] Player1
+			[X] Player2
 
 [ ] Linear Triangles (extra credit)
 
