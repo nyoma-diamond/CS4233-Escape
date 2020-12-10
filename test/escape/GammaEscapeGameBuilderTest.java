@@ -17,16 +17,19 @@ import static org.junit.Assert.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import escape.required.Coordinate;
+
 import static escape.BetaEscapeGameBuilderTest.*;
 
 public class GammaEscapeGameBuilderTest {
 	
-	private static EscapeGameManager manager, bManager;
+	private static EscapeGameManager manager, bManager, vManager;
 
 	@BeforeEach
 	void loadGame() throws Exception {
 		manager = new EscapeGameBuilder("config/egc/gtest1.egc").makeGameManager();
 		bManager = new EscapeGameBuilder("config/egc/blocks.egc").makeGameManager();
+		vManager = new EscapeGameBuilder("config/egc/values.egc").makeGameManager();
 	}
 
 	// #1
@@ -45,5 +48,47 @@ public class GammaEscapeGameBuilderTest {
 			new int[]{1,3,5,1,5,1,3,5});
 	}
 
-	
+
+	// #3
+	@Test
+	void endAfterTurnLimit() {
+		Coordinate c1 = manager.makeCoordinate(4, 4);
+		Coordinate c2 = manager.makeCoordinate(4, 5);
+		Coordinate c3 = manager.makeCoordinate(7, 6);
+		Coordinate c4 = manager.makeCoordinate(7, 7);
+
+		assertTrue(manager.move(c1,c2));
+		assertTrue(manager.move(c3,c4));
+		assertTrue(manager.move(c2,c1));
+		assertTrue(manager.move(c4,c3)); //LAST TURN, GAME SHOULD END AND ALL ADDITIONAL MOVES WILL FAIL
+		assertFalse(manager.move(c1,c2));
+		assertFalse(manager.move(c3,c4));
+	}
+
+
+	// #4
+	@Test
+	void noTurnLimit() {
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 1), vManager.makeCoordinate(3, 4)));
+	}
+
+
+	// #5
+	@Test
+	void winWithDefaultPoints() {
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 1), vManager.makeCoordinate(5, 5)));
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 2), vManager.makeCoordinate(5, 5)));
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 3), vManager.makeCoordinate(5, 5)));
+		assertFalse(vManager.move(vManager.makeCoordinate(1, 4), vManager.makeCoordinate(5, 5)));
+		assertFalse(vManager.move(vManager.makeCoordinate(1, 4), vManager.makeCoordinate(2, 4)));
+	}
+
+	// #5
+	@Test
+	void winWithSetPoints() {
+		assertTrue(vManager.move(vManager.makeCoordinate(1, 5), vManager.makeCoordinate(5, 5)));
+		assertFalse(vManager.move(vManager.makeCoordinate(1, 2), vManager.makeCoordinate(5, 5)));
+		assertFalse(vManager.move(vManager.makeCoordinate(1, 4), vManager.makeCoordinate(5, 5)));
+		assertFalse(vManager.move(vManager.makeCoordinate(1, 4), vManager.makeCoordinate(1, 5)));
+	}
 }

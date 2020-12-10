@@ -2,11 +2,12 @@ Task List
 =========
 [ ] Game Rules
 	[X] Store game rules (EscapeSettings change)
-	[ ] TURN_LIMIT
-	[ ] SCORE
-		[ ] Removing piece through exit adds piece's score to player score
+	[X] TURN_LIMIT
+	[X] SCORE
+		[X] Removing piece through exit adds piece's score to player score
 	[X] REMOVE (Not tested in Gamma)
 	[ ] POINT_CONFLICT (Not tested in Gamma)
+[ ] End game when player has no pieces
 [X] Fix BLOCKs
 	[X] Can't jump over blocks
 		[X] SQUARE board
@@ -16,9 +17,9 @@ Task List
 	[X] Fix broken tests
 [ ] Piece Attributes
 	[ ] UNBLOCK
-	[ ] VALUE (I think I need game end states to work to test this)
-		[ ] Default to 1
-		[ ] Set to specified value
+	[X] VALUE
+		[X] Default to 1
+		[X] Set to specified value
 [ ] Observers
 	[ ] addObserver
 	[ ] removeObserver

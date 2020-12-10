@@ -30,7 +30,11 @@ public class PieceAttribute {
     PieceAttributeID id;
     int value;
     
-    public PieceAttribute() {}
+	public PieceAttribute() {}
+	public PieceAttribute(PieceAttributeID id, int value) {
+		this.id = id;
+		this.value = value;
+	}
     
     public PieceAttributeID getId() { return id; }
     public void setId(PieceAttributeID id) { this.id = id; }

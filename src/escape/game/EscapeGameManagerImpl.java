@@ -12,6 +12,7 @@
 
 package escape.game;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,7 @@ import escape.EscapeGameManager;
 import escape.required.*;
 import escape.util.EscapeGameInitializer;
 import escape.util.LocationInitializer;
+import escape.util.PieceAttribute;
 import escape.util.PieceTypeDescriptor;
 import escape.util.RuleDescriptor;
 import escape.required.Player;
@@ -34,6 +36,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private EscapeSettings settings;
 
 	private Player curPlayer;
+	private int curTurn;
+	private int[] scores;
 	
 	private HashMap<EscapeCoordinate, EscapeLocation> positions; //This could just use Coordinates, but the change isn't necessary
 	private HashMap<PieceName, PieceTypeDescriptor> pieceDescriptors; //stores information about pieces
@@ -66,6 +70,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			}
 
 		this.curPlayer = Player.PLAYER1;
+		this.curTurn = 0;
+		this.scores = new int[]{0,0};
 
 		this.positions = new HashMap<EscapeCoordinate, EscapeLocation>();
 
@@ -82,8 +88,14 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			);
 
 		this.pieceDescriptors = new HashMap<PieceName, PieceTypeDescriptor>(); 
-		for (PieceTypeDescriptor pieceDescriptor : initializer.getPieceTypes())
-			pieceDescriptors.put(pieceDescriptor.getPieceName(), pieceDescriptor);
+		for (PieceTypeDescriptor descriptor : initializer.getPieceTypes()) {
+			if (descriptor.getAttribute(PieceAttributeID.VALUE) == null) { //TODO: I hate this, refactor into PieceTypeDescriptor by making setAttribute?
+				List<PieceAttribute> attributes = new LinkedList<PieceAttribute>(Arrays.asList(descriptor.getAttributes()));
+				attributes.add(new PieceAttribute(PieceAttributeID.VALUE, 1));
+				descriptor.setAttributes(attributes.toArray(new PieceAttribute[attributes.size()]));
+			}
+			pieceDescriptors.put(descriptor.getPieceName(), descriptor);	
+		}		
 	}
 
 	
@@ -125,7 +137,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY() - 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() - d));
 			}
 		} else { //Currently only works for triangle
-			if (jump) { //we're getting jump neighbours
+			if (jump) { //we're getting jump neighbours (THIS ASSUMES YOU CAN JUMP OVER BLOCKS!!!!!!!)
 				neighbours.add(makeCoordinate(coordinate.getX() + 1, coordinate.getY() + 1));
 				neighbours.add(makeCoordinate(coordinate.getX() - 1, coordinate.getY() + 1));
 				neighbours.add(makeCoordinate(coordinate.getX() + 1, coordinate.getY() - 1));
@@ -323,8 +335,19 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	}
 
 
+	/**
+	 * Return if the game is in progress (might change this later but for the time being it's fine)
+	 * @return if the game is in progress
+	 */
+	private boolean isInProgress() { 
+		return (settings.turnLimit == null || curTurn < settings.turnLimit) 
+			&& (settings.scoreLimit == null || (scores[0] < settings.scoreLimit && scores[1] < settings.scoreLimit)); 
+	}
+
+
 	@Override
 	public boolean move(EscapeCoordinate from, EscapeCoordinate to) {
+		if (!isInProgress()) return false;
 		if (!validMove(from, to)) return false;
 
 		EscapeLocation fromLoc = positions.get(from);
@@ -332,9 +355,14 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 		if (toLoc == null) positions.put(to, toLoc = LocationFactory.getLocation(fromLoc.getPiece())); //if null target location (empty), initialize new location with sourcepiece
 		else if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece()); //not exit (must be enemy or empty, already checked for blocks), so set piece
-		positions.remove(from); //no reason to keep the coordinate after moving a piece off it (must be a clear location). Free up some memory (This line can actually be removed by replacing fromLoc in previous two lines with positions.remove(from), but that hurts readability)
+		else if (toLoc.locationType == LocationType.EXIT) scores[curPlayer == Player.PLAYER1 ? 0 : 1] += pieceDescriptors.get(fromLoc.getPiece().getName()).getAttribute(PieceAttributeID.VALUE).getValue();
+		positions.remove(from); //no reason to keep the coordinate after moving a piece off it (must be a clear location). Free up some memory (This line can actually be removed by replacing fromLoc with positions.remove(from), but that hurts readability)
 		
-		curPlayer = curPlayer == Player.PLAYER1 ? Player.PLAYER2 : Player.PLAYER1; //Would make this its own method but its only one line and not used anywhere else
+		if (curPlayer == Player.PLAYER2) {
+			curPlayer = Player.PLAYER1;
+			curTurn++;
+		} else curPlayer = Player.PLAYER2;
+		
 		return true;
 	}
 
