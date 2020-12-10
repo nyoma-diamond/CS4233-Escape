@@ -1,6 +1,6 @@
 Task List
 =========
-[ ] Game Rules
+[X] Game Rules
 	[X] Store game rules (EscapeSettings change)
 	[X] TURN_LIMIT
 	[X] SCORE
@@ -8,15 +8,18 @@ Task List
 	[X] REMOVE (Not tested in Gamma)
 	[ ] POINT_CONFLICT (Not tested in Gamma)
 [ ] End game when player has no pieces
-[X] Fix BLOCKs
+[] Fix BLOCKs
 	[X] Can't jump over blocks
+		[X] SQUARE board
+		[ ] TRIANGLE board (NOT BEING TESTED, DON'T DO)
+	[X] Can't jump over exits
 		[X] SQUARE board
 		[ ] TRIANGLE board (NOT BEING TESTED, DON'T DO)
 [X] Fix piece capture
 	[X] Can't capture pieces
 	[X] Fix broken tests
-[ ] Piece Attributes
-	[ ] UNBLOCK
+[X] Piece Attributes
+	[X] UNBLOCK
 	[X] VALUE
 		[X] Default to 1
 		[X] Set to specified value

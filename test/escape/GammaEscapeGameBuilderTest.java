@@ -23,13 +23,14 @@ import static escape.BetaEscapeGameBuilderTest.*;
 
 public class GammaEscapeGameBuilderTest {
 	
-	private static EscapeGameManager manager, bManager, vManager;
+	private static EscapeGameManager manager, bManager, vManager, uManager;
 
 	@BeforeEach
 	void loadGame() throws Exception {
 		manager = new EscapeGameBuilder("config/egc/gtest1.egc").makeGameManager();
 		bManager = new EscapeGameBuilder("config/egc/blocks.egc").makeGameManager();
 		vManager = new EscapeGameBuilder("config/egc/values.egc").makeGameManager();
+		uManager = new EscapeGameBuilder("config/egc/unblock.egc").makeGameManager();
 	}
 
 	// #1
@@ -40,7 +41,7 @@ public class GammaEscapeGameBuilderTest {
 
 	// #2
 	@Test
-	void cantJumpOverBlockSQUARE() {
+	void cantJumpOverBlock() {
 		invalidMoves(
 			bManager, 
 			bManager.makeCoordinate(3, 3),
@@ -90,5 +91,23 @@ public class GammaEscapeGameBuilderTest {
 		assertFalse(vManager.move(vManager.makeCoordinate(1, 2), vManager.makeCoordinate(5, 5)));
 		assertFalse(vManager.move(vManager.makeCoordinate(1, 4), vManager.makeCoordinate(5, 5)));
 		assertFalse(vManager.move(vManager.makeCoordinate(1, 4), vManager.makeCoordinate(1, 5)));
+	}
+
+	// #5
+	@Test 
+	void cantJumpOverExit() {
+		assertFalse(uManager.move(uManager.makeCoordinate(7, 3), uManager.makeCoordinate(5, 3)));
+		assertTrue(uManager.move(uManager.makeCoordinate(7, 3), uManager.makeCoordinate(6, 3)));
+	}
+
+	// #6
+	@Test
+	void unblockWorks() {
+		validMoves(
+			uManager, 
+			new int[]{3,5,6,2,3,5}, 
+			new int[]{3,3,5,5,1,3}, 
+			uManager.makeCoordinate(15, 15), 
+			uManager.makeCoordinate(15, 16));
 	}
 }

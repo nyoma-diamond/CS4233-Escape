@@ -169,3 +169,7 @@ If this completes without returning true (finding a path) it will return false, 
 - Completed turn limits (pretty easy, was just a matter of actually recording the turn current turn)
   - Chose to split `isGameOver` into its own function rather than store the game state. This choice was made out of convenience and for readability. This may change as observers get added.
   - Edit: changed `isGameOver` to `isInProgress` (flipping the output) to make the internals more readable
+- Made it so you can't jump over exits (like you're SUPPOSED to AAAAAAAAAAAAAAAAAAA)
+  - This is why I hate unclear specifications, because I have to literally UNDO and UNFACTOR code to make fixes for things that are unclear or aren't required in an immediate release. Just tell me clearly what I need instead of being vague until I need it because it just makes more work for me :_( This would have been a complete non-issue if I understood this was the case earlier because I wouldn't have written my code in the way I did.
+- I THINK UNBLOCK WORKS
+  - Spent like an hour trying to debug what was apparently just a single conditional I forgot existed that filtered out all non-clear spaces

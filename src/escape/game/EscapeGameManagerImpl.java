@@ -116,28 +116,37 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	 * @param coordinate coordinate to get neighbours around
 	 * @param movementPattern movement pattern to designate neighbour limitations
 	 * @param jump whether to get jump neighbours intead of adjacent neighbours
+	 * @param unblock whether moving piece has unblock
 	 * @return list of neighbouring coordinates
 	 */
-	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern, boolean jump) { 
+	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern, boolean jump, boolean unblock) { 
 		List<EscapeCoordinate> neighbours = new LinkedList<EscapeCoordinate>();
 		int d = jump ? 2 : 1;
 		EscapeLocation loc;
 
-		if (coordinate.coordinateType == CoordinateType.SQUARE) {
-			if (movementPattern != MovementPattern.DIAGONAL) { //TODO: REFACTOR THIS FOR FUCKS SAKE HOLY SHIT
-				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() + 1, coordinate.getY()))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY()));
-				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY()))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY()));
-				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX(), coordinate.getY() + 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() + d));
-				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX(), coordinate.getY() - 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() - d));
+		if (coordinate.coordinateType == CoordinateType.SQUARE) { //TODO: REFACTOR THIS FOR FUCKS SAKE HOLY SHIT (checking that a location is clear implies that it has a piece in it)
+			if (movementPattern != MovementPattern.DIAGONAL) { //all the stupid conditionals in here are needed to make sure I don't jump over BLOCKs or EXITs.
+				loc = positions.get(makeCoordinate(coordinate.getX() + 1, coordinate.getY()));
+				if (!jump || loc == null || loc.locationType == LocationType.CLEAR) neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY()));
+				loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY()));
+				if (!jump || loc == null || loc.locationType == LocationType.CLEAR) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY()));
+				loc = positions.get(makeCoordinate(coordinate.getX(), coordinate.getY() + 1));
+				if (!jump || loc == null || loc.locationType == LocationType.CLEAR) neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() + d));
+				loc = positions.get(makeCoordinate(coordinate.getX(), coordinate.getY() - 1));
+				if (!jump || loc == null || loc.locationType == LocationType.CLEAR) neighbours.add(makeCoordinate(coordinate.getX(), coordinate.getY() - d));
 			} 
 			if (movementPattern != MovementPattern.ORTHOGONAL) {
-				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() + 1, coordinate.getY() + 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() + d));
-				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() + 1, coordinate.getY() - 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() - d));
-				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY() + 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() + d));
-				if (!jump || ((loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY() - 1))) != null && loc.locationType != LocationType.BLOCK)) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() - d));
+				loc = positions.get(makeCoordinate(coordinate.getX() + 1, coordinate.getY() + 1));
+				if (!jump || loc == null || loc.locationType == LocationType.CLEAR) neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() + d));
+				loc = positions.get(makeCoordinate(coordinate.getX() + 1, coordinate.getY() - 1));
+				if (!jump || loc == null || loc.locationType == LocationType.CLEAR) neighbours.add(makeCoordinate(coordinate.getX() + d, coordinate.getY() - d));
+				loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY() + 1));
+				if (!jump || loc == null || loc.locationType == LocationType.CLEAR) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() + d));
+				loc = positions.get(makeCoordinate(coordinate.getX() - 1, coordinate.getY() - 1));
+				if (!jump || loc == null || loc.locationType == LocationType.CLEAR) neighbours.add(makeCoordinate(coordinate.getX() - d, coordinate.getY() - d));
 			}
 		} else { //Currently only works for triangle
-			if (jump) { //we're getting jump neighbours (THIS ASSUMES YOU CAN JUMP OVER BLOCKS!!!!!!!)
+			if (jump) { //we're getting jump neighbours (THIS ASSUMES YOU CAN JUMP OVER BLOCKS AND EXITS!!!!!!!)
 				neighbours.add(makeCoordinate(coordinate.getX() + 1, coordinate.getY() + 1));
 				neighbours.add(makeCoordinate(coordinate.getX() - 1, coordinate.getY() + 1));
 				neighbours.add(makeCoordinate(coordinate.getX() + 1, coordinate.getY() - 1));
@@ -175,8 +184,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 				&& nextLayer.indexOf(coord) == -1 //isn't already queued in next layer
 				&& (loc == null //empty spaces are good
 					|| loc.locationType == LocationType.EXIT //exits are good
-					|| (loc.getPiece() != null 
-						&& loc.getPiece().getPlayer() != positions.get(source).getPiece().getPlayer())); //enemy piece spaces are good
+					|| (descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null && loc.locationType == LocationType.BLOCK) // blocks are good when unblock is present
+					|| (settings.remove 
+						&& loc.getPiece() != null 
+						&& loc.getPiece().getPlayer() != positions.get(source).getPiece().getPlayer())); //enemy piece spaces are good when REMOVE
 		};
 
 		int maxDistance = descriptor.getAttribute(PieceAttributeID.DISTANCE).getValue(); //set maximum distance
@@ -192,9 +203,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			
 			visited.add(curNode);
 
-			if (positions.get(curNode) == null || curNode == source) { // empty space (cannot be BLOCK or EXIT) or starting node (need this to avoid repeating code). This means we can move forward from here
-				nextLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), false).stream().filter(validNeighbour).collect(Collectors.toList())); //add neighbours to next layer
-				if (canJump) jumpLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), true).stream().filter(validNeighbour).collect(Collectors.toList())); //add jumping neighbours to jump layer
+			// current node is empty, source, or a block when we have UNBLOCK
+			if (positions.get(curNode) == null || curNode == source || (descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null && positions.get(curNode).locationType == LocationType.BLOCK)) { // empty space (cannot be BLOCK or EXIT) or starting node (need this to avoid repeating code). This means we can move forward from here
+				nextLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), false, descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null).stream().filter(validNeighbour).collect(Collectors.toList())); //add neighbours to next layer
+				if (canJump) jumpLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), true, descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null).stream().filter(validNeighbour).collect(Collectors.toList())); //add jumping neighbours to jump layer
 			}
 			
 			if (curLayer.size() == 0) { //done with layer
