@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import escape.required.Coordinate;
+import escape.required.GameObserver;
 
 import static escape.BetaEscapeGameBuilderTest.*;
 
@@ -32,6 +33,20 @@ public class GammaEscapeGameBuilderTest {
 		vManager = new EscapeGameBuilder("config/egc/values.egc").makeGameManager();
 		uManager = new EscapeGameBuilder("config/egc/unblock.egc").makeGameManager();
 	}
+
+	private class TestObserver implements GameObserver {
+		String message;
+
+		TestObserver() {
+			this.message = null;
+		}
+
+		@Override
+		public void notify(String message) { this.message = message; }
+	}
+
+
+
 
 	// #1
 	@Test
@@ -73,7 +88,6 @@ public class GammaEscapeGameBuilderTest {
 		assertTrue(vManager.move(vManager.makeCoordinate(1, 1), vManager.makeCoordinate(3, 4)));
 	}
 
-
 	// #5
 	@Test
 	void winWithDefaultPoints() {
@@ -109,5 +123,59 @@ public class GammaEscapeGameBuilderTest {
 			new int[]{3,3,5,5,1,3}, 
 			uManager.makeCoordinate(15, 15), 
 			uManager.makeCoordinate(15, 16));
+	}
+
+	// #7
+	@Test
+	void addObserverTest() {
+		TestObserver obs = new TestObserver();
+		assertEquals(obs, manager.addObserver(obs));
+	}
+
+	// #8
+	@Test
+	void notifyFailedMove() {
+		TestObserver obs = new TestObserver();
+		manager.addObserver(obs);
+		assertTrue(manager.move(manager.makeCoordinate(4, 4), manager.makeCoordinate(4, 3)));
+		assertNull(obs.message);
+		assertFalse(manager.move(manager.makeCoordinate(4, 3), manager.makeCoordinate(4, 4)));
+		assertEquals("Invalid move: Not allowed to move enemy player's piece", obs.message);
+	}
+
+	// #9
+	@Test
+	void notifyMultipleObservers() {
+		TestObserver obs1 = new TestObserver();
+		TestObserver obs2 = new TestObserver();
+		manager.addObserver(obs1);
+		manager.addObserver(obs2);
+		assertFalse(manager.move(null, manager.makeCoordinate(1, 2)));
+		assertEquals("Invalid move: Source is null", obs1.message);
+		assertEquals("Invalid move: Source is null", obs2.message);
+	}
+
+	// #10
+	@Test
+	void testRemoveObservers() {
+		TestObserver obs1 = new TestObserver();
+		TestObserver obs2 = new TestObserver();
+		manager.addObserver(obs1);
+		manager.addObserver(obs2);
+		assertFalse(manager.move(null, manager.makeCoordinate(1, 2)));
+		assertEquals("Invalid move: Source is null", obs1.message);
+		assertEquals("Invalid move: Source is null", obs2.message);
+		
+		assertEquals(obs2, manager.removeObserver(obs2));
+		assertFalse(manager.move(manager.makeCoordinate(4, 4), null));
+		assertEquals("Invalid move: Target is null", obs1.message);
+		assertEquals("Invalid move: Source is null", obs2.message);
+	}
+
+	// #11
+	@Test
+	void removeNeverAddedObserver() {
+		TestObserver obs = new TestObserver();
+		assertNull(manager.removeObserver(obs));
 	}
 }

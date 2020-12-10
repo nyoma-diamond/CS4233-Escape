@@ -42,6 +42,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private HashMap<EscapeCoordinate, EscapeLocation> positions; //This could just use Coordinates, but the change isn't necessary
 	private HashMap<PieceName, PieceTypeDescriptor> pieceDescriptors; //stores information about pieces
 
+	private List<GameObserver> observers;
+
 
 	/**
 	 * EscapeGameManagerImpl constructor
@@ -96,6 +98,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			}
 			pieceDescriptors.put(descriptor.getPieceName(), descriptor);	
 		}		
+
+		this.observers = new LinkedList<GameObserver>();
 	}
 
 	
@@ -295,19 +299,36 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private boolean validMove(EscapeCoordinate source, EscapeCoordinate target) { //this code is awful and I hate it
 		EscapeLocation sourceLoc, targetLoc;
 		
-		if (source == null
-			|| target == null 
-			|| outOfBounds(target) //target out of bounds
-			|| (sourceLoc = positions.get(source)) == null //source has no location (empty)
-			|| sourceLoc.getPiece() == null  //no piece, implies BLOCK or EXIT
-			|| sourceLoc.getPiece().getPlayer() != curPlayer //wrong player's piece
-			|| ((targetLoc = positions.get(target)) != null 
-				&& targetLoc.getPiece() != null 
-				&& (targetLoc.getPiece().getPlayer() == curPlayer 
-					|| (targetLoc.getPiece().getPlayer() != curPlayer && !settings.remove))) //target has current player's piece or enemy piece and not allowed to remove
-			|| (targetLoc != null && targetLoc.locationType == LocationType.BLOCK) //target a BLOCK
-		) return false;
-
+		if (source == null) { //TODO: this is awful, refactor somehow?
+			notifyObservers("Invalid move: Source is null");
+			return false;
+		} else if (target == null) {
+			notifyObservers("Invalid move: Target is null");
+			return false;
+		} else if (outOfBounds(target)) {
+			notifyObservers("Invalid move: Target is out of bounds");
+			return false;
+		} else if ((sourceLoc = positions.get(source)) == null) {
+			notifyObservers("Invalid move: Source is empty or out of bounds");
+			return false;
+		} else if (sourceLoc.getPiece() == null) {
+			notifyObservers("Invalid move: Source is a BLOCK or EXIT");
+			return false;
+		} else if (sourceLoc.getPiece().getPlayer() != curPlayer) {
+			notifyObservers("Invalid move: Not allowed to move enemy player's piece");
+			return false;
+		} else if (
+			(targetLoc = positions.get(target)) != null
+			&& targetLoc.getPiece() != null 
+			&& (targetLoc.getPiece().getPlayer() == curPlayer 
+				|| (targetLoc.getPiece().getPlayer() != curPlayer 
+					&& !settings.remove))) {
+			notifyObservers("Invalid move: Cannot land on enemy piece without the REMOVE rule");
+			return false;
+		} else if (targetLoc != null && targetLoc.locationType == LocationType.BLOCK) {
+			notifyObservers("Invalid move: Cannot land on a BLOCK");
+			return false;
+		}
 
 		PieceTypeDescriptor descriptor = pieceDescriptors.get(sourceLoc.getPiece().getName()); 
 
@@ -317,30 +338,46 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 		switch (descriptor.getMovementPattern()) { 
 			case OMNI:
-				if (source.DistanceTo(target) > maxDistance) 
+				if (source.DistanceTo(target) > maxDistance) {
+					notifyObservers("Invalid move: Target is too far away");
 					return false;
+				}
 				break;
 			case LINEAR:
-				if (source.DistanceTo(target) > maxDistance
-					|| (Math.abs(target.getX() - source.getX()) != Math.abs(target.getY() - source.getY())
-						&& target.getX() - source.getX() != 0
-						&& target.getY() - source.getY() != 0))
+				if (source.DistanceTo(target) > maxDistance) {
+					notifyObservers("Invalid move: Target is too far away");
+					return false;
+				} else if ((Math.abs(target.getX() - source.getX()) != Math.abs(target.getY() - source.getY())
+					&& target.getX() - source.getX() != 0
+					&& target.getY() - source.getY() != 0)) {
+						notifyObservers("Invalid move: LINEAR pieces can't move that way");
 						return false;
+				}
 				break;
 			case ORTHOGONAL:
-				if (Math.abs(target.getX() - source.getX()) + Math.abs(target.getY() - source.getY()) > maxDistance) 
+				if (Math.abs(target.getX() - source.getX()) + Math.abs(target.getY() - source.getY()) > maxDistance) {
+					notifyObservers("Invalid move: Target is too far away");
 					return false;
+				}
 				break;
 			case DIAGONAL:
-				if ((target.getX() + target.getY()) % 2 != (source.getX() + source.getY()) % 2
-					|| Math.abs(target.getX() - source.getX()) > maxDistance
-					|| Math.abs(target.getY() - source.getY()) > maxDistance) 
+				if ((target.getX() + target.getY()) % 2 != (source.getX() + source.getY()) % 2) {
+					notifyObservers("Invalid move: DIAGONAL pieces can't move that way");
 					return false;
+				} else if (Math.abs(target.getX() - source.getX()) > maxDistance
+					|| Math.abs(target.getY() - source.getY()) > maxDistance) {
+					notifyObservers("Invalid move: Target is too far away");
+					return false;
+				}
 				break;
 		}
 
-		if (descriptor.getAttribute(PieceAttributeID.FLY) == null) //if FLY is null then DISTANCE must not be and we need to search
-			return pathExists(source, target, descriptor); 
+		if (descriptor.getAttribute(PieceAttributeID.FLY) == null) {//if FLY is null then DISTANCE must not be and we need to search
+			if (!pathExists(source, target, descriptor)) {
+				notifyObservers("Invalid move: No path to target");
+				return false;
+			}
+		}
 
 		return true;
 		
@@ -354,6 +391,15 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private boolean isInProgress() { 
 		return (settings.turnLimit == null || curTurn < settings.turnLimit) 
 			&& (settings.scoreLimit == null || (scores[0] < settings.scoreLimit && scores[1] < settings.scoreLimit)); 
+	}
+
+
+	/**
+	 * Notifies all observers with the provided message
+	 * @param message message to notify with
+	 */
+	private void notifyObservers(String message) {
+		for (GameObserver observer : observers) observer.notify(message);
 	}
 
 
@@ -389,5 +435,18 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	@Override
 	public EscapeCoordinate makeCoordinate(int x, int y) {
 		return CoordinateFactory.getCoordinate(settings.coordinateType, x, y);	
+	}
+
+	
+	@Override
+	public GameObserver addObserver(GameObserver observer) {
+		observers.add(observer);
+		return observer;
+	}
+
+	
+	@Override
+	public GameObserver removeObserver(GameObserver observer) {
+		return observers.remove(observer) ? observer : null;
 	}
 }

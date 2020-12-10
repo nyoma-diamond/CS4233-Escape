@@ -7,7 +7,7 @@ Task List
 		[X] Removing piece through exit adds piece's score to player score
 	[X] REMOVE (Not tested in Gamma)
 	[ ] POINT_CONFLICT (Not tested in Gamma)
-[ ] End game when player has no pieces
+[ ] End game when player has no pieces (can't test this until observers are in place)
 [] Fix BLOCKs
 	[X] Can't jump over blocks
 		[X] SQUARE board
@@ -24,12 +24,17 @@ Task List
 		[X] Default to 1
 		[X] Set to specified value
 [ ] Observers
-	[ ] addObserver
-	[ ] removeObserver
+	[X] addObserver
+		[X] Returns added observer
+		[X] Actually adds the observer
+	[X] removeObserver
+		[X] Returns removed observer
+		[X] Actually removes the observer
+		[X] Returns null if never added
 	[ ] Notifications
-		[ ] Failed move
+		[X] Failed move
 		[ ] Player wins (game is over)
-		[ ] Move when game is over (should fail)
+		[ ] Move when game is over
 
 [ ] Linear Triangles (extra credit)
 
