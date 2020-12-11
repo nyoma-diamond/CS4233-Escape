@@ -151,12 +151,11 @@ If this completes without returning true (finding a path) it will return false, 
 - Completed everything Beta needs for triangle (I kinda forgot to keep track of things, but uhhhhhhhh it should hopefully work. Only pathfinding changes necessary were just changing how neighbours were calculated)
 - Hella refactoring (primarily reducing redundant code)
 
-
 ## Gamma
 
 ### 12/9
 
-- Changed BLOCKs to player2 pieces in most of my test because BLOCKs dont act how i thought they did and while they worked for testing in Alpha and Beta they wont work in Gamma 
+- Changed BLOCKs to player2 pieces in most of my test because BLOCKs dont act how i thought they did and while they worked for testing in Alpha and Beta they wont work in Gamma.
 - Created Gamma TODO
 - Turns out something about my code made it work despite not following my initial assumption that if a location is stored it must be either filled, a BLOCK, or an EXIT. Changing my code to not allow capturing pieces made it *actually* follow the assumption, breaking my test for the assumption that shouldve failed but didn't because my code didn't follow the assumption. Fixed it. So now my code *actually* follows the assumption (tl;dr im stupid but my code worked before and still works now so idc)
 - Changed rules in all configuration files to avoid breaking tests
@@ -174,7 +173,7 @@ If this completes without returning true (finding a path) it will return false, 
 - I THINK UNBLOCK WORKS
   - Spent like an hour trying to debug what was apparently just a single conditional I forgot existed that filtered out all non-clear spaces
 - Implemented observers
-	- I just have one function that notifies all observers with a provided message. Anywhere that observers need to be notified (failed move, game win, etc.) it just calls that
+  - I just have one function that notifies all observers with a provided message. Anywhere that observers need to be notified (failed move, game win, etc.) it just calls that
 
 ### 12/10
 
