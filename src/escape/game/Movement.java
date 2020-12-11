@@ -39,7 +39,7 @@ abstract class Movement {
 	 * @param source source coordinate
 	 * @param target target coordinate
 	 * @param maxDistance maximum moveable distance
-	 * @return if the move is valid
+	 * @return a string with the reason why the move is not valid or null if it is valid
 	 */
 	abstract String validateUnbounded(EscapeCoordinate source, EscapeCoordinate target, int maxDistance);
 
@@ -111,7 +111,7 @@ abstract class Movement {
 			if (coordinate.coordinateType == CoordinateType.SQUARE) {
 				neighbours.addAll(ORTHOGONAL.getNeighbours(coordinate, jump, manager));
 				neighbours.addAll(DIAGONAL.getNeighbours(coordinate, jump, manager));
-			} else if (coordinate.coordinateType == CoordinateType.TRIANGLE) { //Currently only works for triangle
+			} else if (coordinate.coordinateType == CoordinateType.TRIANGLE) {
 				int d = jump ? 2 : 1;
 				int x = coordinate.getX();
 				int y = coordinate.getY();

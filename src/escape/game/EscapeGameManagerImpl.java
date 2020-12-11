@@ -55,7 +55,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		this.settings.xMax = initializer.getxMax();
 		this.settings.yMax = initializer.getyMax();
 
-		for (RuleDescriptor rule : initializer.getRules())
+		for (RuleDescriptor rule : initializer.getRules()) //rule initialization
 			switch (rule.id) {
 				case POINT_CONFLICT:
 					this.settings.pointConflict = true;
@@ -78,12 +78,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 		this.positions = new HashMap<EscapeCoordinate, EscapeLocation>();
 
-		// This assumes that the initializer filtered out empty and out of bounds
-		// spaces. If an initializer is provided with an empty CLEAR
-		// LocationInitializer, bugs may occur(?)
+		//location initialization 
 		for (LocationInitializer loc : initializer.getLocationInitializers()) {
 			EscapeCoordinate coord = makeCoordinate(loc.x, loc.y);
-			if (loc.player == null && loc.locationType == LocationType.CLEAR) continue; //This is to skip empty CLEAR spaces (so the code can assume if it isn't in positions it's an empty clear)
+			if (loc.player == null && loc.locationType == LocationType.CLEAR) continue; //Skip empty CLEAR spaces (so the code can assume if it isn't in positions it's an empty clear or out of bounds)
 			else if (loc.player == null) positions.put(coord, LocationFactory.getLocation(loc));
 			else { //piece is present
 				positions.put(coord, LocationFactory.getLocation(new EscapePieceImpl(loc.player, loc.pieceName)));
@@ -91,13 +89,13 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			}
 		}
 			
-
+		//piece type initialization
 		this.pieceDescriptors = new HashMap<PieceName, PieceTypeDescriptor>(); 
 		for (PieceTypeDescriptor descriptor : initializer.getPieceTypes()) {
-			if (descriptor.getAttribute(PieceAttributeID.VALUE) == null) { //TODO: I hate this, refactor into PieceTypeDescriptor by making setAttribute?
-				List<PieceAttribute> attributes = new LinkedList<PieceAttribute>(Arrays.asList(descriptor.getAttributes()));
-				attributes.add(new PieceAttribute(PieceAttributeID.VALUE, 1));
-				descriptor.setAttributes(attributes.toArray(new PieceAttribute[attributes.size()]));
+			if (descriptor.getAttribute(PieceAttributeID.VALUE) == null) { //IF NO VALUE
+				List<PieceAttribute> attributes = new LinkedList<PieceAttribute>(Arrays.asList(descriptor.getAttributes())); //Get attributes
+				attributes.add(new PieceAttribute(PieceAttributeID.VALUE, 1)); //Add VALUE attribute with value 1
+				descriptor.setAttributes(attributes.toArray(new PieceAttribute[attributes.size()])); //Set attributes
 			}
 			pieceDescriptors.put(descriptor.getPieceName(), descriptor);
 		}		
@@ -158,12 +156,12 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 			visited.add(curNode);
 
-			Predicate<EscapeCoordinate> validJumpNeighbour = to -> {
+			Predicate<EscapeCoordinate> validJumpNeighbour = to -> { //This is for additional filtering on jump neighbours to make sure that they are valid to jump to (not jumping over BLOCKs or EXITs)
+				if (source.coordinateType != CoordinateType.SQUARE) return true; //not coded for other cases right now, this is to catch for them
+				
 				int xDif = to.getX() - curNode.getX();
 				int yDif = to.getY() - curNode.getY();
 
-				if (source.coordinateType != CoordinateType.SQUARE) return true; //not coded for other cases right now, this is to catch for them
-				
 				EscapeLocation jumpOver = positions.get(makeCoordinate(curNode.getX() + (xDif / 2), curNode.getY() + (yDif / 2))); //get the location being jumped over
 				if (jumpOver == null || jumpOver.locationType == LocationType.CLEAR) return true; //the location being jumped over is a piece (can only jump over pieces)
 				return false;
@@ -171,8 +169,18 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 			// current node is empty, source, or a block when we have UNBLOCK
 			if (positions.get(curNode) == null || curNode == source || (descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null && positions.get(curNode).locationType == LocationType.BLOCK)) { // empty space (cannot be BLOCK or EXIT) or starting node (need this to avoid repeating code). This means we can move forward from here
-				nextLayer.addAll(movement.getNeighbours(curNode, false, this).stream().filter(validNeighbour).collect(Collectors.toList())); //add neighbours to next layer
-				if (canJump) jumpLayer.addAll(movement.getNeighbours(curNode, true, this).stream().filter(validNeighbour).filter(validJumpNeighbour).collect(Collectors.toList())); //add jumping neighbours to jump layer
+				nextLayer.addAll(movement.getNeighbours(curNode, false, this)
+					.stream()
+					.filter(validNeighbour)  //filter to make sure they're valid neighbours
+					.collect(Collectors.toList())); //add neighbours to next layer
+				
+				if (canJump) {
+					jumpLayer.addAll(movement.getNeighbours(curNode, true, this)
+						.stream()
+						.filter(validNeighbour) //filter to make sure they're valid neighbours
+						.filter(validJumpNeighbour) //filter to make sure they're valid JUMP neighbours
+						.collect(Collectors.toList())); //add jumping neighbours to jump layer
+				}
 			}
 			
 			if (curLayer.size() == 0) { //done with layer
@@ -181,8 +189,13 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 					nextLayer.clear();
 					distance++; //increment distance from source
 					
-					//move forward jump layer  //filter to make sure we're not moving forward a node we can access earlier
-					if (canJump) nextLayer.addAll(jumpLayer.stream().filter(coord -> curLayer.indexOf(coord) == -1).distinct().collect(Collectors.toList()));
+					if (canJump) { //move forward jump layer 
+						nextLayer.addAll(jumpLayer
+							.stream()
+							.filter(coord -> curLayer.indexOf(coord) == -1) //make sure we aren't advancing something we're checking earlier
+							.distinct() //remove redundancy
+							.collect(Collectors.toList())); 
+					}
 															 
 					jumpLayer.clear(); //clear jump layer (already empty if cannot jump)
 				} else if (canJump) { //next layer is empty (only possible moves are jumps)
@@ -193,7 +206,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 			}
 		} 
 
-		return false;
+		return false; //no path was found
 	}
 
 
