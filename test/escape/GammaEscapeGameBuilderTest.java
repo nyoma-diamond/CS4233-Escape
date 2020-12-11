@@ -237,7 +237,9 @@ public class GammaEscapeGameBuilderTest {
 		assertTrue(manager.move(manager.makeCoordinate(5, 5), manager.makeCoordinate(4, 4)));
 		assertNull(obs.message);
 		assertTrue(manager.move(manager.makeCoordinate(15, 16), manager.makeCoordinate(15, 15)));
-		assertEquals("Draw", obs.message);
+		assertEquals("Game is over and results in a draw", obs.message);
+		assertFalse(manager.move(manager.makeCoordinate(15, 16), manager.makeCoordinate(15, 15)));
+		assertEquals("Game is already over: Draw", obs.message);
 	}
 
 	// #17

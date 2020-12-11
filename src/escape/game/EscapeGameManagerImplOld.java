@@ -28,10 +28,11 @@ import escape.util.PieceTypeDescriptor;
 import escape.util.RuleDescriptor;
 import escape.required.Player;
 import escape.required.Coordinate.CoordinateType;
+import escape.required.EscapePiece.MovementPattern;
 import escape.required.EscapePiece.PieceAttributeID;
 import escape.required.EscapePiece.PieceName;
 
-public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate> {
+public class EscapeGameManagerImplOld implements EscapeGameManager<EscapeCoordinate> {
 	private EscapeSettings settings;
 
 	private Player curPlayer;
@@ -50,7 +51,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	 * EscapeGameManagerImpl constructor
 	 * @param initializer the game initializer to use
 	 */
-	public EscapeGameManagerImpl(EscapeGameInitializer initializer) {
+	public EscapeGameManagerImplOld(EscapeGameInitializer initializer) {
 		this.settings = new EscapeSettings();
 		this.settings.coordinateType = initializer.getCoordinateType();
 		this.settings.xMax = initializer.getxMax();
@@ -119,6 +120,53 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 
 	/**
+	 * Get the coordinates neighbouring the provided node
+	 * Note: does not do any checks on coordinates
+	 * @param coordinate coordinate to get neighbours around
+	 * @param movementPattern movement pattern to designate neighbour limitations
+	 * @param jump whether to get jump neighbours intead of adjacent neighbours
+	 * @return list of neighbouring coordinates
+	 */
+	private List<EscapeCoordinate> getNeighbours(EscapeCoordinate coordinate, MovementPattern movementPattern, boolean jump) { 
+		List<EscapeCoordinate> neighbours = new LinkedList<EscapeCoordinate>();
+		int d = jump ? 2 : 1;
+		int x = coordinate.getX();
+		int y = coordinate.getY();
+
+		if (coordinate.coordinateType == CoordinateType.SQUARE) { //I cannot figure out how the hell to refactor this in the slightest. The best thing to do would be to rewrite everything but I don't have the time or sanity for that
+			if (movementPattern != MovementPattern.DIAGONAL) {
+				neighbours.add(makeCoordinate(x + d, y));
+				neighbours.add(makeCoordinate(x - d, y));
+				neighbours.add(makeCoordinate(x, y + d));
+				neighbours.add(makeCoordinate(x, y - d));
+			} 
+			if (movementPattern != MovementPattern.ORTHOGONAL) {
+				neighbours.add(makeCoordinate(x + d, y + d));
+				neighbours.add(makeCoordinate(x + d, y - d));
+				neighbours.add(makeCoordinate(x - d, y + d));
+				neighbours.add(makeCoordinate(x - d, y - d));
+			}
+		} else { //Currently only works for triangle
+			if (jump) { //we're getting jump neighbours
+				neighbours.add(makeCoordinate(x + 1, y + 1));
+				neighbours.add(makeCoordinate(x - 1, y + 1));
+				neighbours.add(makeCoordinate(x + 1, y - 1));
+				neighbours.add(makeCoordinate(x - 1, y - 1));
+			} else if ((x + y) % 2 == 0) { //points down
+				neighbours.add(makeCoordinate(x + 1, y));
+			} else {
+				neighbours.add(makeCoordinate(x - 1, y)); //points up
+			}
+
+			neighbours.add(makeCoordinate(x, y - d));
+			neighbours.add(makeCoordinate(x, y + d));
+		}
+		
+		return neighbours;
+	}
+
+
+	/**
 	 * Find a path from the source to the target with OMNI movement pattern (assumes already valid with FLY)
 	 * @param source starting coordinate
 	 * @param target target coordinate
@@ -130,7 +178,6 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		List<EscapeCoordinate> visited = new LinkedList<EscapeCoordinate>(); //visited nodes
 		List<EscapeCoordinate> nextLayer = new LinkedList<EscapeCoordinate>(); //next layer to check. Becomes curLayer
 		List<EscapeCoordinate> jumpLayer = new LinkedList<EscapeCoordinate>(); //layer of nodes to jump to. Becomes nextLayer
-		Movement movement = getMovement(descriptor);
 		
 		Predicate<EscapeCoordinate> validNeighbour = coord -> { //Predicate indicating whether the neighbour is a valid space to move to and not already queued
 			EscapeLocation loc = positions.get(coord);
@@ -172,8 +219,8 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 			// current node is empty, source, or a block when we have UNBLOCK
 			if (positions.get(curNode) == null || curNode == source || (descriptor.getAttribute(PieceAttributeID.UNBLOCK) != null && positions.get(curNode).locationType == LocationType.BLOCK)) { // empty space (cannot be BLOCK or EXIT) or starting node (need this to avoid repeating code). This means we can move forward from here
-				nextLayer.addAll(movement.getNeighbours(curNode, false, this).stream().filter(validNeighbour).collect(Collectors.toList())); //add neighbours to next layer
-				if (canJump) jumpLayer.addAll(movement.getNeighbours(curNode, true, this).stream().filter(validNeighbour).filter(validJumpNeighbour).collect(Collectors.toList())); //add jumping neighbours to jump layer
+				nextLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), false).stream().filter(validNeighbour).collect(Collectors.toList())); //add neighbours to next layer
+				if (canJump) jumpLayer.addAll(getNeighbours(curNode, descriptor.getMovementPattern(), true).stream().filter(validNeighbour).filter(validJumpNeighbour).collect(Collectors.toList())); //add jumping neighbours to jump layer
 			}
 			
 			if (curLayer.size() == 0) { //done with layer
@@ -233,6 +280,26 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 
 	/**
+	 * Find a path from the source to the target (assumes source and target are valid)
+	 * @param source starting coordinate
+	 * @param target target coordinate
+	 * @param descriptor descriptor for piece (movement patterns, max distance, etc.)
+	 * @return if there exists a valid path
+	 */
+	private boolean pathExists(EscapeCoordinate source, EscapeCoordinate target, PieceTypeDescriptor descriptor) {
+		switch (descriptor.getMovementPattern()) {
+			case ORTHOGONAL:
+			case DIAGONAL:
+			case OMNI:
+				return omniPath(source, target, descriptor);
+			case LINEAR:
+				return linearPath(source, target, descriptor);
+			default: 
+				return false; //This isn't possible to get but is needed to compile for some reason
+		}
+	}
+
+	/**
 	 * Notifies all observers with the provided message
 	 * @param message message to notify with
 	 */
@@ -284,9 +351,53 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	}
 
 
-	//TODO: javadoc
-	private Movement getMovement(PieceTypeDescriptor descriptor) {
-		return Movement.movementTypes.get(descriptor.getMovementPattern());
+	/**
+	 * Validate if moving from source to target is valid for the provided movement pattern and maximum distance unbounded by the board state
+	 * Note: This assumes that the source and target are already valid on their own
+	 * @param source source coordinate
+	 * @param target target coordinate
+	 * @param movementPattern movement pattern to use
+	 * @param maxDistance maximum move distance
+	 * @return if the move is valid ignoring the board state
+	 */
+	private boolean validateUnbounded(EscapeCoordinate source, EscapeCoordinate target, MovementPattern movementPattern, int maxDistance) {
+		switch (movementPattern) { 
+			case OMNI:
+				if (source.DistanceTo(target) > maxDistance) {
+					notifyObservers("Invalid move: Target is too far away");
+					return false;
+				}
+				break;
+			case LINEAR:
+				if (source.DistanceTo(target) > maxDistance) {
+					notifyObservers("Invalid move: Target is too far away");
+					return false;
+				} else if ((Math.abs(target.getX() - source.getX()) != Math.abs(target.getY() - source.getY())
+					&& target.getX() - source.getX() != 0
+					&& target.getY() - source.getY() != 0)) {
+						notifyObservers("Invalid move: LINEAR pieces can't move that way");
+						return false;
+				}
+				break;
+			case ORTHOGONAL:
+				if (Math.abs(target.getX() - source.getX()) + Math.abs(target.getY() - source.getY()) > maxDistance) {
+					notifyObservers("Invalid move: Target is too far away");
+					return false;
+				}
+				break;
+			case DIAGONAL:
+				if ((target.getX() + target.getY()) % 2 != (source.getX() + source.getY()) % 2) {
+					notifyObservers("Invalid move: DIAGONAL pieces can't move that way");
+					return false;
+				} else if (Math.abs(target.getX() - source.getX()) > maxDistance
+					|| Math.abs(target.getY() - source.getY()) > maxDistance) {
+					notifyObservers("Invalid move: Target is too far away");
+					return false;
+				}
+				break;
+		}
+
+		return true;
 	}
 
 
@@ -301,20 +412,14 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 
 		PieceTypeDescriptor descriptor = pieceDescriptors.get(positions.get(source).getPiece().getName()); 
 
-		Movement movement = getMovement(descriptor);
-
 		int maxDistance = descriptor.getAttribute(PieceAttributeID.FLY) != null
 			? descriptor.getAttribute(PieceAttributeID.FLY).getValue()
 			: descriptor.getAttribute(PieceAttributeID.DISTANCE).getValue();
 
-		String message = movement.validateUnbounded(source, target, maxDistance);
-		if (message != null) {
-			notifyObservers(message);
-			return false;
-		}
+		if (!validateUnbounded(source, target, descriptor.getMovementPattern(), maxDistance)) return false;
 
 		if (descriptor.getAttribute(PieceAttributeID.FLY) == null) {//if FLY is null then DISTANCE must not be and we need to search
-			if (!movement.pathExists(source, target, descriptor, this)) {
+			if (!pathExists(source, target, descriptor)) {
 				notifyObservers("Invalid move: No path to target");
 				return false;
 			}
