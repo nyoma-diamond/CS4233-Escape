@@ -189,4 +189,5 @@ If this completes without returning true (finding a path) it will return false, 
 - Refactored out a bunch of my conditionals in `getNeighbours` to a predicate used exclusively for filtering jump neighbours
 - Refactored my checks for whether source and target coordinates are valid (not pathing, checking the actual coordinates) into its own function (this helps readability)
 - Also refactored out "as the crow flies" location validation into it's own method
-- Refactored movement pattern dependent code into the `Movement` class to simplify `EscapeGameManagerImpl`
+- Refactored movement pattern dependent code into the `Movement` class to simplify `EscapeGameManagerImpl` (THIS WAS A VERY LARGE REFACTOR)
+  - By factoring out movement like this it allows me to greatly simplify parts of my code, relocate some things outside of `EscapeGameManagerImpl` so it's less of a god class, and make my code more variable (if there were further releases this would be great, but there aren't :/ )

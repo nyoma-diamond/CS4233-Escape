@@ -39,8 +39,7 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	private int[] scores;
 	private int[] piecesRemaining;
 	
-	//TODO: make Map?
-	private HashMap<EscapeCoordinate, EscapeLocation> positions; //This could just use Coordinates, but the change isn't necessary
+	private HashMap<EscapeCoordinate, EscapeLocation> positions; //this is effectively the "board"
 	private HashMap<PieceName, PieceTypeDescriptor> pieceDescriptors; //stores information about pieces
 
 	private List<GameObserver> observers;
@@ -284,7 +283,11 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 	}
 
 
-	//TODO: javadoc
+	/**
+	 * Get's the Movement class corresponding to the provided descriptor
+	 * @param descriptor descriptor to get movement for
+	 * @return Movement class for descriptor's movement pattern
+	 */
 	private Movement getMovement(PieceTypeDescriptor descriptor) {
 		return Movement.movementTypes.get(descriptor.getMovementPattern());
 	}
