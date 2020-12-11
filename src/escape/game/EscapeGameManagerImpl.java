@@ -382,7 +382,10 @@ public class EscapeGameManagerImpl implements EscapeGameManager<EscapeCoordinate
 		EscapeLocation toLoc = positions.get(to);
 
 		if (toLoc == null) positions.put(to, toLoc = LocationFactory.getLocation(fromLoc.getPiece())); //if null target location (empty), initialize new location with sourcepiece
-		else if (toLoc.locationType != LocationType.EXIT) toLoc.setPiece(fromLoc.getPiece()); //not exit (must be enemy or empty, already checked for blocks), so set piece
+		else if (toLoc.locationType == LocationType.CLEAR) { //if it's clear it must be an enemy piece 
+			toLoc.setPiece(fromLoc.getPiece()); 
+			piecesRemaining[curPlayer == Player.PLAYER1 ? 1 : 0] -= 1;
+		}
 		else if (toLoc.locationType == LocationType.EXIT) {
 			scores[curPlayer == Player.PLAYER1 ? 0 : 1] += pieceDescriptors.get(fromLoc.getPiece().getName()).getAttribute(PieceAttributeID.VALUE).getValue();
 			piecesRemaining[curPlayer == Player.PLAYER1 ? 0 : 1] -= 1;
