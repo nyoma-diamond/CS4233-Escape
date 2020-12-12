@@ -165,7 +165,7 @@ abstract class Movement {
 
 
 
-	//Map that allows us to effectively convert from the MovementPattern enum to the movement classes
+	//Map that allows us to effectively convert from the MovementPattern enum to the movement classes. Idea gotten from: https://www.baeldung.com/java-immutable-maps
 	static final ImmutableMap<MovementPattern, Movement> movementTypes = ImmutableMap.<MovementPattern, Movement>builder()
 		.put(MovementPattern.ORTHOGONAL, ORTHOGONAL)
 		.put(MovementPattern.DIAGONAL, DIAGONAL)
